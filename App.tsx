@@ -1,15 +1,15 @@
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-import PatientListScreen from "./src/screens/PatientListScreen";
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import PatientListScreen from './src/screens/PatientListScreen';
 
 const navigator = createStackNavigator(
   {
     PatientList: PatientListScreen,
   },
   {
-    initialRouteName: "PatientList",
+    initialRouteName: 'PatientList',
     defaultNavigationOptions: {
-      title: "iCure Scan Companion",
+      title: 'iCure Scan Companion',
     },
   }
 );
