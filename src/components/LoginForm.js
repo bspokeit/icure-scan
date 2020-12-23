@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
 
@@ -9,7 +9,7 @@ const LoginForm = ({
   onSubmit,
   submitButtonText,
 }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   return (
@@ -19,10 +19,11 @@ const LoginForm = ({
       </Spacer>
       <Input
         label="Username"
-        value={email}
-        onChangeText={setEmail}
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
         autoCorrect={false}
+        onSubmitEditing={() => onSubmit({ username, password })}
       />
       <Spacer />
       <Input
@@ -32,6 +33,7 @@ const LoginForm = ({
         onChangeText={setPassword}
         autoCapitalize="none"
         autoCorrect={false}
+        onSubmitEditing={() => onSubmit({ username, password })}
       />
       {errorMessage ? (
         <Text style={styles.errorMessage}>{errorMessage}</Text>
@@ -39,7 +41,7 @@ const LoginForm = ({
       <Spacer>
         <Button
           title={submitButtonText}
-          onPress={() => onSubmit({ email, password })}
+          onPress={() => onSubmit({ username, password })}
         />
       </Spacer>
     </>

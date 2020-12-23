@@ -1,3 +1,4 @@
+import iCureAPI from '../api/icure';
 import createContext from './createContext';
 
 const authReducer = (state, action) => {
@@ -11,21 +12,30 @@ const authReducer = (state, action) => {
   }
 };
 
-const login = (dispatch) => async ({ email, password }) => {
+const login = (dispatch) => async ({ username, password }) => {
   try {
-    // const response = await .post('/signin', { email, password });
+    console.log({ username, password });
+    const response = await iCureAPI.authAPI.login({ username, password });
+
+    if (!response.successful) {
+      dispatch({
+        type: 'add_error',
+        payload: 'Invalid credentials',
+      });
+    }
     // await AsyncStorage.setItem('token', response.data.token);
     // dispatch({ type: 'signin', payload: response.data.token });
     // navigate('TrackList');
+    console.log('response: ', response);
   } catch (err) {
-    // dispatch({
-    //   type: 'add_error',
-    //   payload: 'Something went wrong with sign in',
-    // });
+    dispatch({
+      type: 'add_error',
+      payload: 'Something went wrong with login',
+    });
   }
 };
 
-const signout = (dispatch) => {
+const logout = (dispatch) => {
   return () => {
     // somehow sign out!!!
   };
@@ -33,6 +43,6 @@ const signout = (dispatch) => {
 
 export const { Provider, Context } = createContext(
   authReducer,
-  { login },
+  { login, logout },
   { token: null, errorMessage: '' }
 );

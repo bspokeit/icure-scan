@@ -1,25 +1,30 @@
 import isoCrypto from 'isomorphic-webcrypto';
-import { Api } from '@icure/api';
+import { Api, IccAuthApi } from '@icure/api';
 
-const host = 'http://f5a0cc119943.ngrok.io/rest/v1';
+const BASE_URL = 'http://cc145e8e3c89.ngrok.io';
+
+const API_URL = `${BASE_URL}/rest/v1`;
 
 export const initCrypto = async () => {
   await isoCrypto.ensureSecure();
 };
 
 //  TODO: provide credential up front
-export const initICureApi = async () => {
-  // if (iCureAPI.api) {
-  //   return;
-  // }
+// export const initICureApi = async () => {
+//   // if (iCureAPI.api) {
+//   //   return;
+//   // }
 
-  await isoCrypto.ensureSecure();
+//   await isoCrypto.ensureSecure();
 
-  // iCureAPI.api = Api(host, 'demo-test-1608210888', 'test', isoCrypto);
-};
+//   // iCureAPI.api = Api(host, 'demo-test-1608210888', 'test', isoCrypto);
+// };
+
+const authAPI = new IccAuthApi(API_URL, {});
 
 const iCureAPI = {
   initCrypto,
+  authAPI,
 };
 
 export default iCureAPI;

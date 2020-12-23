@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import LoginForm from '../components/LoginForm';
-import { Context } from '../context/AuthContext';
+import { Context as AuthContext } from '../context/AuthContext';
 
 const LoginScreen = () => {
-  const { state } = useContext(Context);
+  const { state, login } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
       <LoginForm
         headerText="Log in"
         errorMessage={state.errorMessage}
-        onSubmit={() => {}}
+        onSubmit={login}
         submitButtonText="Log in"
       />
     </View>
