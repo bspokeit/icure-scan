@@ -9,8 +9,8 @@ const LoginForm = ({
   onSubmit,
   submitButtonText,
 }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('demo-test-1608210888');
+  const [password, setPassword] = useState('test');
 
   return (
     <>

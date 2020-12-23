@@ -1,5 +1,6 @@
 import iCureAPI from '../api/icure';
 import createContext from './createContext';
+import { navigate } from '../utils/navigationHelper';
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -26,8 +27,6 @@ const login = (dispatch) => async ({ username, password }) => {
     }
     // await AsyncStorage.setItem('token', response.data.token);
     // dispatch({ type: 'signin', payload: response.data.token });
-    // navigate('TrackList');
-    console.log('response: ', response);
   } catch (err) {
     dispatch({
       type: 'add_error',

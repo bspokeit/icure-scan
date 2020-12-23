@@ -4,10 +4,10 @@ import { Text } from 'react-native-elements';
 import { Context as ICureContext } from '../context/IcureContext';
 
 const InitApplicationScreen = () => {
-  const { initCrypto } = useContext(ICureContext);
+  const { checkSystem } = useContext(ICureContext);
 
   useEffect(() => {
-    initCrypto();
+    checkSystem();
   }, []);
 
   return (

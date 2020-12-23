@@ -1,10 +1,10 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Provider as IcureProvider } from './src/context/IcureContext';
 import { Provider as AuthProvider } from './src/context/AuthContext';
-import LoginScreen from './src/screens/LoginScreen';
+import { Provider as IcureProvider } from './src/context/IcureContext';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import PatientDetailScreen from './src/screens/PatientDetail';
 import PatientListScreen from './src/screens/PatientListScreen';
 import { setNavigator } from './src/utils/navigationHelper';
