@@ -17,7 +17,7 @@ const initCrypto = (dispatch) => async () => {
   try {
     await iCureAPI.initCrypto();
     dispatch({ type: 'crypto_ready', payload: true });
-    navigate('PatientList');
+    navigate('Login');
   } catch (err) {
     dispatch({ type: 'add_error', payload: err.message });
     dispatch({ type: 'crypto_ready', payload: false });
