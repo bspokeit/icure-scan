@@ -23,7 +23,7 @@ const login = (dispatch) => async ({ username, password }) => {
         payload: 'Invalid credentials',
       });
     } else {
-      navigate('mainFlow');
+      navigate('ImportKey');
     }
     // await AsyncStorage.setItem('token', response.data.token);
     // dispatch({ type: 'signin', payload: response.data.token });
