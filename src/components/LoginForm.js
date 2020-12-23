@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
 
