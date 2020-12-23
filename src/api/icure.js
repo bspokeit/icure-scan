@@ -5,6 +5,10 @@ const BASE_URL = 'http://cc145e8e3c89.ngrok.io';
 
 const API_URL = `${BASE_URL}/rest/v1`;
 
+const HEADERS = {
+  'X-CLIENT-SIDE-TIMEOUT': 30000,
+};
+
 export const initCrypto = async () => {
   await isoCrypto.ensureSecure();
 };
@@ -20,7 +24,7 @@ export const initCrypto = async () => {
 //   // iCureAPI.api = Api(host, 'demo-test-1608210888', 'test', isoCrypto);
 // };
 
-const authAPI = new IccAuthApi(API_URL, {});
+const authAPI = new IccAuthApi(API_URL, HEADERS);
 
 const iCureAPI = {
   initCrypto,

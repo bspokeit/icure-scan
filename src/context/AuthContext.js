@@ -14,7 +14,6 @@ const authReducer = (state, action) => {
 
 const login = (dispatch) => async ({ username, password }) => {
   try {
-    console.log({ username, password });
     const response = await iCureAPI.authAPI.login({ username, password });
 
     if (!response.successful) {
@@ -22,6 +21,8 @@ const login = (dispatch) => async ({ username, password }) => {
         type: 'add_error',
         payload: 'Invalid credentials',
       });
+    } else {
+      navigate('mainFlow');
     }
     // await AsyncStorage.setItem('token', response.data.token);
     // dispatch({ type: 'signin', payload: response.data.token });
