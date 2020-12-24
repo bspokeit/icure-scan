@@ -2,7 +2,7 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider as AuthProvider } from './src/context/AuthContext';
-import { Provider as IcureProvider } from './src/context/IcureContext';
+import { Provider as IcureProvider } from './src/context/SystemContext';
 import ImportKeyScreen from './src/screens/ImportKeyScreen';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -14,6 +14,7 @@ const switchNavigator = createSwitchNavigator({
   Init: InitApplicationScreen,
   Login: LoginScreen,
   ImportKey: ImportKeyScreen,
+
   mainFlow: createStackNavigator({
     List: PatientListScreen,
     Detail: PatientDetailScreen,

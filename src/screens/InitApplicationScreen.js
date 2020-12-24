@@ -1,13 +1,17 @@
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import { Context as ICureContext } from '../context/IcureContext';
+import { Context as SystemContext } from '../context/SystemContext';
+import { Context as AuthContext } from '../context/AuthContext';
 
 const InitApplicationScreen = () => {
-  const { checkSystem } = useContext(ICureContext);
+  const { checkSystem } = useContext(SystemContext);
+  const { autoLogin } = useContext(AuthContext);
 
   useEffect(() => {
-    checkSystem();
+    checkSystem().then(() => {
+      autoLogin();
+    });
   }, []);
 
   return (

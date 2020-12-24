@@ -11,6 +11,7 @@
     "@icure/api": "github:phil1618/icc-api#rn-integration-base",
     "@react-native-community/masked-view": "^0.1.10",
     "expo": "~40.0.0",
+    "expo-document-picker": "~8.4.1",
     "expo-random": "~10.0.0",
     "expo-secure-store": "~9.3.0",
     "expo-status-bar": "~1.0.3",

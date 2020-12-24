@@ -3,6 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
 
 const ImportKeyScreen = () => {
+  // getDocumentAsync({
+  //   type: 'plain/text',
+  //   copyToCacheDirectory: false,
+  //   multiple: false,
+  // });
+
   return (
     <View style={styles.container}>
       <Text>Import Key Screen</Text>

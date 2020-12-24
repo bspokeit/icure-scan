@@ -1,9 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 import iCureAPI from '../api/icure';
-import { navigate } from '../utils/navigationHelper';
 import createContext from './createContext';
 
-const icureReducer = (state, action) => {
+const systemReducer = (state, action) => {
   switch (action.type) {
     case 'crypto_ready':
       return { ...state, cryptoReady: action.payload };
@@ -38,15 +37,18 @@ const initCrypto = (dispatch) => async () => {
 
 const checkSystem = (dispatch) => async () => {
   try {
-    await Promise.all([initCrypto(dispatch)(), checkSecureStore(dispatch)()]);
-    navigate('Login');
+    return await Promise.all([
+      initCrypto(dispatch)(),
+      checkSecureStore(dispatch)(),
+    ]);
   } catch (err) {
     dispatch({ type: 'add_error', payload: err.message });
+    throw err;
   }
 };
 
 export const { Provider, Context } = createContext(
-  icureReducer,
+  systemReducer,
   { checkSystem },
   { cryptoReady: false, secureStoreAvailable: false }
 );
