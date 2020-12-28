@@ -22,7 +22,7 @@ const authReducer = (state, action) => {
 
 const login = (dispatch) => async ({ username, password }) => {
   try {
-    const response = await iCureAPI.authAPI.login({ username, password });
+    const response = await iCureAPI.getAuthAPI().login({ username, password });
 
     if (!response.successful) {
       await SecureStore.deleteItemAsync(CREDENTIAL_KEY);
@@ -44,16 +44,12 @@ const login = (dispatch) => async ({ username, password }) => {
       );
       dispatch({ type: 'login', payload: authHeader });
 
+      iCureAPI.addHeaders(authHeader);
+
       const currentUser = await iCureAPI
         .getUserAPI(authHeader)
         .getCurrentUser();
       dispatch({ type: 'current_user', payload: currentUser });
-
-      console.log('currentUser: ', currentUser);
-
-      const session = await iCureAPI.getUserAPI(authHeader).getCurrentSession();
-
-      console.log('session: ', session);
 
       navigate('ImportKey');
     }
