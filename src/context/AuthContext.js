@@ -15,6 +15,10 @@ const authReducer = (state, action) => {
       return { authHeader: action.payload, errorMessage: '' };
     case 'current_user':
       return { ...state, currentUser: action.payload };
+    case 'current_hcp':
+      return { ...state, currentHcp: action.payload };
+    case 'parent_hcp':
+      return { ...state, parentHcp: action.payload };
     default:
       return state;
   }
@@ -46,10 +50,24 @@ const login = (dispatch) => async ({ username, password }) => {
 
       iCureAPI.addHeaders(authHeader);
 
-      const currentUser = await iCureAPI
-        .getUserAPI(authHeader)
-        .getCurrentUser();
+      const currentUser = await iCureAPI.getUserAPI().getCurrentUser();
       dispatch({ type: 'current_user', payload: currentUser });
+
+      const currentHcp = await iCureAPI.getHcpAPI().getCurrentHealthcareParty();
+      dispatch({ type: 'current_hcp', payload: currentHcp });
+
+      let parentHcp;
+      if (currentHcp.parentId) {
+        try {
+          parentHcp = await iCureAPI
+            .getHcpAPI()
+            .getHealthcareParty(currentHcp.parentId, true);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      dispatch({ type: 'parent_hcp', payload: parentHcp });
 
       navigate('ImportKey');
     }

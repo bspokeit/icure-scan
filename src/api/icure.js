@@ -1,4 +1,5 @@
-import isoCrypto from 'isomorphic-webcrypto';
+const isoCrypto = require('isomorphic-webcrypto');
+console.log('AAAAAAAAA');
 import {
   IccAuthApi,
   IccHcpartyXApi,
@@ -7,7 +8,7 @@ import {
   IccCryptoXApi,
 } from '@icure/api';
 
-const BASE_URL = 'http://cc5384b046d7.ngrok.io';
+const BASE_URL = 'http://41839e7eb8c4.ngrok.io';
 
 const API_URL = `${BASE_URL}/rest/v1`;
 
@@ -64,7 +65,7 @@ export const getCryptoAPI = (headers) => {
       { ...HEADERS, ...headers },
       getHcpAPI(headers),
       new IccPatientApi(API_URL, headers),
-      crypto
+      isoCrypto
     );
   }
 
