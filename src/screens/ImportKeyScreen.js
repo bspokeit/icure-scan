@@ -3,7 +3,6 @@ import * as FS from 'expo-file-system';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-elements';
-import iCureAPI from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as CryptoContext } from '../context/CryptoContext';
 
@@ -13,23 +12,19 @@ const ImportKeyScreen = () => {
   } = useContext(AuthContext);
   const {
     state: { keys },
-    loadPrivateKeyToStorage,
-    loadPrivateKeyFromStorage,
-    loadPrivateKeysFromStorage,
+    importPrivateKey,
+    importPrivateKeysFromStorage,
   } = useContext(CryptoContext);
 
   useEffect(() => {
-    console.log('Current HCP: ', !!currentHcp);
-    console.log('Parent HCP: ', !!parentHcp);
-
     async function automaticKeyLoading() {
-      await loadPrivateKeysFromStorage([currentHcp, parentHcp]);
+      await importPrivateKeysFromStorage([currentHcp, parentHcp]);
     }
 
     automaticKeyLoading();
   }, []);
 
-  const onImportPress = (hcpId) => {
+  const onImportPress = (hcp) => {
     getDocumentAsync({
       multiple: false,
     })
@@ -40,15 +35,7 @@ const ImportKeyScreen = () => {
       })
       .then((privateKey) => {
         if (privateKey) {
-          return iCureAPI
-            .getCryptoAPI()
-            .loadKeyPairsAsTextInBrowserLocalStorage(
-              hcpId,
-              iCureAPI.getCryptoAPI().utils.hex2ua(privateKey)
-            )
-            .then(() => {
-              return loadPrivateKeyToStorage(hcpId, privateKey);
-            });
+          return importPrivateKey(hcp, privateKey);
         }
       })
       .catch((err) => {
@@ -62,23 +49,23 @@ const ImportKeyScreen = () => {
       <Button
         title="Import your key"
         onPress={() => {
-          onImportPress(currentHcp.id);
+          onImportPress(currentHcp);
         }}
       />
       {parentHcp ? (
         <Button
           title="Import parent key"
           onPress={() => {
-            onImportPress(parentHcp.id);
+            onImportPress(parentHcp);
           }}
         />
       ) : null}
 
       {currentHcp ? (
-        <Text>Current key: ...{keys[currentHcp.id]?.substr(-23)}</Text>
+        <Text>Current key: ...{keys[currentHcp.id]?.substr(-25)}</Text>
       ) : null}
       {parentHcp ? (
-        <Text>Parent key: ...{keys[parentHcp.id]?.substr(-23)}</Text>
+        <Text>Parent key: ...{keys[parentHcp.id]?.substr(-25)}</Text>
       ) : null}
     </View>
   );

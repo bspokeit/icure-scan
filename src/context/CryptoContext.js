@@ -1,20 +1,26 @@
-import createContext from './createContext';
 import * as SecureStore from 'expo-secure-store';
 import { compact } from 'lodash';
+import iCureAPI from '../api/icure';
+import createContext from './createContext';
 
 const PRIVATE_KEY_POSTFIX_1 = '-icure-scan-key-1';
 const PRIVATE_KEY_POSTFIX_2 = '-icure-scan-key-2';
 
 const cryptoReducer = (state, action) => {
   switch (action.type) {
-    case 'private_key':
-      return { ...state, keys: { ...state.keys, ...action.payload } };
+    case 'add_private_key':
+      const extendedKeySet = { ...state.keys, ...action.payload };
+      return { ...state, keys: extendedKeySet };
+    case 'remove_private_key':
+      const cleanedKeySet = { ...state.keys };
+      delete cleanedKeySet[action.payload];
+      return { ...state, keys: cleanedKeySet };
     default:
       return state;
   }
 };
 
-const storePrivateKey = async (hcp, content) => {
+const addPrivateKeyToStorage = async (hcp, content) => {
   if (!hcp || !hcp.id || !content) {
     return;
   }
@@ -27,7 +33,7 @@ const storePrivateKey = async (hcp, content) => {
   await SecureStore.setItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`, part2);
 };
 
-const getPrivateKey = async (hcp) => {
+const getPrivateKeyFromStorage = async (hcp) => {
   if (!hcp || !hcp.id) {
     return;
   }
@@ -41,23 +47,61 @@ const getPrivateKey = async (hcp) => {
   return part1 + part2;
 };
 
-const loadPrivateKeyFromStorage = (dispatch) => async (hcp) => {
-  const privateKey = await getPrivateKey(hcp);
-  dispatch({
-    type: 'private_key',
-    payload: { [hcp.id]: privateKey },
-  });
+const removePrivateKeyFromStorage = async (hcp) => {
+  if (!hcp || !hcp.id) {
+    return;
+  }
+
+  await SecureStore.deleteItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_1}`);
+  await SecureStore.deleteItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`);
 };
 
-const loadPrivateKeyToStorage = (dispatch) => async (hcp, privateKey) => {
-  await storePrivateKey(hcp, privateKey);
-  dispatch({
-    type: 'private_key',
-    payload: { [hcp.id]: privateKey },
-  });
+const importAndValidatePrivateKey = async (hcp, privateKey) => {
+  return iCureAPI
+    .getCryptoAPI()
+    .loadKeyPairsAsTextInBrowserLocalStorage(
+      hcp.id,
+      iCureAPI.getCryptoAPI().utils.hex2ua(privateKey)
+    )
+    .then(() => {
+      console.log('Imported: ', hcp.id, privateKey.substr(-25));
+    })
+    .then(() => true)
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
 };
 
-const loadPrivateKeysFromStorage = (dispatch) => async (hcps) => {
+const importPrivateKeyFromStorage = (dispatch) => async (hcp) => {
+  try {
+    const privateKey = await getPrivateKeyFromStorage(hcp);
+    await importAndValidatePrivateKey(hcp, privateKey);
+    dispatch({
+      type: 'add_private_key',
+      payload: { [hcp.id]: privateKey },
+    });
+  } catch (err) {
+    console.log(err);
+    clearPrivateKeyData(dispatch)(hcp);
+  }
+};
+
+const importPrivateKey = (dispatch) => async (hcp, privateKey) => {
+  try {
+    await importAndValidatePrivateKey(hcp, privateKey);
+    await addPrivateKeyToStorage(hcp, privateKey);
+    dispatch({
+      type: 'add_private_key',
+      payload: { [hcp.id]: privateKey },
+    });
+  } catch (err) {
+    console.log(err);
+    clearPrivateKeyData(dispatch)(hcp);
+  }
+};
+
+const importPrivateKeysFromStorage = (dispatch) => async (hcps) => {
   if (!hcps || !hcps.length) {
     return;
   }
@@ -65,18 +109,26 @@ const loadPrivateKeysFromStorage = (dispatch) => async (hcps) => {
   const chainedPromise = Promise.resolve();
   return compact(hcps).reduce((acc, current) => {
     acc = acc.then(() => {
-      return loadPrivateKeyFromStorage(dispatch)(current);
+      return importPrivateKeyFromStorage(dispatch)(current);
     });
     return acc;
   }, chainedPromise);
 };
 
+const clearPrivateKeyData = (dispatch) => async (hcp) => {
+  await removePrivateKeyFromStorage(hcp);
+  dispatch({
+    type: 'remove_private_key',
+    payload: hcp.id,
+  });
+};
+
 export const { Provider, Context } = createContext(
   cryptoReducer,
   {
-    loadPrivateKeyToStorage,
-    loadPrivateKeyFromStorage,
-    loadPrivateKeysFromStorage,
+    importPrivateKey,
+    importPrivateKeyFromStorage,
+    importPrivateKeysFromStorage,
   },
   { keys: {} }
 );
