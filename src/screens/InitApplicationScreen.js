@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import { Context as SystemContext } from '../context/SystemContext';
 import { Context as AuthContext } from '../context/AuthContext';
+import { Context as SystemContext } from '../context/SystemContext';
 
 const InitApplicationScreen = () => {
   const { checkSystem } = useContext(SystemContext);

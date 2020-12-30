@@ -160,6 +160,7 @@ const importPrivateKey = (dispatch) => async (hcp, privateKey) => {
   } catch (err) {
     console.log(err);
     await clearPrivateKeyData(dispatch)(hcp);
+
     dispatch({
       type: 'set_private_key_import',
       payload: { [hcp.id]: false },

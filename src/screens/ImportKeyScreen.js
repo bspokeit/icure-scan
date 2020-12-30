@@ -3,20 +3,42 @@ import { StyleSheet, View } from 'react-native';
 import KeyImporter from '../components/KeyImporter';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as CryptoContext } from '../context/CryptoContext';
+import { navigate } from '../utils/navigationHelper';
 
 const ImportKeyScreen = () => {
   const {
     state: { currentHcp, parentHcp },
   } = useContext(AuthContext);
-  const { importPrivateKeysFromStorage } = useContext(CryptoContext);
+  const {
+    state: { keys },
+    importPrivateKeysFromStorage,
+  } = useContext(CryptoContext);
 
   useEffect(() => {
     async function automaticKeyLoading() {
-      await importPrivateKeysFromStorage([currentHcp, parentHcp]);
+      await importPrivateKeysFromStorage([currentHcp, parentHcp]).then(() => {
+        if (currentHcp && parentHcp) {
+          if (keys[currentHcp.id] && keys[parentHcp.id]) {
+            navigate('List');
+          }
+        } else if (currentHcp && keys[currentHcp.id]) {
+          navigate('List');
+        }
+      });
     }
 
     automaticKeyLoading();
   }, []);
+
+  useEffect(() => {
+    if (currentHcp && parentHcp) {
+      if (keys[currentHcp.id] && keys[parentHcp.id]) {
+        navigate('List');
+      }
+    } else if (currentHcp && keys[currentHcp.id]) {
+      navigate('List');
+    }
+  }, [keys]);
 
   return (
     <View style={styles.container}>
