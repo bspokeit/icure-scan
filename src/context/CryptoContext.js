@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { compact } from 'lodash';
+import { compact, reject } from 'lodash';
 import iCureAPI from '../api/icure';
 import createContext from './createContext';
 
@@ -40,14 +40,23 @@ const getPrivateKeyFromStorage = async (hcp) => {
   if (!hcp || !hcp.id) {
     return;
   }
-  const part1 = await SecureStore.getItemAsync(
-    `${hcp.id}${PRIVATE_KEY_POSTFIX_1}`
-  );
-  const part2 = await SecureStore.getItemAsync(
-    `${hcp.id}${PRIVATE_KEY_POSTFIX_2}`
-  );
 
-  return part1 + part2;
+  try {
+    const part1 = await SecureStore.getItemAsync(
+      `${hcp.id}${PRIVATE_KEY_POSTFIX_1}`
+    );
+    const part2 = await SecureStore.getItemAsync(
+      `${hcp.id}${PRIVATE_KEY_POSTFIX_2}`
+    );
+
+    if (!part1 || !part2) {
+      throw Error('No private key value found in storage');
+    }
+
+    return part1 + part2;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const removePrivateKeyFromStorage = async (hcp) => {
@@ -60,6 +69,7 @@ const removePrivateKeyFromStorage = async (hcp) => {
 };
 
 const validatePrivateKey = async (hcp) => {
+  //  TODO: write this block with awaits
   const randomString = Math.random().toString(36).substring(2);
 
   let userCryptoKey = null;
@@ -124,7 +134,6 @@ const importPrivateKeyFromStorage = (dispatch) => async (hcp) => {
     }
     dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: false } });
   } catch (err) {
-    console.log(err);
     await clearPrivateKeyData(dispatch)(hcp);
     dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: false } });
   }
@@ -162,6 +171,9 @@ const importPrivateKeysFromStorage = (dispatch) => async (hcps) => {
   if (!hcps || !hcps.length) {
     return;
   }
+  compact(hcps).forEach((hcp) => {
+    dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: true } });
+  });
 
   const chainedPromise = Promise.resolve();
 
@@ -187,7 +199,6 @@ export const { Provider, Context } = createContext(
   cryptoReducer,
   {
     importPrivateKey,
-    importPrivateKeyFromStorage,
     importPrivateKeysFromStorage,
   },
   { keys: {}, keyImports: {} }
