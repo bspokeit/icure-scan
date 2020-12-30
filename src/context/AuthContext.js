@@ -100,7 +100,7 @@ const autoLogin = (dispatch) => async () => {
 
 const logout = (dispatch) => async () => {
   await clearAuthenticationData(dispatch);
-  navigate('ImportKey');
+  navigate('Login');
 };
 
 const clearAuthenticationData = async (dispatch) => {
