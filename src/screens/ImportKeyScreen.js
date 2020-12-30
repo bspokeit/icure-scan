@@ -1,14 +1,34 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text, Button } from 'react-native-elements';
 import { getDocumentAsync } from 'expo-document-picker';
 import * as FS from 'expo-file-system';
-import { Context as AuthContext } from '../context/AuthContext';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Button, Text } from 'react-native-elements';
 import iCureAPI from '../api/icure';
-import * as SecureStore from 'expo-secure-store';
+import { Context as AuthContext } from '../context/AuthContext';
+import { Context as CryptoContext } from '../context/CryptoContext';
 
 const ImportKeyScreen = () => {
-  const { state } = useContext(AuthContext);
+  const {
+    state: { currentHcp, parentHcp },
+  } = useContext(AuthContext);
+  const {
+    state: { keys },
+    loadPrivateKeyToStorage,
+    loadPrivateKeyFromStorage,
+    loadPrivateKeysFromStorage,
+  } = useContext(CryptoContext);
+
+  useEffect(() => {
+    console.log('Current HCP: ', !!currentHcp);
+    console.log('Parent HCP: ', !!parentHcp);
+
+    async function automaticKeyLoading() {
+      await loadPrivateKeysFromStorage([currentHcp, parentHcp]);
+    }
+
+    automaticKeyLoading();
+  }, []);
+
   const onImportPress = (hcpId) => {
     getDocumentAsync({
       multiple: false,
@@ -18,21 +38,20 @@ const ImportKeyScreen = () => {
           return FS.readAsStringAsync(result.uri);
         }
       })
-      .then((fileContent) => {
-        if (fileContent) {
+      .then((privateKey) => {
+        if (privateKey) {
           return iCureAPI
             .getCryptoAPI()
             .loadKeyPairsAsTextInBrowserLocalStorage(
               hcpId,
-              iCureAPI.getCryptoAPI().utils.hex2ua(fileContent)
+              iCureAPI.getCryptoAPI().utils.hex2ua(privateKey)
             )
             .then(() => {
-              return SecureStore.setItemAsync(hcpId + '-key', fileContent);
+              return loadPrivateKeyToStorage(hcpId, privateKey);
             });
         }
       })
       .catch((err) => {
-        console.log('BAM!!!!');
         console.log(err);
       });
   };
@@ -43,16 +62,23 @@ const ImportKeyScreen = () => {
       <Button
         title="Import your key"
         onPress={() => {
-          onImportPress(state.currentHcp.id);
+          onImportPress(currentHcp.id);
         }}
       />
-      {state.parentHcp ? (
+      {parentHcp ? (
         <Button
           title="Import parent key"
           onPress={() => {
-            onImportPress(state.parentHcp.id);
+            onImportPress(parentHcp.id);
           }}
         />
+      ) : null}
+
+      {currentHcp ? (
+        <Text>Current key: ...{keys[currentHcp.id]?.substr(-23)}</Text>
+      ) : null}
+      {parentHcp ? (
+        <Text>Parent key: ...{keys[parentHcp.id]?.substr(-23)}</Text>
       ) : null}
     </View>
   );

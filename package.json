@@ -17,6 +17,7 @@
     "expo-secure-store": "~9.3.0",
     "expo-status-bar": "~1.0.3",
     "isomorphic-webcrypto": "^2.3.6",
+    "lodash": "^4.17.20",
     "msrcrypto": "^1.5.8",
     "react": "16.13.1",
     "react-dom": "16.13.1",

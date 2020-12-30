@@ -8,7 +8,7 @@ import {
   IccCryptoXApi,
 } from '@icure/api';
 
-const BASE_URL = 'http://41839e7eb8c4.ngrok.io';
+const BASE_URL = 'http://33189d95d7aa.ngrok.io';
 
 const API_URL = `${BASE_URL}/rest/v1`;
 

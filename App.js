@@ -2,7 +2,8 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider as AuthProvider } from './src/context/AuthContext';
-import { Provider as IcureProvider } from './src/context/SystemContext';
+import { Provider as SystemProvider } from './src/context/SystemContext';
+import { Provider as CryptoProvider } from './src/context/CryptoContext';
 import ImportKeyScreen from './src/screens/ImportKeyScreen';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -25,14 +26,16 @@ const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
-    <IcureProvider>
+    <SystemProvider>
       <AuthProvider>
-        <App
-          ref={(navigator) => {
-            setNavigator(navigator);
-          }}
-        />
+        <CryptoProvider>
+          <App
+            ref={(navigator) => {
+              setNavigator(navigator);
+            }}
+          />
+        </CryptoProvider>
       </AuthProvider>
-    </IcureProvider>
+    </SystemProvider>
   );
 };
