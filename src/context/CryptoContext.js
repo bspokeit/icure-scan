@@ -8,6 +8,9 @@ const PRIVATE_KEY_POSTFIX_2 = '-icure-scan-key-2';
 
 const cryptoReducer = (state, action) => {
   switch (action.type) {
+    case 'set_private_key_import':
+      const keyImports = { ...state.keyImports, ...action.payload };
+      return { ...state, keyImports };
     case 'add_private_key':
       const extendedKeySet = { ...state.keys, ...action.payload };
       return { ...state, keys: extendedKeySet };
@@ -56,6 +59,39 @@ const removePrivateKeyFromStorage = async (hcp) => {
   await SecureStore.deleteItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`);
 };
 
+const validatePrivateKey = async (hcp) => {
+  const randomString = Math.random().toString(36).substring(2);
+
+  let userCryptoKey = null;
+
+  return iCureAPI
+    .getHcpAPI()
+    .getHcPartyKeysForDelegate(hcp.id)
+    .then((encryptedHcPartyKey) =>
+      iCureAPI
+        .getCryptoAPI()
+        .decryptHcPartyKey(hcp.id, hcp.id, encryptedHcPartyKey[hcp.id], true)
+    )
+    .then((importedAESHcPartyKey) => {
+      userCryptoKey = importedAESHcPartyKey.key;
+      return iCureAPI
+        .getCryptoAPI()
+        .AES.encrypt(
+          userCryptoKey,
+          iCureAPI.getCryptoAPI().utils.text2ua(randomString)
+        );
+    })
+    .then((cryptedString) => {
+      return iCureAPI.getCryptoAPI().AES.decrypt(userCryptoKey, cryptedString);
+    })
+    .then((decription) => {
+      return Promise.resolve(
+        iCureAPI.getCryptoAPI().utils.ua2text(decription) === randomString
+      );
+    })
+    .catch(() => Promise.resolve(false));
+};
+
 const importAndValidatePrivateKey = async (hcp, privateKey) => {
   return iCureAPI
     .getCryptoAPI()
@@ -64,9 +100,8 @@ const importAndValidatePrivateKey = async (hcp, privateKey) => {
       iCureAPI.getCryptoAPI().utils.hex2ua(privateKey)
     )
     .then(() => {
-      console.log('Imported: ', hcp.id, privateKey.substr(-25));
+      return validatePrivateKey(hcp);
     })
-    .then(() => true)
     .catch((err) => {
       console.log(err);
       return false;
@@ -74,30 +109,52 @@ const importAndValidatePrivateKey = async (hcp, privateKey) => {
 };
 
 const importPrivateKeyFromStorage = (dispatch) => async (hcp) => {
+  dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: true } });
   try {
     const privateKey = await getPrivateKeyFromStorage(hcp);
-    await importAndValidatePrivateKey(hcp, privateKey);
-    dispatch({
-      type: 'add_private_key',
-      payload: { [hcp.id]: privateKey },
-    });
+    const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
+
+    if (keyImported) {
+      dispatch({
+        type: 'add_private_key',
+        payload: { [hcp.id]: privateKey },
+      });
+    } else {
+      await clearPrivateKeyData(dispatch)(hcp);
+    }
+    dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: false } });
   } catch (err) {
     console.log(err);
-    clearPrivateKeyData(dispatch)(hcp);
+    await clearPrivateKeyData(dispatch)(hcp);
+    dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: false } });
   }
 };
 
 const importPrivateKey = (dispatch) => async (hcp, privateKey) => {
+  dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: true } });
   try {
-    await importAndValidatePrivateKey(hcp, privateKey);
-    await addPrivateKeyToStorage(hcp, privateKey);
+    const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
+
+    if (keyImported) {
+      await addPrivateKeyToStorage(hcp, privateKey);
+      dispatch({
+        type: 'add_private_key',
+        payload: { [hcp.id]: privateKey },
+      });
+    } else {
+      await clearPrivateKeyData(dispatch)(hcp);
+    }
     dispatch({
-      type: 'add_private_key',
-      payload: { [hcp.id]: privateKey },
+      type: 'set_private_key_import',
+      payload: { [hcp.id]: false },
     });
   } catch (err) {
     console.log(err);
-    clearPrivateKeyData(dispatch)(hcp);
+    await clearPrivateKeyData(dispatch)(hcp);
+    dispatch({
+      type: 'set_private_key_import',
+      payload: { [hcp.id]: false },
+    });
   }
 };
 
@@ -107,12 +164,15 @@ const importPrivateKeysFromStorage = (dispatch) => async (hcps) => {
   }
 
   const chainedPromise = Promise.resolve();
-  return compact(hcps).reduce((acc, current) => {
+
+  compact(hcps).reduce((acc, current) => {
     acc = acc.then(() => {
       return importPrivateKeyFromStorage(dispatch)(current);
     });
     return acc;
   }, chainedPromise);
+
+  return chainedPromise;
 };
 
 const clearPrivateKeyData = (dispatch) => async (hcp) => {
@@ -130,5 +190,5 @@ export const { Provider, Context } = createContext(
     importPrivateKeyFromStorage,
     importPrivateKeysFromStorage,
   },
-  { keys: {} }
+  { keys: {}, keyImports: {} }
 );

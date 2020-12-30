@@ -11,7 +11,7 @@ const ImportKeyScreen = () => {
     state: { currentHcp, parentHcp },
   } = useContext(AuthContext);
   const {
-    state: { keys },
+    state: { keys, keyImports },
     importPrivateKey,
     importPrivateKeysFromStorage,
   } = useContext(CryptoContext);
@@ -25,9 +25,7 @@ const ImportKeyScreen = () => {
   }, []);
 
   const onImportPress = (hcp) => {
-    getDocumentAsync({
-      multiple: false,
-    })
+    getDocumentAsync()
       .then((result) => {
         if (result.type === 'success') {
           return FS.readAsStringAsync(result.uri);
@@ -45,21 +43,27 @@ const ImportKeyScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Import Key Screen</Text>
-      <Button
-        title="Import your key"
-        onPress={() => {
-          onImportPress(currentHcp);
-        }}
-      />
-      {parentHcp ? (
+      {currentHcp && keyImports[currentHcp.id] && !keys[currentHcp.id] ? (
+        <Text>Current HCP key import...</Text>
+      ) : (
+        <Button
+          title="Import your key"
+          onPress={() => {
+            onImportPress(currentHcp);
+          }}
+        />
+      )}
+
+      {parentHcp && keyImports[parentHcp.id] && !keys[parentHcp.id] ? (
+        <Text>Parent HCP key import...</Text>
+      ) : (
         <Button
           title="Import parent key"
           onPress={() => {
             onImportPress(parentHcp);
           }}
         />
-      ) : null}
+      )}
 
       {currentHcp ? (
         <Text>Current key: ...{keys[currentHcp.id]?.substr(-25)}</Text>

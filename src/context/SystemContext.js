@@ -27,8 +27,8 @@ const checkSecureStore = (dispatch) => async () => {
 
 const initCrypto = (dispatch) => async () => {
   try {
-    await iCureAPI.initCrypto();
-    console.log('Crypto ready !');
+    const cryptoSecured = await iCureAPI.initCrypto();
+    console.log('Crypto ready ? ', cryptoSecured);
     dispatch({ type: 'crypto_ready', payload: true });
   } catch (err) {
     dispatch({ type: 'add_error', payload: err.message });

@@ -8,7 +8,7 @@ import {
   IccCryptoXApi,
 } from '@icure/api';
 
-const BASE_URL = 'http://33189d95d7aa.ngrok.io';
+const BASE_URL = 'http://c49ebeb41654.ngrok.io';
 
 const API_URL = `${BASE_URL}/rest/v1`;
 
@@ -17,7 +17,13 @@ const HEADERS = {
 };
 
 export const initCrypto = async () => {
-  await isoCrypto.ensureSecure();
+  try {
+    await isoCrypto.ensureSecure();
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 let authAPI;
