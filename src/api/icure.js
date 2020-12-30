@@ -1,11 +1,11 @@
 const isoCrypto = require('isomorphic-webcrypto');
-console.log('AAAAAAAAA');
+
 import {
   IccAuthApi,
-  IccHcpartyXApi,
-  IccUserXApi,
-  IccPatientApi,
   IccCryptoXApi,
+  IccHcpartyXApi,
+  IccPatientApi,
+  IccUserXApi,
 } from '@icure/api';
 
 const BASE_URL = 'http://c49ebeb41654.ngrok.io';
