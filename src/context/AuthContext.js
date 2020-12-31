@@ -73,7 +73,6 @@ const login = (dispatch) => async ({ username, password }) => {
     }
   } catch (err) {
     console.log(err);
-    await SecureStore.deleteItemAsync(CREDENTIAL_KEY);
     dispatch({
       type: 'add_error',
       payload: 'Something went wrong with login',

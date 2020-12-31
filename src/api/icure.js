@@ -8,7 +8,7 @@ import {
   IccUserXApi,
 } from '@icure/api';
 
-const BASE_URL = 'http://c49ebeb41654.ngrok.io';
+const BASE_URL = 'http://9229d3482162.ngrok.io';
 
 const API_URL = `${BASE_URL}/rest/v1`;
 

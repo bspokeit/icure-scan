@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { compact, reject } from 'lodash';
+import { compact } from 'lodash';
 import iCureAPI from '../api/icure';
 import createContext from './createContext';
 
