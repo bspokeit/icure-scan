@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import SearchBar from '../components/SearchBar';
+import { SearchBar } from 'react-native-elements';
 
 const PatientListScreen = () => {
   const [query, setQuery] = useState('');
@@ -8,9 +8,13 @@ const PatientListScreen = () => {
   return (
     <View>
       <SearchBar
-        query={query}
-        onQueryChange={setQuery}
-        onQuerySubmit={() => console.log('query submission')}
+        placeholder="Search here..."
+        value={query}
+        onChangeText={setQuery}
+        autoCapitalize="none"
+        autoCorrect={false}
+        onEndEditing={() => console.log('query submission')}
+        onClear={() => console.log('Search cleared')}
       />
       <Text>Patient List Sreen</Text>
       <Text>Query: {query}</Text>
