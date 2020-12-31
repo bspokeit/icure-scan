@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import { compact } from 'lodash';
-import iCureAPI from '../api/icure';
+import { getApi as api } from '../api/icure';
 import createContext from './createContext';
 
 const PRIVATE_KEY_POSTFIX_1 = '-icure-scan-key-1';
@@ -74,36 +74,29 @@ const validatePrivateKey = async (hcp) => {
 
   let userCryptoKey = null;
 
-  return iCureAPI
-    .getApi()
+  return api()
     .healthcarePartyApi.getHcPartyKeysForDelegate(hcp.id)
     .then((encryptedHcPartyKey) =>
-      iCureAPI
-        .getApi()
-        .cryptoApi.decryptHcPartyKey(
-          hcp.id,
-          hcp.id,
-          encryptedHcPartyKey[hcp.id],
-          true
-        )
+      api().cryptoApi.decryptHcPartyKey(
+        hcp.id,
+        hcp.id,
+        encryptedHcPartyKey[hcp.id],
+        true
+      )
     )
     .then((importedAESHcPartyKey) => {
       userCryptoKey = importedAESHcPartyKey.key;
-      return iCureAPI
-        .getApi()
-        .cryptoApi.AES.encrypt(
-          userCryptoKey,
-          iCureAPI.getApi().cryptoApi.utils.text2ua(randomString)
-        );
+      return api().cryptoApi.AES.encrypt(
+        userCryptoKey,
+        api().cryptoApi.utils.text2ua(randomString)
+      );
     })
     .then((cryptedString) => {
-      return iCureAPI
-        .getApi()
-        .cryptoApi.AES.decrypt(userCryptoKey, cryptedString);
+      return api().cryptoApi.AES.decrypt(userCryptoKey, cryptedString);
     })
     .then((decription) => {
       return Promise.resolve(
-        iCureAPI.getApi().cryptoApi.utils.ua2text(decription) === randomString
+        api().cryptoApi.utils.ua2text(decription) === randomString
       );
     })
     .catch((error) => {
@@ -113,11 +106,10 @@ const validatePrivateKey = async (hcp) => {
 };
 
 const importAndValidatePrivateKey = async (hcp, privateKey) => {
-  return iCureAPI
-    .getApi()
+  return api()
     .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(
       hcp.id,
-      iCureAPI.getApi().cryptoApi.utils.hex2ua(privateKey)
+      api().cryptoApi.utils.hex2ua(privateKey)
     )
     .then(() => {
       return validatePrivateKey(hcp);

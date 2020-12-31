@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import iCureAPI from '../api/icure';
+import { initApi, getAuthAPI as authApi, getApi as api } from '../api/icure';
 import { navigate } from '../utils/navigationHelper';
 import createContext from './createContext';
 
@@ -26,7 +26,7 @@ const authReducer = (state, action) => {
 
 const login = (dispatch) => async ({ username, password }) => {
   try {
-    const response = await iCureAPI.getAuthAPI().login({ username, password });
+    const response = await authApi().login({ username, password });
 
     if (!response.successful) {
       await SecureStore.deleteItemAsync(CREDENTIAL_KEY);
@@ -48,22 +48,21 @@ const login = (dispatch) => async ({ username, password }) => {
       );
       dispatch({ type: 'login', payload: authHeader });
 
-      iCureAPI.initApi({ username, password });
+      initApi({ username, password });
 
-      const currentUser = await iCureAPI.getApi().userApi.getCurrentUser();
+      const currentUser = await api().userApi.getCurrentUser();
       dispatch({ type: 'current_user', payload: currentUser });
 
-      const currentHcp = await iCureAPI
-        .getApi()
-        .healthcarePartyApi.getCurrentHealthcareParty();
+      const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
       dispatch({ type: 'current_hcp', payload: currentHcp });
 
       let parentHcp;
       if (currentHcp.parentId) {
         try {
-          parentHcp = await iCureAPI
-            .getApi()
-            .healthcarePartyApi.getHealthcareParty(currentHcp.parentId, true);
+          parentHcp = await api().healthcarePartyApi.getHealthcareParty(
+            currentHcp.parentId,
+            true
+          );
         } catch (err) {
           console.log(err);
         }

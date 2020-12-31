@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import iCureAPI from '../api/icure';
+import { initCrypto as initApiCrypto } from '../api/icure';
 import createContext from './createContext';
 
 const systemReducer = (state, action) => {
@@ -36,7 +36,7 @@ const checkSecureStore = (dispatch) => async () => {
 
 const initCrypto = (dispatch) => async () => {
   try {
-    const cryptoSecured = await iCureAPI.initCrypto();
+    const cryptoSecured = await initApiCrypto();
     dispatch({ type: 'crypto_ready', payload: cryptoSecured });
   } catch (err) {
     dispatch({ type: 'add_error', payload: err.message });
