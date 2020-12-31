@@ -7,7 +7,7 @@ const patientReducer = (state, action) => {
     case 'get_access_log':
       return { ...state, accessLogs: action.payload };
     case 'search_patient':
-      return { ...state, search: action.payload };
+      return { ...state, patientList: action.payload };
     default:
       return state;
   }
@@ -19,8 +19,6 @@ const loadAccessLogs = (dispatch) => async (user) => {
 };
 
 const searchPatients = (dispatch) => async (user, term) => {
-  //fuzzySearchWithUser
-  //findByNameBirthSsinAutoWithUser(user: User, healthcarePartyId?: string, filterValue?: string, startKey?: string, startDocumentId?: string, limit?: number, sortDirection?: string): never;
   try {
     const search = await api().patientApi.findByNameBirthSsinAutoWithUser(
       user,
@@ -28,10 +26,9 @@ const searchPatients = (dispatch) => async (user, term) => {
       term,
       null,
       null,
-      5,
+      25,
       null
     );
-    console.log(search.rows);
     dispatch({ type: 'search_patient', payload: search.rows });
   } catch (error) {
     console.log(error);
@@ -58,7 +55,6 @@ export const { Provider, Context } = createContext(
   {
     loadAccessLogs,
     searchPatients,
-    addPatient,
   },
-  { accessLogs: [] }
+  { accessLogs: [], patientList: [] }
 );

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -10,21 +9,23 @@ const PatientListScreen = () => {
     state: { currentUser },
   } = useContext(AuthContext);
 
-  const { accessLogs, loadAccessLogs, searchPatients, addPatient } = useContext(
-    PatientContext
-  );
+  const {
+    state: { patientList },
+    loadAccessLogs,
+    searchPatients,
+  } = useContext(PatientContext);
 
   const [query, setQuery] = useState('');
-
-  const createPatient = async () => {
-    const patient = await addPatient(currentUser);
-  };
 
   useEffect(() => {
     loadAccessLogs(currentUser);
   }, []);
 
-  //listAccessLogsWithUser
+  const Item = ({ content }) => (
+    <View style={styles.item}>
+      <Text style={styles.content}>{content}</Text>
+    </View>
+  );
 
   return (
     <View>
@@ -37,8 +38,13 @@ const PatientListScreen = () => {
         onEndEditing={() => searchPatients(currentUser, query)}
         onClear={() => console.log('Search cleared')}
       />
-      <Text>Query: {query}</Text>
-      <Button title="Create a patient" onPress={createPatient} />
+      <FlatList
+        data={patientList}
+        renderItem={({ item }) => (
+          <Item content={`${item.firstName} ${item.lastName}`} />
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 };
