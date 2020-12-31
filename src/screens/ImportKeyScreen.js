@@ -15,28 +15,18 @@ const ImportKeyScreen = () => {
   } = useContext(CryptoContext);
 
   useEffect(() => {
-    async function automaticKeyLoading() {
-      await importPrivateKeysFromStorage([currentHcp, parentHcp]).then(() => {
-        if (currentHcp && parentHcp) {
-          if (keys[currentHcp.id] && keys[parentHcp.id]) {
-            navigate('List');
-          }
-        } else if (currentHcp && keys[currentHcp.id]) {
-          navigate('List');
-        }
-      });
-    }
-
-    automaticKeyLoading();
+    // (async () => {
+    //   await importPrivateKeysFromStorage([currentHcp, parentHcp]);
+    // })();
   }, []);
 
   useEffect(() => {
     if (currentHcp && parentHcp) {
       if (keys[currentHcp.id] && keys[parentHcp.id]) {
-        navigate('List');
+        // navigate('List');
       }
     } else if (currentHcp && keys[currentHcp.id]) {
-      navigate('List');
+      // navigate('List');
     }
   }, [keys]);
 
@@ -73,7 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 250,
+    marginBottom: 150,
   },
 });
 

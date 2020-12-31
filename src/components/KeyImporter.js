@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import { Context as CryptoContext } from '../context/CryptoContext';
+import Spacer from './Spacer';
 
 const KeyImporter = ({ hcp, loadingText, buttonText, loadedText }) => {
   const {
@@ -38,11 +39,13 @@ const KeyImporter = ({ hcp, loadingText, buttonText, loadedText }) => {
 
   return (
     <View>
-      {!keys[hcp.id] ? (
-        <Button title={buttonText} onPress={onImportPress} />
-      ) : (
-        <Text>{loadedText}</Text>
-      )}
+      <Spacer>
+        {!keys[hcp.id] ? (
+          <Button title={buttonText} onPress={onImportPress} />
+        ) : (
+          <Text>{loadedText}</Text>
+        )}
+      </Spacer>
 
       <Text>Hcp key: ...{keys[hcp.id]?.substr(-25)}</Text>
     </View>
