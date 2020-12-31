@@ -5,14 +5,21 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
 
 const InitApplicationScreen = () => {
-  const { checkSystem } = useContext(SystemContext);
+  const {
+    state: { systemReady },
+    checkSystem,
+  } = useContext(SystemContext);
   const { autoLogin } = useContext(AuthContext);
 
   useEffect(() => {
-    checkSystem().then(() => {
-      autoLogin();
-    });
+    checkSystem();
   }, []);
+
+  useEffect(() => {
+    if (systemReady) {
+      autoLogin();
+    }
+  }, [systemReady]);
 
   return (
     <View style={styles.container}>
