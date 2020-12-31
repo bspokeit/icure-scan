@@ -21,8 +21,7 @@ const InitApplicationScreen = () => {
   useEffect(() => {
     if (systemReady) {
       setTimeout(() => {
-        //autoLogin();
-        navigate('Login');
+        autoLogin();
       }, 250);
     }
   }, [systemReady]);
