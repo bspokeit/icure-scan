@@ -48,20 +48,22 @@ const login = (dispatch) => async ({ username, password }) => {
       );
       dispatch({ type: 'login', payload: authHeader });
 
-      iCureAPI.addHeaders(authHeader);
+      iCureAPI.initApi({ username, password });
 
-      const currentUser = await iCureAPI.getUserAPI().getCurrentUser();
+      const currentUser = await iCureAPI.getApi().userApi.getCurrentUser();
       dispatch({ type: 'current_user', payload: currentUser });
 
-      const currentHcp = await iCureAPI.getHcpAPI().getCurrentHealthcareParty();
+      const currentHcp = await iCureAPI
+        .getApi()
+        .healthcarePartyApi.getCurrentHealthcareParty();
       dispatch({ type: 'current_hcp', payload: currentHcp });
 
       let parentHcp;
       if (currentHcp.parentId) {
         try {
           parentHcp = await iCureAPI
-            .getHcpAPI()
-            .getHealthcareParty(currentHcp.parentId, true);
+            .getApi()
+            .healthcarePartyApi.getHealthcareParty(currentHcp.parentId, true);
         } catch (err) {
           console.log(err);
         }

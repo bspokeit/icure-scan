@@ -16,7 +16,6 @@ const PatientListScreen = () => {
         onEndEditing={() => console.log('query submission')}
         onClear={() => console.log('Search cleared')}
       />
-      <Text>Patient List Sreen</Text>
       <Text>Query: {query}</Text>
     </View>
   );

@@ -75,39 +75,49 @@ const validatePrivateKey = async (hcp) => {
   let userCryptoKey = null;
 
   return iCureAPI
-    .getHcpAPI()
-    .getHcPartyKeysForDelegate(hcp.id)
+    .getApi()
+    .healthcarePartyApi.getHcPartyKeysForDelegate(hcp.id)
     .then((encryptedHcPartyKey) =>
       iCureAPI
-        .getCryptoAPI()
-        .decryptHcPartyKey(hcp.id, hcp.id, encryptedHcPartyKey[hcp.id], true)
+        .getApi()
+        .cryptoApi.decryptHcPartyKey(
+          hcp.id,
+          hcp.id,
+          encryptedHcPartyKey[hcp.id],
+          true
+        )
     )
     .then((importedAESHcPartyKey) => {
       userCryptoKey = importedAESHcPartyKey.key;
       return iCureAPI
-        .getCryptoAPI()
-        .AES.encrypt(
+        .getApi()
+        .cryptoApi.AES.encrypt(
           userCryptoKey,
-          iCureAPI.getCryptoAPI().utils.text2ua(randomString)
+          iCureAPI.getApi().cryptoApi.utils.text2ua(randomString)
         );
     })
     .then((cryptedString) => {
-      return iCureAPI.getCryptoAPI().AES.decrypt(userCryptoKey, cryptedString);
+      return iCureAPI
+        .getApi()
+        .cryptoApi.AES.decrypt(userCryptoKey, cryptedString);
     })
     .then((decription) => {
       return Promise.resolve(
-        iCureAPI.getCryptoAPI().utils.ua2text(decription) === randomString
+        iCureAPI.getApi().cryptoApi.utils.ua2text(decription) === randomString
       );
     })
-    .catch(() => Promise.resolve(false));
+    .catch((error) => {
+      console.log(error);
+      Promise.resolve(false);
+    });
 };
 
 const importAndValidatePrivateKey = async (hcp, privateKey) => {
   return iCureAPI
-    .getCryptoAPI()
-    .loadKeyPairsAsTextInBrowserLocalStorage(
+    .getApi()
+    .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(
       hcp.id,
-      iCureAPI.getCryptoAPI().utils.hex2ua(privateKey)
+      iCureAPI.getApi().cryptoApi.utils.hex2ua(privateKey)
     )
     .then(() => {
       return validatePrivateKey(hcp);
@@ -141,6 +151,7 @@ const importPrivateKeyFromStorage = (dispatch) => async (hcp) => {
 
 const importPrivateKey = (dispatch) => async (hcp, privateKey) => {
   dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: true } });
+
   try {
     const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
 
