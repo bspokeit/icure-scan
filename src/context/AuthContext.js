@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { initApi, getAuthAPI as authApi, getApi as api } from '../api/icure';
+import { getApi as api, getAuthAPI as authApi, initApi } from '../api/icure';
 import { navigate } from '../utils/navigationHelper';
 import createContext from './createContext';
 
@@ -12,19 +12,22 @@ const authReducer = (state, action) => {
     case 'clear_authentication_data':
       return {};
     case 'login':
-      return { authHeader: action.payload, errorMessage: '' };
+      return { authHeader: action.payload, errorMessage: null };
     case 'current_user':
       return { ...state, currentUser: action.payload };
     case 'current_hcp':
       return { ...state, currentHcp: action.payload };
     case 'parent_hcp':
       return { ...state, parentHcp: action.payload };
+    case 'login_ongoing':
+      return { ...state, loginOngoing: action.payload };
     default:
       return state;
   }
 };
 
 const login = (dispatch) => async ({ username, password }) => {
+  dispatch({ type: 'login_ongoing', payload: true });
   try {
     const response = await authApi().login({ username, password });
 
@@ -113,5 +116,5 @@ const clearAuthenticationData = async (dispatch) => {
 export const { Provider, Context } = createContext(
   authReducer,
   { login, logout, autoLogin },
-  {}
+  { loginOngoing: false }
 );

@@ -5,6 +5,7 @@ import { Text } from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
+import { navigate } from '../utils/navigationHelper';
 
 const InitApplicationScreen = () => {
   const {
@@ -20,7 +21,8 @@ const InitApplicationScreen = () => {
   useEffect(() => {
     if (systemReady) {
       setTimeout(() => {
-        autoLogin();
+        //autoLogin();
+        navigate('Login');
       }, 250);
     }
   }, [systemReady]);
@@ -28,7 +30,7 @@ const InitApplicationScreen = () => {
   return (
     <View style={styles.container}>
       {!checkCompleted ? (
-        <ActivityIndicator animating color="#0000ff" size="large" />
+        <ActivityIndicator animating color="#2089dc" size="large" />
       ) : null}
 
       {cryptoReady ? (
@@ -62,7 +64,7 @@ const InitApplicationScreen = () => {
       {storeReady && cryptoReady ? (
         <Spacer>
           <View style={styles.horizontal}>
-            <ActivityIndicator animating color="#0000ff" size="small" />
+            <ActivityIndicator animating color="#2089dc" size="small" />
             <Text style={styles.text}>Attempting to log you in...</Text>
           </View>
         </Spacer>

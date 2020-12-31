@@ -9,10 +9,11 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <LoginForm
-        headerText="Log in"
         errorMessage={state.errorMessage}
         onSubmit={login}
-        submitButtonText="Log in"
+        submitButtonText={!!state.authHeader ? 'You are logged in!' : 'Log in'}
+        loginOngoing={state.loginOngoing && !state.authHeader}
+        disabled={!!state.authHeader}
       />
     </View>
   );
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 250,
+    marginBottom: 150,
   },
 });
 
