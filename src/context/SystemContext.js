@@ -9,15 +9,17 @@ const systemReducer = (state, action) => {
       return {
         ...state,
         cryptoReady,
-        systemReady: state.secureStoreAvailable && cryptoReady,
+        systemReady: state.storeReady && cryptoReady,
       };
     case 'secure_store_available':
-      const secureStoreAvailable = action.payload;
+      const storeReady = action.payload;
       return {
         ...state,
-        secureStoreAvailable,
-        systemReady: secureStoreAvailable && state.cryptoReady,
+        storeReady,
+        systemReady: storeReady && state.cryptoReady,
       };
+    case 'check_completed':
+      return { ...state, checkCompleted: true };
     case 'add_error':
       return { ...state, errorMessage: action.payload };
     default:
@@ -27,8 +29,8 @@ const systemReducer = (state, action) => {
 
 const checkSecureStore = (dispatch) => async () => {
   try {
-    const secureStoreAvailable = await SecureStore.isAvailableAsync();
-    dispatch({ type: 'secure_store_available', payload: secureStoreAvailable });
+    const storeReady = await SecureStore.isAvailableAsync();
+    dispatch({ type: 'secure_store_available', payload: storeReady });
   } catch (err) {
     dispatch({ type: 'add_error', payload: err.message });
   }
@@ -45,18 +47,21 @@ const initCrypto = (dispatch) => async () => {
 
 const checkSystem = (dispatch) => async () => {
   try {
-    return await Promise.all([
-      initCrypto(dispatch)(),
-      checkSecureStore(dispatch)(),
-    ]);
+    await Promise.all([initCrypto(dispatch)(), checkSecureStore(dispatch)()]);
   } catch (err) {
     dispatch({ type: 'add_error', payload: err.message });
-    throw err;
   }
+
+  dispatch({ type: 'check_completed' });
 };
 
 export const { Provider, Context } = createContext(
   systemReducer,
   { checkSystem },
-  { cryptoReady: false, secureStoreAvailable: false, systemReady: false }
+  {
+    cryptoReady: false,
+    storeReady: false,
+    systemReady: false,
+    checkCompleted: false,
+  }
 );
