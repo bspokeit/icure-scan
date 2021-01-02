@@ -19,7 +19,7 @@ const PatientListScreen = () => {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    loadAccessLogs(currentUser);
+    // loadAccessLogs(currentUser);
   }, []);
 
   const keyExtractor = (item) => item.id;
@@ -27,10 +27,19 @@ const PatientListScreen = () => {
   const renderItem = ({ item }) => (
     <ListItem bottomDivider>
       {item.picture ? (
-        <Avatar rounded size="small" source={{ uri: item.picture }} />
+        <Avatar
+          rounded
+          source={{
+            uri: `data:image/jpeg;base64,${btoa(
+              String.fromCharCode(...new Uint8Array(item.picture))
+            )}`,
+          }}
+          size="medium"
+        />
       ) : (
         <Avatar
           rounded
+          size="medium"
           icon={{
             name: 'user-circle',
             type: 'font-awesome',
