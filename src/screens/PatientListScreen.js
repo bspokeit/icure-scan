@@ -11,10 +11,11 @@ const PatientListScreen = () => {
   } = useContext(AuthContext);
 
   const {
-    state: { patientList },
+    state: { patientList, searching },
     loadAccessLogs,
     searchPatients,
   } = useContext(PatientContext);
+  
 
   const [query, setQuery] = useState('');
 
@@ -32,12 +33,15 @@ const PatientListScreen = () => {
     <SafeAreaView>
       <SearchBar
         placeholder="Search here..."
+        lightTheme
         value={query}
         onChangeText={setQuery}
         autoCapitalize="none"
         autoCorrect={false}
         onEndEditing={() => searchPatients(currentUser, query)}
         onClear={() => console.log('Search cleared')}
+        showLoading={searching}
+        loadingProps={{ color: '#2089dc', size: 'small' }}
       />
       <FlatList
         data={patientList}
