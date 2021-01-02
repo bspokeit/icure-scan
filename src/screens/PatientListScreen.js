@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { FlatList, StyleSheet } from 'react-native';
+import { Avatar, ListItem, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -15,7 +15,6 @@ const PatientListScreen = () => {
     loadAccessLogs,
     searchPatients,
   } = useContext(PatientContext);
-  
 
   const [query, setQuery] = useState('');
 
@@ -23,10 +22,29 @@ const PatientListScreen = () => {
     loadAccessLogs(currentUser);
   }, []);
 
-  const Item = ({ content }) => (
-    <View style={styles.item}>
-      <Text style={styles.content}>{content}</Text>
-    </View>
+  const keyExtractor = (item) => item.id;
+
+  const renderItem = ({ item }) => (
+    <ListItem bottomDivider>
+      {item.picture ? (
+        <Avatar rounded size="small" source={{ uri: item.picture }} />
+      ) : (
+        <Avatar
+          rounded
+          icon={{
+            name: 'user-circle',
+            type: 'font-awesome',
+            size: 32,
+            color: 'grey',
+          }}
+        />
+      )}
+      <ListItem.Content>
+        <ListItem.Title>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
+        <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+      </ListItem.Content>
+      <ListItem.Chevron />
+    </ListItem>
   );
 
   return (
@@ -44,11 +62,9 @@ const PatientListScreen = () => {
         loadingProps={{ color: '#2089dc', size: 'small' }}
       />
       <FlatList
+        keyExtractor={keyExtractor}
         data={patientList}
-        renderItem={({ item }) => (
-          <Item content={`${item.firstName} ${item.lastName}`} />
-        )}
-        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
       />
     </SafeAreaView>
   );
