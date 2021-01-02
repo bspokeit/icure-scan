@@ -5,7 +5,6 @@ import { Text } from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
-import { navigate } from '../utils/navigationHelper';
 
 const InitApplicationScreen = () => {
   const {
@@ -34,37 +33,62 @@ const InitApplicationScreen = () => {
 
       {cryptoReady ? (
         <View style={styles.horizontal}>
-          <Ionicons name="md-checkmark-circle" size={16} color="green" />
-          <Text style={styles.text}>Crypto is ready!</Text>
+          <Ionicons
+            style={styles.textIcon}
+            name="md-checkmark-circle"
+            size={16}
+            color="green"
+          />
+          <Text>Crypto is ready!</Text>
         </View>
       ) : null}
 
       {checkCompleted && !cryptoReady ? (
         <View style={styles.horizontal}>
-          <Ionicons name="alert-circle" size={16} color="red" />
-          <Text style={styles.text}>Crypto is not properly configured!</Text>
+          <Ionicons
+            style={styles.textIcon}
+            name="alert-circle"
+            size={16}
+            color="red"
+          />
+          <Text>Crypto is not properly configured!</Text>
         </View>
       ) : null}
 
       {storeReady ? (
         <View style={styles.horizontal}>
-          <Ionicons name="md-checkmark-circle" size={16} color="green" />
-          <Text style={styles.text}>Store is ready!</Text>
+          <Ionicons
+            style={styles.textIcon}
+            name="md-checkmark-circle"
+            size={16}
+            color="green"
+          />
+          <Text>Store is ready!</Text>
         </View>
       ) : null}
 
       {checkCompleted && !storeReady ? (
         <View style={styles.horizontal}>
-          <Ionicons name="alert-circle" size={16} color="red" />
-          <Text style={styles.text}>Store is not properly configured!</Text>
+          <Ionicons
+            style={styles.textIcon}
+            name="alert-circle"
+            size={16}
+            color="red"
+          />
+          <Text>Store is not properly configured!</Text>
         </View>
       ) : null}
 
       {storeReady && cryptoReady ? (
         <Spacer>
           <View style={styles.horizontal}>
-            <ActivityIndicator animating color="#2089dc" size="small" />
-            <Text style={styles.text}>Attempting to log you in...</Text>
+            <ActivityIndicator
+              style={styles.textIcon}
+              animating
+              color="#2089dc"
+              size="small"
+            />
+            <Text>Attempting to log you in...</Text>
           </View>
         </Spacer>
       ) : null}
@@ -85,9 +109,8 @@ const styles = StyleSheet.create({
     marginBottom: 150,
     alignItems: 'center',
   },
-  text: {
-    fontSize: 16,
-    marginLeft: 8,
+  textIcon: {
+    marginRight: 8,
   },
   horizontal: {
     alignItems: 'center',

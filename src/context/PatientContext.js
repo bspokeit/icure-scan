@@ -1,5 +1,5 @@
-import { getApi as api } from '../api/icure';
 import { Patient } from '@icure/api';
+import { getApi as api } from '../api/icure';
 import createContext from './createContext';
 
 const patientReducer = (state, action) => {

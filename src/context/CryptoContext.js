@@ -1,5 +1,4 @@
 import * as SecureStore from 'expo-secure-store';
-import { compact } from 'lodash';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
 
@@ -69,40 +68,7 @@ const removePrivateKeyFromStorage = async (hcp) => {
 };
 
 const validatePrivateKey = async (hcp) => {
-  //  TODO: write this block with awaits
-  const randomString = Math.random().toString(36).substring(2);
-
-  let userCryptoKey = null;
-
-  return api()
-    .healthcarePartyApi.getHcPartyKeysForDelegate(hcp.id)
-    .then((encryptedHcPartyKey) =>
-      api().cryptoApi.decryptHcPartyKey(
-        hcp.id,
-        hcp.id,
-        encryptedHcPartyKey[hcp.id],
-        true
-      )
-    )
-    .then((importedAESHcPartyKey) => {
-      userCryptoKey = importedAESHcPartyKey.key;
-      return api().cryptoApi.AES.encrypt(
-        userCryptoKey,
-        api().cryptoApi.utils.text2ua(randomString)
-      );
-    })
-    .then((cryptedString) => {
-      return api().cryptoApi.AES.decrypt(userCryptoKey, cryptedString);
-    })
-    .then((decription) => {
-      return Promise.resolve(
-        api().cryptoApi.utils.ua2text(decription) === randomString
-      );
-    })
-    .catch((error) => {
-      console.log(error);
-      Promise.resolve(false);
-    });
+  return await api().cryptoApi.checkPrivateKeyValidity(hcp);
 };
 
 const importAndValidatePrivateKey = async (hcp, privateKey) => {
@@ -175,20 +141,16 @@ const importPrivateKeysFromStorage = (dispatch) => async (hcps) => {
   if (!hcps || !hcps.length) {
     return;
   }
-  compact(hcps).forEach((hcp) => {
+  hcps.forEach((hcp) => {
     dispatch({ type: 'set_private_key_import', payload: { [hcp.id]: true } });
   });
 
-  const chainedPromise = Promise.resolve();
-
-  compact(hcps).reduce((acc, current) => {
+  return hcps.reduce((acc, current) => {
     acc = acc.then(() => {
       return importPrivateKeyFromStorage(dispatch)(current);
     });
     return acc;
-  }, chainedPromise);
-
-  return chainedPromise;
+  }, Promise.resolve());
 };
 
 const clearPrivateKeyData = (dispatch) => async (hcp) => {
