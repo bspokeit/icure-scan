@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 
@@ -28,7 +29,7 @@ const PatientListScreen = () => {
   );
 
   return (
-    <View>
+    <SafeAreaView>
       <SearchBar
         placeholder="Search here..."
         value={query}
@@ -45,8 +46,14 @@ const PatientListScreen = () => {
         )}
         keyExtractor={(item) => item.id}
       />
-    </View>
+    </SafeAreaView>
   );
+};
+
+PatientListScreen.navigationOptions = () => {
+  return {
+    headerShown: false,
+  };
 };
 
 const styles = StyleSheet.create({});

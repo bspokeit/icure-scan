@@ -1,6 +1,7 @@
 import { compact } from 'lodash';
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import KeyImporter from '../components/KeyImporter';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as CryptoContext } from '../context/CryptoContext';
@@ -37,7 +38,7 @@ const ImportKeyScreen = ({ navigation }) => {
   }, [keys, keyImports]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {currentHcp ? (
         <KeyImporter
           hcp={currentHcp}
@@ -55,7 +56,7 @@ const ImportKeyScreen = ({ navigation }) => {
           buttonText="Select your parent key"
         ></KeyImporter>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Spacer from '../components/Spacer';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
@@ -26,7 +27,7 @@ const InitApplicationScreen = () => {
   }, [systemReady]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {!checkCompleted ? (
         <ActivityIndicator animating color="#2089dc" size="large" />
       ) : null}
@@ -92,7 +93,7 @@ const InitApplicationScreen = () => {
           </View>
         </Spacer>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 
