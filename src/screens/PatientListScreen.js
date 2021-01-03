@@ -20,7 +20,7 @@ const PatientListScreen = () => {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    // loadAccessLogs(currentUser);
+    loadAccessLogs(currentUser);
   }, []);
 
   const keyExtractor = (item) => item.id;

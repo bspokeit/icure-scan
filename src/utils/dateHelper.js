@@ -230,7 +230,8 @@ export const dateOfBirthInfo = (iCureDate) => {
   const parsedDate = iCureDateParser(iCureDate);
 
   const dateRepresentation = parsedDate2String(parsedDate);
-  const ageRepresentation = `${parsedDate2Age(parsedDate)} ans`;
+  const age = parsedDate2Age(parsedDate);
+  const ageRepresentation = age ? `${parsedDate2Age(parsedDate)} ans` : null;
 
   return compact([ageRepresentation, dateRepresentation]).join(' - ');
 };

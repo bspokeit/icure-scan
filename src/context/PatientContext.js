@@ -1,6 +1,7 @@
 import { Patient } from '@icure/api';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
+import _ from 'lodash';
 
 const patientReducer = (state, action) => {
   switch (action.type) {
@@ -16,8 +17,46 @@ const patientReducer = (state, action) => {
 };
 
 const loadAccessLogs = (dispatch) => async (user) => {
-  const logPage = await api().accessLogApi.listAccessLogsWithUser(user);
-  dispatch({ type: 'get_access_log', payload: logPage.rows });
+  try {
+    dispatch({ type: 'set_searching', payload: true });
+
+    const now = Date.now();
+    const threeDaysAgo = now - 3 * 24 * 60 * 60 * 1000;
+    const logPage = await api().accessLogApi.listAccessLogsWithUser(
+      user,
+      threeDaysAgo,
+      now,
+      null,
+      null,
+      25,
+      null
+    );
+
+    const patientIds = _(logPage.rows)
+      .map('patientId')
+      .compact()
+      .uniq()
+      .value();
+
+    dispatch({ type: 'get_access_log', payload: patientIds });
+
+    if (patientIds && patientIds.length) {
+      const patientfromLogs = await api().patientApi.getPatientsWithUser(user, {
+        ids: patientIds,
+      });
+
+      dispatch({ type: 'set_search', payload: patientfromLogs });
+    } else {
+      dispatch({ type: 'set_search', payload: [] });
+    }
+
+    dispatch({ type: 'set_searching', payload: false });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: 'get_access_log', payload: [] });
+    dispatch({ type: 'set_search', payload: [] });
+    dispatch({ type: 'set_searching', payload: false });
+  }
 };
 
 const searchPatients = (dispatch) => async (user, term) => {
