@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text } from 'react-native';
-import { Avatar, ListItem, SearchBar } from 'react-native-elements';
+import { FlatList, StyleSheet } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import PatientListItem from '../components/PatientListItem';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
-import { addressAsString } from '../utils/addressHelper';
-import { dateOfBirthInfo } from '../utils/dateHelper';
 
 const PatientListScreen = () => {
   const {
@@ -27,42 +26,7 @@ const PatientListScreen = () => {
   const keyExtractor = (item) => item.id;
 
   const renderItem = ({ item }) => (
-    <ListItem bottomDivider>
-      {item.picture ? (
-        <Avatar
-          rounded
-          source={{
-            uri: `data:image/jpeg;base64,${btoa(
-              String.fromCharCode(...new Uint8Array(item.picture))
-            )}`,
-          }}
-          size="medium"
-        />
-      ) : (
-        <Avatar
-          rounded
-          size="medium"
-          icon={{
-            name: 'user-circle',
-            type: 'font-awesome',
-            size: 32,
-            color: 'grey',
-          }}
-        />
-      )}
-      <ListItem.Content>
-        <ListItem.Title>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
-        <ListItem.Subtitle>
-          <Text style={styles.subTitle}>
-            {dateOfBirthInfo(item.dateOfBirth)}
-          </Text>
-        </ListItem.Subtitle>
-        <ListItem.Subtitle>
-          <Text style={styles.subTitle}>{addressAsString(item.addresses)}</Text>
-        </ListItem.Subtitle>
-      </ListItem.Content>
-      <ListItem.Chevron />
-    </ListItem>
+    <PatientListItem patient={item}></PatientListItem>
   );
 
   return (
