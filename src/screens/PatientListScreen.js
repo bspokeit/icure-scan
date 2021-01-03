@@ -15,6 +15,7 @@ const PatientListScreen = () => {
     state: { patientList, searching },
     loadAccessLogs,
     searchPatients,
+    clearSearch,
   } = useContext(PatientContext);
 
   const [query, setQuery] = useState('');
@@ -39,8 +40,9 @@ const PatientListScreen = () => {
         autoCapitalize="none"
         autoCorrect={false}
         onEndEditing={() => searchPatients(currentUser, query)}
-        onClear={() => console.log('Search cleared')}
+        onClear={clearSearch}
         showLoading={searching}
+        disabled={searching}
         loadingProps={{ color: '#2089dc', size: 'small' }}
       />
       <FlatList

@@ -5,12 +5,14 @@ import _ from 'lodash';
 
 const patientReducer = (state, action) => {
   switch (action.type) {
-    case 'get_access_log':
-      return { ...state, accessLogs: action.payload };
+    case 'set_patient_logs':
+      return { ...state, patientsLogs: action.payload };
     case 'set_searching':
       return { ...state, searching: action.payload };
     case 'set_search':
       return { ...state, patientList: action.payload };
+    case 'clear_search':
+      return { ...state, patientList: state.patientsLogs };
     default:
       return state;
   }
@@ -38,23 +40,23 @@ const loadAccessLogs = (dispatch) => async (user) => {
       .uniq()
       .value();
 
-    dispatch({ type: 'get_access_log', payload: patientIds });
-
     if (patientIds && patientIds.length) {
       const patientfromLogs = await api().patientApi.getPatientsWithUser(user, {
         ids: patientIds,
       });
 
+      dispatch({ type: 'set_patient_logs', payload: patientfromLogs });
       dispatch({ type: 'set_search', payload: patientfromLogs });
     } else {
+      dispatch({ type: 'set_patient_logs', payload: [] });
       dispatch({ type: 'set_search', payload: [] });
     }
 
     dispatch({ type: 'set_searching', payload: false });
   } catch (error) {
     console.log(error);
-    dispatch({ type: 'get_access_log', payload: [] });
     dispatch({ type: 'set_search', payload: [] });
+    dispatch({ type: 'set_patient_logs', payload: [] });
     dispatch({ type: 'set_searching', payload: false });
   }
 };
@@ -80,6 +82,12 @@ const searchPatients = (dispatch) => async (user, term) => {
   }
 };
 
+const clearSearch = (dispatch) => async () => {
+  dispatch({
+    type: 'clear_search',
+  });
+};
+
 const addPatient = (dispatch) => async (user) => {
   const patient = await api().patientApi.createPatientWithUser(
     user,
@@ -99,6 +107,7 @@ export const { Provider, Context } = createContext(
   {
     loadAccessLogs,
     searchPatients,
+    clearSearch,
   },
   { accessLogs: [], patientList: [], searching: false }
 );
