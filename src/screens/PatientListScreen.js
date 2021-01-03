@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
+import { addressAsString } from '../utils/addressHelper';
+import { dateOfBirthInfo } from '../utils/dateHelper';
 
 const PatientListScreen = () => {
   const {
@@ -50,7 +52,14 @@ const PatientListScreen = () => {
       )}
       <ListItem.Content>
         <ListItem.Title>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
-        <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+        <ListItem.Subtitle>
+          <Text style={styles.subTitle}>
+            {dateOfBirthInfo(item.dateOfBirth)}
+          </Text>
+        </ListItem.Subtitle>
+        <ListItem.Subtitle>
+          <Text style={styles.subTitle}>{addressAsString(item.addresses)}</Text>
+        </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />
     </ListItem>
@@ -85,6 +94,10 @@ PatientListScreen.navigationOptions = () => {
   };
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  subTitle: {
+    fontSize: 12,
+  },
+});
 
 export default PatientListScreen;

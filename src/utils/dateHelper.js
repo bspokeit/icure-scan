@@ -1,3 +1,4 @@
+import { compact } from 'lodash';
 import moment from 'moment';
 
 export const yearString2Int = (yearStr) => {
@@ -27,7 +28,7 @@ export const monthString2Int = (monthStr) => {
     return null;
   }
 
-  if (MONTH_VALUES.includes(monthCandidate)) {
+  if (!MONTH_VALUES.includes(monthCandidate)) {
     return null;
   }
 
@@ -79,44 +80,157 @@ export const dayString2Int = (dayStr) => {
     return null;
   }
 
-  if (DAY_VALUES.includes(dayCandidate)) {
+  if (!DAY_VALUES.includes(dayCandidate)) {
     return null;
   }
 
   return dayCandidate;
 };
 
-export const dateIsValid = (candidate) => {
-  return (
-    candidate &&
-    candidate.year &&
-    candidate.month &&
-    candidate.day &&
-    moment(
-      `${dateCandidate.year}${dateCandidate.month}${dateCandidate.day}`,
-      'YYYYMMDD'
-    ).isValid()
-  );
-};
-
-export const iCureDate2PartialDate = (iCureDate) => {
+export const iCureDateParser = (iCureDate) => {
   if (!iCureDate || iCureDate.toString().length !== 8) {
-    return null;
+    return {
+      year: null,
+      month: null,
+      day: null,
+    };
   }
 
   const strDate = iCureDate.toString();
 
   const dateCandidate = {
-    year: yearString2Int(strDate.substr(0, 3)),
-    month: monthString2Int(strDate.substr(4, 5)),
-    day: dayString2Int(strDate.substr(6, 7)),
+    year: yearString2Int(strDate.substr(0, 4)),
+    month: monthString2Int(strDate.substr(4, 2)),
+    day: dayString2Int(strDate.substr(6, 2)),
   };
 
-  if (dateIsValid(dateCandidate)) {
-    dateCandidate.date = new Date(
-      `${dateCandidate.year}-${dateCandidate.month}-${dateCandidate.day}`
-    );
-  }
-
   return dateCandidate;
+};
+
+export const parsedDate2String = (parsedDate) => {
+  const { year, month, day } = parsedDate;
+
+  if (year) {
+    if (month) {
+      if (day) {
+        return moment(
+          `${year.toString().padStart(4, '0')}${month
+            .toString()
+            .padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+          'YYYYMMDD'
+        ).format('D MMM YYYY');
+      } else {
+        return moment(
+          `${year.toString().padStart(4, '0')}${month
+            .toString()
+            .padStart(2, '0')}`,
+          'YYYYMM'
+        ).format('MMM YYYY');
+      }
+    } else {
+      return moment(`${year.toString().padStart(4, '0')}`, 'YYYY').format(
+        'YYYY'
+      );
+    }
+  } else {
+    if (month) {
+      if (day) {
+        return moment(
+          `${month.toString().padStart(2, '0')}${day
+            .toString()
+            .padStart(2, '0')}`,
+          'MMDD'
+        ).format('D MMM');
+      } else {
+        return moment(`${month.toString().padStart(2, '0')}`, 'MM').format(
+          'MMM'
+        );
+      }
+    } else {
+      null;
+    }
+  }
+};
+
+export const parsedDate2Age = (parsedDate) => {
+  const { year, month, day } = parsedDate;
+
+  if (year) {
+    if (month) {
+      if (day) {
+        return moment().diff(
+          moment(
+            `${year.toString().padStart(4, '0')}${month
+              .toString()
+              .padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+            'YYYYMMDD'
+          ),
+          'years'
+        );
+      } else {
+        return moment().diff(
+          moment(
+            `${year.toString().padStart(4, '0')}${month
+              .toString()
+              .padStart(2, '0')}`,
+            'YYYYMM'
+          ),
+          'years'
+        );
+      }
+    } else {
+      return moment().diff(
+        moment(`${year.toString().padStart(4, '0')}`, 'YYYY'),
+        'years'
+      );
+    }
+  } else {
+    if (month) {
+      if (day) {
+        return moment().diff(
+          moment(
+            `${month.toString().padStart(2, '0')}${day
+              .toString()
+              .padStart(2, '0')}`,
+            'MMDD'
+          ),
+          'years'
+        );
+      } else {
+        return moment().diff(
+          moment(`${month.toString().padStart(2, '0')}`, 'MM'),
+          'years'
+        );
+      }
+    } else {
+      null;
+    }
+  }
+};
+
+export const iCureDateOfBirth = (iCureDate) => {
+  const parsedDate = iCureDateParser(iCureDate);
+
+  const stringRepresentation = parsedDate2String(parsedDate);
+
+  if (stringRepresentation) {
+    return `${stringRepresentation}`;
+  } else {
+    return ``;
+  }
+};
+
+export const iCureDateOfBirth2Age = (iCureDate) => {
+  const parsedDate = iCureDateParser(iCureDate);
+
+  return `${parsedDate2Age(parsedDate)} ans`;
+};
+
+export const dateOfBirthInfo = (iCureDate) => {
+  const parsedDate = iCureDateParser(iCureDate);
+
+  const dateRepresentation = parsedDate2String(parsedDate);
+  const ageRepresentation = `${parsedDate2Age(parsedDate)} ans`;
+
+  return compact([ageRepresentation, dateRepresentation]).join(' - ');
 };
