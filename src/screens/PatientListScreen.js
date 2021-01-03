@@ -30,6 +30,12 @@ const PatientListScreen = () => {
     <PatientListItem patient={item}></PatientListItem>
   );
 
+  const searchClearRequest = () => {
+    if (!searching) {
+      clearSearch();
+    }
+  };
+
   return (
     <SafeAreaView>
       <SearchBar
@@ -40,9 +46,10 @@ const PatientListScreen = () => {
         autoCapitalize="none"
         autoCorrect={false}
         onEndEditing={() => searchPatients(currentUser, query)}
-        onClear={clearSearch}
+        onClear={searchClearRequest}
         showLoading={searching}
         disabled={searching}
+        clearIcon={{ size: searching ? 0 : 22 }}
         loadingProps={{ color: '#2089dc', size: 'small' }}
       />
       <FlatList
