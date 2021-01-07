@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    build:
+      context: .
+      dockerfile: docker-images/db/Dockerfile
+    env_file:
+      - dev.env
+    ports:
+      - 127.0.0.1:5984:5984
+      - 127.0.0.1:4369:4369
+      - 127.0.0.1:9100:9100
+    networks:
+      - database
+    volumes:
+      - db:/opt/couchdb/data
+
+networks:
+  database:
+    driver: bridge
+
+volumes:
+  db:
