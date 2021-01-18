@@ -10,8 +10,9 @@ const PatientListItem = ({ patient }) => {
   return (
     <ListItem
       onPress={() => {
-        console.log('Patient ID = : ', patient.id);
-        navigate('Detail', { patientId: patient.id });
+        navigate('Detail', {
+          patient,
+        });
       }}
       bottomDivider
     >

@@ -3,13 +3,20 @@ import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PatientDetailScreen = ({ navigation }) => {
-  const patientId = navigation.getParam('patientId');
-  console.log('PatientId: ', patientId);
+  const patient = navigation.getParam('patient');
+
   return (
     <SafeAreaView>
-      <Text>`Patient Detail Sreen: ${patientId}`</Text>
+      <Text>`Patient Detail Screen: ${patient.id}`</Text>
     </SafeAreaView>
   );
+};
+
+PatientDetailScreen.navigationOptions = ({ navigation }) => {
+  const patient = navigation.getParam('patient');
+  return {
+    headerTitle: `${patient.firstName} ${patient.lastName}`,
+  };
 };
 
 const styles = StyleSheet.create({});
