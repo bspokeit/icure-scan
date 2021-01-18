@@ -3,11 +3,18 @@ import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
+import { navigate } from '../utils/navigationHelper';
 import { ab2Base64 } from '../utils/pictureHelper';
 
 const PatientListItem = ({ patient }) => {
   return (
-    <ListItem bottomDivider>
+    <ListItem
+      onPress={() => {
+        console.log('Patient ID = : ', patient.id);
+        navigate('Detail', { patientId: patient.id });
+      }}
+      bottomDivider
+    >
       {patient.picture ? (
         <Avatar
           rounded
