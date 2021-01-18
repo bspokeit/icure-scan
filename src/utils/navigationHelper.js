@@ -7,7 +7,6 @@ export const setNavigator = (nav) => {
 };
 
 export const navigate = (routeName, params) => {
-  console.log('BIM params: ', params);
   if (navigator) {
     navigator.dispatch(
       NavigationActions.navigate({
