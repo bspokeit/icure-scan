@@ -1,14 +1,18 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 
 const PatientDetailScreen = ({ navigation }) => {
-  const clickHandler = () => {
-    //function to handle click on floating Action Button
-    alert('Floating Button Clicked');
-  };
   const patient = navigation.getParam('patient');
+
+  const cameraRequest = () => {
+    alert('Camera Button Clicked');
+  };
+
+  const galleryRequest = () => {
+    alert('Gallery Button Clicked');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,17 +23,52 @@ const PatientDetailScreen = ({ navigation }) => {
         <Text style={styles.textStyle}>
           Click on Action Button to see Alert
         </Text>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={clickHandler}
-          style={styles.touchableOpacityStyle}
-        >
-          <Ionicons
-            name="add-circle-sharp"
-            size={64}
-            style={styles.floatingButtonStyle}
-          />
-        </TouchableOpacity>
+        <Text style={styles.titleStyle}>
+          Example of React Native Floating Action Button
+        </Text>
+        <Text style={styles.textStyle}>
+          Click on Action Button to see Alert
+        </Text>
+        <Text style={styles.titleStyle}>
+          Example of React Native Floating Action Button
+        </Text>
+        <Text style={styles.textStyle}>
+          Click on Action Button to see Alert
+        </Text>
+        <Text style={styles.titleStyle}>
+          Example of React Native Floating Action Button
+        </Text>
+        <Text style={styles.textStyle}>
+          Click on Action Button to see Alert
+        </Text>
+        <Text style={styles.titleStyle}>
+          Example of React Native Floating Action Button
+        </Text>
+        <Text style={styles.textStyle}>
+          Click on Action Button to see Alert
+        </Text>
+        <View style={styles.actionButtonBlock}>
+          <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
+            <Icon
+              reverse
+              raised
+              name="images"
+              type="ionicon"
+              color="#00aced"
+              style={styles.actionButtonStyle}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
+            <Icon
+              reverse
+              raised
+              name="camera"
+              type="ionicon"
+              color="#517fa4"
+              style={styles.actionButtonStyle}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -57,23 +96,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 10,
   },
-  touchableOpacityStyle: {
+  actionButtonBlock: {
     position: 'absolute',
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 70,
+    left: 30,
     right: 30,
     bottom: 30,
-  },
-  floatingButtonStyle: {
-    width: 60,
-    height: 60,
-    color: 'green',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
     borderColor: 'red',
     borderWidth: 2,
     borderStyle: 'solid',
-    //backgroundColor:'black'
+  },
+  actionButtonStyle: {
+    width: 60,
+    height: 60,
+    color: 'green',
   },
 });
 
