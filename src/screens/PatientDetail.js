@@ -1,15 +1,19 @@
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSelection from '../components/ImageSelection';
 import PatientScans from '../components/PatientScans';
+import { Context as PatientContext } from '../context/PatientContext';
 
 const PatientDetailScreen = ({ navigation }) => {
-  const patient = navigation.getParam('patient');
+  const {
+    state: { images },
+    collectImage,
+  } = useContext(PatientContext);
 
-  const [images, setImages] = useState([]);
+  const patient = navigation.getParam('patient');
 
   const cameraRequest = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -24,9 +28,10 @@ const PatientDetailScreen = ({ navigation }) => {
       allowsMultipleSelection: true,
       base64: true,
     });
-
+    console.log(Object.keys(result));
+    console.log(result.uri);
     if (!result.cancelled) {
-      setImages([...images, result]);
+      collectImage(result);
     }
   };
 
@@ -44,8 +49,11 @@ const PatientDetailScreen = ({ navigation }) => {
       base64: true,
     });
 
+    console.log(Object.keys(result));
+    console.log(result.uri);
+
     if (!result.cancelled) {
-      setImages([...images, result]);
+      collectImage(result);
     }
   };
 
@@ -80,7 +88,7 @@ const PatientDetailScreen = ({ navigation }) => {
               raised
               name="cloud-upload"
               type="ionicon"
-              color="#517fa4"
+              color="green"
             />
           </TouchableOpacity>
         ) : null}

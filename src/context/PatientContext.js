@@ -13,6 +13,10 @@ const patientReducer = (state, action) => {
       return { ...state, patientList: action.payload };
     case 'clear_search':
       return { ...state, patientList: state.patientsLogs };
+    case 'collect_image':
+      return { ...state, images: [...state.images, action.payload] };
+    case 'clear_images':
+      return { ...state, images: [] };
     default:
       return state;
   }
@@ -102,12 +106,22 @@ const addPatient = (dispatch) => async (user) => {
   );
 };
 
+const collectImage = (dispatch) => async (image) => {
+  dispatch({ type: 'collect_image', payload: image });
+};
+
+const clearImages = (dispatch) => async () => {
+  dispatch({ type: 'clear_images' });
+};
+
 export const { Provider, Context } = createContext(
   patientReducer,
   {
     loadAccessLogs,
     searchPatients,
     clearSearch,
+    collectImage,
+    clearImages,
   },
-  { accessLogs: [], patientList: [], searching: false }
+  { accessLogs: [], patientList: [], searching: false, images: [] }
 );

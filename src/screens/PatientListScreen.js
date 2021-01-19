@@ -6,7 +6,7 @@ import PatientListItem from '../components/PatientListItem';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 
-const PatientListScreen = () => {
+const PatientListScreen = ({ navigation }) => {
   const {
     state: { currentUser },
   } = useContext(AuthContext);
@@ -16,6 +16,7 @@ const PatientListScreen = () => {
     loadAccessLogs,
     searchPatients,
     clearSearch,
+    clearImages,
   } = useContext(PatientContext);
 
   const [query, setQuery] = useState('');
@@ -27,7 +28,15 @@ const PatientListScreen = () => {
   const keyExtractor = (item) => item.id;
 
   const renderItem = ({ item }) => (
-    <PatientListItem patient={item}></PatientListItem>
+    <PatientListItem
+      patient={item}
+      onSelection={() => {
+        clearImages();
+        navigation.navigate('Detail', {
+          patient: item,
+        });
+      }}
+    ></PatientListItem>
   );
 
   const searchClearRequest = () => {
