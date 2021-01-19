@@ -6,6 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSelection from '../components/ImageSelection';
 import PatientScans from '../components/PatientScans';
 import { Context as PatientContext } from '../context/PatientContext';
+import { Context as AuthContext } from '../context/AuthContext';
+import useImageImporter from '../hooks/useImageImporter';
 
 const PatientDetailScreen = ({ navigation }) => {
   const {
@@ -13,6 +15,12 @@ const PatientDetailScreen = ({ navigation }) => {
     collectImage,
   } = useContext(PatientContext);
 
+  //  TODO: the PatientDetailComponent should not be responsible for resolving the current User...
+  //  Check Hooks to mix Context ?
+  const {
+    state: { currentUser },
+  } = useContext(AuthContext);
+  const { startImport } = useImageImporter();
   const patient = navigation.getParam('patient');
 
   const cameraRequest = async () => {
@@ -57,7 +65,9 @@ const PatientDetailScreen = ({ navigation }) => {
     }
   };
 
-  const processImages = async () => {};
+  const processImages = async () => {
+    startImport(currentUser);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
