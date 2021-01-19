@@ -49,6 +49,8 @@ const PatientDetailScreen = ({ navigation }) => {
     }
   };
 
+  const processImages = async () => {};
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
@@ -71,6 +73,17 @@ const PatientDetailScreen = ({ navigation }) => {
         <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
           <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
         </TouchableOpacity>
+        {images.length ? (
+          <TouchableOpacity activeOpacity={0.7} onPress={processImages}>
+            <Icon
+              reverse
+              raised
+              name="cloud-upload"
+              type="ionicon"
+              color="#517fa4"
+            />
+          </TouchableOpacity>
+        ) : null}
       </View>
     </SafeAreaView>
   );
