@@ -1,9 +1,10 @@
-import { last } from 'lodash';
+import { last, toLower, fromPairs } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import { URI2Blob } from '../utils/formatHelper';
+import moment from 'moment';
 
 export default () => {
   const {
@@ -14,44 +15,87 @@ export default () => {
     state: { images },
   } = useContext(PatientContext);
 
-  const startImport = async () => {
+  const buildNewContact = async (patient) => {
     try {
-      const imageTest = images[0];
-      console.log('imageTest: ', imageTest.uri);
-
-      const extention = last(imageTest.uri.split('.'));
-      console.log('Extention: ', extention);
-
-      const documentDto = await api().documentApi.newInstance(
+      const newContact = await api().contactApi.newInstance(
         currentUser,
-        null,
+        patient,
         {
-          name: 'test',
-          mainUti: api().documentApi.uti(null, extention), // TODO: Type could be infered from the camera/media library
+          author: currentUser.id,
+          responsible: currentUser.healthcarePartyId,
+          subContacts: [],
+          services: [],
         }
       );
-      console.log('DocumentDTO created');
 
-      const savedDocumentDto = await api().documentApi.createDocument(
-        documentDto
-      );
+      return newContact;
+    } catch (e) {
+      throw e;
+    }
+  };
 
-      console.log('DocumentDTO uploaded: ', imageTest.base64.substring(0, 30));
+  const buildNewDocument = async (image) => {
+    const ext = last(image.uri.split('.'));
+    let mimeType = toLower(ext);
+    mimeType =
+      mimeType === 'jpg' ? 'jpeg' : mimeType === 'tif' ? 'tiff' : mimeType;
+    try {
+      const document = await api().documentApi.newInstance(currentUser, null, {
+        name: `${api().cryptoApi.randomUuid()}-from-icure-scan`,
+        mainUti: api().documentApi.uti(
+          mimeType === 'pdf' ? 'application/pdf' : 'image/' + mimeType,
+          ext
+        ),
+      });
 
-      const blob = await URI2Blob(imageTest.uri);
+      return await api().documentApi.createDocument(document);
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  const startImport = async (patient) => {
+    try {
+      const imageTest = images[0];
+
+      const newContact = await buildNewContact(patient);
+
+      const document = await buildNewDocument(imageTest);
 
       await api().documentApi.setDocumentAttachment(
-        savedDocumentDto.id,
+        document.id,
         '',
-        blob
+        await URI2Blob(imageTest.uri)
       );
 
-      console.log('Attachment uploaded');
+      const service = api()
+        .contactApi.service()
+        .newInstance(currentUser, {
+          content: fromPairs([
+            [
+              'fr', // TODO: fix this hardcoding...
+              {
+                documentId: document.id,
+                stringValue: document.name,
+              },
+            ],
+          ]),
+          tags: [
+            {
+              type: 'CD-TRANSACTION',
+              code: imageTest.type || 'icure-scan-import',
+            },
+          ],
+          label: 'imported document',
+        });
 
-      const finalDocument = await api().documentApi.getDocument(
-        savedDocumentDto.id
-      );
-      console.log('Final document ready: ', finalDocument);
+      newContact.services.push(service);
+      newContact.subContacts.push({
+        status: 64,
+        services: [{ serviceId: service.id }],
+      });
+
+      await api().contactApi.createContactWithUser(currentUser, newContact);
     } catch (err) {
       console.error(err);
     }

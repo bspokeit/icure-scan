@@ -67,7 +67,7 @@ const login = (dispatch) => async ({ username, password }) => {
             true
           );
         } catch (err) {
-          console.log(err);
+          throw err;
         }
       }
 

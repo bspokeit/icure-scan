@@ -29,8 +29,7 @@ const PatientDetailScreen = ({ navigation }) => {
       allowsMultipleSelection: true,
       base64: true,
     });
-    console.log(Object.keys(result));
-    console.log(result.uri);
+
     if (!result.cancelled) {
       collectImage(result);
     }
@@ -49,9 +48,6 @@ const PatientDetailScreen = ({ navigation }) => {
       allowsMultipleSelection: true,
       base64: true,
     });
-
-    console.log(Object.keys(result));
-    console.log(result.uri);
 
     if (!result.cancelled) {
       collectImage(result);
