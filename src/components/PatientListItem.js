@@ -3,7 +3,7 @@ import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
-import { ab2Base64 } from '../utils/pictureHelper';
+import { arrayBuffer2Base64 } from '../utils/formatHelper';
 
 const PatientListItem = ({ patient, onSelection }) => {
   return (
@@ -12,7 +12,7 @@ const PatientListItem = ({ patient, onSelection }) => {
         <Avatar
           rounded
           source={{
-            uri: ab2Base64(patient.picture),
+            uri: arrayBuffer2Base64(patient.picture),
           }}
           size="medium"
         />

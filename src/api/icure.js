@@ -2,7 +2,7 @@ const isoCrypto = require('isomorphic-webcrypto');
 
 import { Api, IccAuthApi } from '@icure/api';
 
-const BASE_URL = 'http://96cf0c5dd351.ngrok.io';
+const BASE_URL = 'http://4d5808a7a40f.ngrok.io';
 
 const API_URL = `${BASE_URL}/rest/v1`;
 

@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@icure/api": "github:phil1618/icc-api#rn-integration-base",
+    "@icure/api": "github:bspokeit/icc-api#msrcrypto-compatibility",
     "@react-native-community/masked-view": "^0.1.10",
     "expo": "~40.0.0",
     "expo-camera": "~9.1.0",
