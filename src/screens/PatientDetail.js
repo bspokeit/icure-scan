@@ -1,12 +1,11 @@
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSelection from '../components/ImageSelection';
 import PatientScans from '../components/PatientScans';
 import { Context as PatientContext } from '../context/PatientContext';
-import { Context as AuthContext } from '../context/AuthContext';
 import useImageImporter from '../hooks/useImageImporter';
 
 const PatientDetailScreen = ({ navigation }) => {
@@ -15,13 +14,7 @@ const PatientDetailScreen = ({ navigation }) => {
     collectImage,
   } = useContext(PatientContext);
 
-  //  TODO: the PatientDetailComponent should not be responsible for resolving the current User...
-  //  Check Hooks to mix Context ?
-  const {
-    state: { currentUser },
-  } = useContext(AuthContext);
   const { startImport } = useImageImporter();
-  const patient = navigation.getParam('patient');
 
   const cameraRequest = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -66,7 +59,8 @@ const PatientDetailScreen = ({ navigation }) => {
   };
 
   const processImages = async () => {
-    startImport(currentUser);
+    const patient = navigation.getParam('patient');
+    startImport(patient);
   };
 
   return (
