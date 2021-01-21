@@ -3,17 +3,19 @@ import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ImageSelection from '../components/ImageSelection';
 import ImageImporter from '../components/ImageImporter';
+import ImageSelection from '../components/ImageSelection';
 import PatientScans from '../components/PatientScans';
 import { Context as PatientContext } from '../context/PatientContext';
 
-const PatientDetailScreen = () => {
+const PatientDetailScreen = ({ navigation }) => {
   const {
     state: { images, importMode },
     collectImage,
     setImportMode,
   } = useContext(PatientContext);
+
+  const patient = navigation.getParam('patient');
 
   const cameraRequest = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -100,7 +102,10 @@ const PatientDetailScreen = () => {
         isVisible={importMode}
         fullscreen
       >
-        <ImageImporter onCancel={deactivateImportMode}></ImageImporter>
+        <ImageImporter
+          onDone={deactivateImportMode}
+          patient={patient}
+        ></ImageImporter>
       </Overlay>
     </SafeAreaView>
   );
@@ -145,8 +150,6 @@ const styles = StyleSheet.create({
   overlayStyle: {
     width: '90%',
     height: '90%',
-    borderColor: 'blue',
-    borderWidth: 2,
   },
 });
 

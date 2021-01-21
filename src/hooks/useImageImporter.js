@@ -1,4 +1,4 @@
-import { fromPairs, last, toLower } from 'lodash';
+import { fromPairs, last, toLower, compact } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
@@ -6,13 +6,22 @@ import { Context as PatientContext } from '../context/PatientContext';
 import { URI2Blob } from '../utils/formatHelper';
 import { taskID } from '../utils/importHelper';
 
+//  TODO:
+//    1. processTask should be based on task type
+//    2. we should have a tack dedicated context
+//    3. Rename image to document (more generic)
+//    4. Isolate build function in an helper file ?
+//    5. Create enum for status and types
+//    6. Avoid copying image in the tasks
+//    7. Handle failure in import flow
 export default () => {
   const {
     state: { currentUser },
   } = useContext(AuthContext);
 
   const {
-    state: { images, importTasks },
+    state: { images },
+    setImportStatus,
     setImportTasks,
     setClosingTask,
     updateTaskStatus,
@@ -57,59 +66,54 @@ export default () => {
     }
   };
 
-  const sleep = (ms) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  };
-
   const processTask = async (task) => {
     let service = null;
     let subContact = null;
     let status = { succesfull: true, error: null };
 
-    await sleep(1500);
+    try {
+      const document = await buildNewDocument(task.image);
+
+      await api().documentApi.setDocumentAttachment(
+        document.id,
+        '',
+        await URI2Blob(task.image.uri)
+      );
+
+      service = api()
+        .contactApi.service()
+        .newInstance(currentUser, {
+          content: fromPairs([
+            [
+              'fr', // TODO: fix this hardcoding...
+              {
+                documentId: document.id,
+                stringValue: document.name,
+              },
+            ],
+          ]),
+          tags: [
+            {
+              type: 'CD-TRANSACTION',
+              code: task.image.type || 'icure-scan-import',
+            },
+          ],
+          label: 'imported document',
+        });
+
+      subContact = {
+        status: 64,
+        services: [{ serviceId: service.id }],
+      };
+    } catch (e) {
+      status = {
+        succesfull: false,
+        error: e,
+      };
+      console.log(e);
+    }
 
     updateTaskStatus(task.id, 'DONE');
-
-    // try {
-    //   const document = await buildNewDocument(image);
-
-    //   await api().documentApi.setDocumentAttachment(
-    //     document.id,
-    //     '',
-    //     await URI2Blob(image.uri)
-    //   );
-
-    //   service = api()
-    //     .contactApi.service()
-    //     .newInstance(currentUser, {
-    //       content: fromPairs([
-    //         [
-    //           'fr', // TODO: fix this hardcoding...
-    //           {
-    //             documentId: document.id,
-    //             stringValue: document.name,
-    //           },
-    //         ],
-    //       ]),
-    //       tags: [
-    //         {
-    //           type: 'CD-TRANSACTION',
-    //           code: image.type || 'icure-scan-import',
-    //         },
-    //       ],
-    //       label: 'imported document',
-    //     });
-
-    //   subContact = {
-    //     status: 64,
-    //     services: [{ serviceId: service.id }],
-    //   };
-    // } catch (e) {
-    //   status = {
-    //     succesfull: false,
-    //     error: e,
-    //   };
-    // }
 
     return {
       service,
@@ -119,30 +123,34 @@ export default () => {
   };
 
   const cleanImportSetup = async () => {
-    await setImportTasks([]);
-    await setClosingTask(null);
+    setImportTasks([]);
+    setClosingTask(null);
+    setImportStatus('PENDING');
   };
 
-  //  importStatus: 'PENDING', 'ONGOING', 'DONE'
-  //  type: 'DOCUMENT_IMPORT' and 'CONTACT_IMPORT'
-  const startImport = async () => {
+  const startImport = async (patient) => {
     cleanImportSetup();
+    setImportStatus('ONGOING');
 
-    const tasks = images.map((image, index) => {
+    const tasks = images.map((image) => {
       return {
         id: taskID(),
-        type: 'DOCUMENT_IMPORT',
         image,
+        type: 'DOCUMENT_IMPORT',
         importStatus: 'PENDING',
       };
     });
 
-    await setImportTasks(tasks);
+    setImportTasks(tasks);
+
+    const services = [];
+    const subContacts = [];
 
     try {
       for (const task of tasks) {
-        await processTask(task);
-        console.log(`Task ${task.id} done`);
+        const { service, subContact } = await processTask(task);
+        services.push(service);
+        subContacts.push(subContact);
       }
     } catch (e) {
       console.log(e);
@@ -151,43 +159,26 @@ export default () => {
     const closingTasks = {
       id: taskID(),
       type: 'CONTACT_IMPORT',
-      contact: null,
       importStatus: 'PENDING',
     };
 
-    await setClosingTask(closingTasks);
+    setClosingTask(closingTasks);
 
-    console.log('Finalisation');
+    try {
+      const newContact = await buildNewContact(patient);
 
-    await sleep(1500);
+      newContact.services = compact([...services]);
+      newContact.subContacts = compact([...subContacts]);
 
-    closingTasks.importStatus = 'DONE';
+      await api().contactApi.createContactWithUser(currentUser, newContact);
+    } catch (err) {
+      console.error(err);
+    }
 
-    await setClosingTask(closingTasks);
+    setClosingTask({ ...closingTasks, importStatus: 'DONE' });
 
-    console.log('DONE');
-    // try {
-    //   const imageTest = images[0];
-
-    //   const newContact = await buildNewContact(patient);
-
-    //   fruitsToGet.forEach(async (fruit) => {
-    //     const numFruit = await getNumFruit(fruit);
-    //     console.log(numFruit);
-    //   });
-
-    //   const { service, subContact, status } = await importDocument(imageTest);
-
-    //   if (status.succesfull) {
-    //     newContact.services.push(service);
-    //     newContact.subContacts.push(subContact);
-    //   }
-
-    //   await api().contactApi.createContactWithUser(currentUser, newContact);
-    // } catch (err) {
-    //   console.error(err);
-    // }
+    setImportStatus('DONE');
   };
 
-  return { startImport };
+  return { startImport, cleanImportSetup };
 };

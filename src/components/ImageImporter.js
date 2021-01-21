@@ -1,35 +1,39 @@
 import React, { useContext } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import { StyleSheet, Text, View } from 'react-native';
+import { Button, Divider } from 'react-native-elements';
 import { Context as PatientContext } from '../context/PatientContext';
 import useImageImporter from '../hooks/useImageImporter';
 
-const ImageImporter = ({ onCancel }) => {
+const ImageImporter = ({ onDone, patient }) => {
   const {
-    state: { images, importTasks, closingTask },
+    state: { images, importStatus, importTasks, closingTask },
   } = useContext(PatientContext);
 
-  const { startImport } = useImageImporter();
+  const { startImport, cleanImportSetup } = useImageImporter();
 
   const start = async () => {
-    await startImport();
+    await startImport(patient);
   };
 
-  console.log('closingTask: ', closingTask);
+  const done = async () => {
+    cleanImportSetup();
+    onDone();
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Import to Cloud</Text>
+      <Divider style={{ backgroundColor: 'blue' }} />
       <View style={styles.body}>
         {!importTasks?.length ? (
-          <Text style={styles.title}>
+          <Text style={styles.bodyLine}>
             Ready to import {images.length}{' '}
             {images.length === 1 ? 'document' : 'documents'}
           </Text>
         ) : null}
 
         {importTasks?.length ? (
-          <Text style={styles.title}>
+          <Text style={styles.bodyLine}>
             Import ongoing{' '}
             {`${importTasks.filter((t) => t.importStatus === 'DONE').length}/${
               importTasks.length
@@ -39,25 +43,39 @@ const ImageImporter = ({ onCancel }) => {
 
         {closingTask ? (
           closingTask.importStatus === 'PENDING' ? (
-            <Text style={styles.title}>Finalisation ongoing</Text>
+            <Text style={styles.bodyLine}>Finalisation ongoing</Text>
           ) : (
-            <Text style={styles.title}>Done!</Text>
+            <Text style={styles.bodyLine}>Done!</Text>
           )
         ) : null}
       </View>
-      <View style={styles.controller}>
-        <Button
-          buttonStyle={styles.control}
-          type="outline"
-          onPress={onCancel}
-          title="Cancel"
-        ></Button>
-        <Button
-          buttonStyle={styles.control}
-          onPress={start}
-          title="Start"
-        ></Button>
-      </View>
+      <Divider style={{ backgroundColor: 'blue' }} />
+      {importStatus === 'DONE' ? (
+        <View style={styles.controller}>
+          <Button
+            buttonStyle={styles.control}
+            onPress={done}
+            title="Ok"
+          ></Button>
+        </View>
+      ) : (
+        <View style={styles.controller}>
+          <Button
+            buttonStyle={styles.control}
+            type="outline"
+            onPress={done}
+            title="Cancel"
+            disabled={importStatus === 'ONGOING'}
+          ></Button>
+          <Button
+            buttonStyle={styles.control}
+            onPress={start}
+            title="Start"
+            disabled={importStatus === 'ONGOING'}
+            loading={importStatus === 'ONGOING'}
+          ></Button>
+        </View>
+      )}
     </View>
   );
 };
@@ -66,15 +84,11 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    borderColor: 'red',
-    borderWidth: 2,
   },
   title: {
     flex: 1,
     textAlign: 'center',
     textAlignVertical: 'center',
-    borderColor: 'purple',
-    borderWidth: 2,
     width: '100%',
     justifyContent: 'center',
     fontSize: 16,
@@ -82,19 +96,24 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 8,
+    justifyContent: 'center',
+  },
+  bodyLine: {
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontSize: 16,
+  },
+  bodyLineIcon: {
+    marginRight: 8,
   },
   controller: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'green',
-    borderWidth: 2,
   },
   control: {
     width: 120,
-    borderColor: 'red',
-    borderWidth: 2,
     marginLeft: 6,
     marginRight: 6,
   },

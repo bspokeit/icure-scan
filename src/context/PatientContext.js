@@ -17,6 +17,8 @@ const patientReducer = (state, action) => {
       return { ...state, images: [...state.images, action.payload] };
     case 'set_import_mode':
       return { ...state, importMode: action.payload };
+    case 'set_import_status':
+      return { ...state, importStatus: action.payload };
     case 'set_import_tasks':
       return { ...state, importTasks: action.payload };
     case 'update_task_status':
@@ -133,6 +135,10 @@ const setImportMode = (dispatch) => async (importMode) => {
   dispatch({ type: 'set_import_mode', payload: importMode });
 };
 
+const setImportStatus = (dispatch) => async (status) => {
+  dispatch({ type: 'set_import_status', payload: status });
+};
+
 const setImportTasks = (dispatch) => async (tasks) => {
   dispatch({ type: 'set_import_tasks', payload: tasks });
 };
@@ -154,6 +160,7 @@ export const { Provider, Context } = createContext(
     collectImage,
     clearImages,
     setImportMode,
+    setImportStatus,
     setImportTasks,
     updateTaskStatus,
     setClosingTask,
@@ -164,6 +171,7 @@ export const { Provider, Context } = createContext(
     searching: false,
     images: [],
     importMode: false,
+    importStatus: 'PENDING',
     importTasks: [],
     closingTask: null,
   }
