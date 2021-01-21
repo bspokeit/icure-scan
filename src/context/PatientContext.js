@@ -17,6 +17,19 @@ const patientReducer = (state, action) => {
       return { ...state, images: [...state.images, action.payload] };
     case 'set_import_mode':
       return { ...state, importMode: action.payload };
+    case 'set_import_tasks':
+      return { ...state, importTasks: action.payload };
+    case 'update_task_status':
+      const updatedTasks = [...state.importTasks].map((t) => {
+        if (t.id === action.payload.id) {
+          t.importStatus = action.payload.status;
+        }
+        return t;
+      });
+
+      return { ...state, importTasks: updatedTasks };
+    case 'set_closing_task':
+      return { ...state, closingTask: action.payload };
     case 'clear_images':
       return { ...state, images: [] };
     default:
@@ -120,6 +133,18 @@ const setImportMode = (dispatch) => async (importMode) => {
   dispatch({ type: 'set_import_mode', payload: importMode });
 };
 
+const setImportTasks = (dispatch) => async (tasks) => {
+  dispatch({ type: 'set_import_tasks', payload: tasks });
+};
+
+const setClosingTask = (dispatch) => async (task) => {
+  dispatch({ type: 'set_closing_task', payload: task });
+};
+
+const updateTaskStatus = (dispatch) => async (id, status) => {
+  dispatch({ type: 'update_task_status', payload: { id, status } });
+};
+
 export const { Provider, Context } = createContext(
   patientReducer,
   {
@@ -129,6 +154,9 @@ export const { Provider, Context } = createContext(
     collectImage,
     clearImages,
     setImportMode,
+    setImportTasks,
+    updateTaskStatus,
+    setClosingTask,
   },
   {
     accessLogs: [],
@@ -136,5 +164,7 @@ export const { Provider, Context } = createContext(
     searching: false,
     images: [],
     importMode: false,
+    importTasks: [],
+    closingTask: null,
   }
 );

@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSelection from '../components/ImageSelection';
-import ImportController from '../components/ImportController';
+import ImageImporter from '../components/ImageImporter';
 import PatientScans from '../components/PatientScans';
 import { Context as PatientContext } from '../context/PatientContext';
 
@@ -100,7 +100,7 @@ const PatientDetailScreen = () => {
         isVisible={importMode}
         fullscreen
       >
-        <ImportController onCancel={deactivateImportMode}></ImportController>
+        <ImageImporter onCancel={deactivateImportMode}></ImageImporter>
       </Overlay>
     </SafeAreaView>
   );
