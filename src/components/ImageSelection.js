@@ -41,8 +41,6 @@ const ImageSelection = ({ images }) => {
 const styles = StyleSheet.create({
   flatListStyle: {
     backgroundColor: 'white',
-    borderColor: 'blue',
-    borderWidth: 2,
   },
   imageContainerStyle: {
     flex: 1,

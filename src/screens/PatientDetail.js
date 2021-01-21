@@ -108,8 +108,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    borderColor: 'green',
-    borderWidth: 2,
     marginTop: -20, // TODO: fihure out this margin shift
   },
   upperContainer: {
@@ -134,8 +132,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'space-around',
     flexDirection: 'row',
-    borderColor: 'red',
-    borderWidth: 2,
   },
 });
 
