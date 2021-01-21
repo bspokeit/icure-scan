@@ -15,6 +15,8 @@ const patientReducer = (state, action) => {
       return { ...state, patientList: state.patientsLogs };
     case 'collect_image':
       return { ...state, images: [...state.images, action.payload] };
+    case 'clear_images':
+      return { ...state, images: [] };
     case 'set_import_mode':
       return { ...state, importMode: action.payload };
     case 'set_import_status':
@@ -28,12 +30,10 @@ const patientReducer = (state, action) => {
         }
         return t;
       });
-
       return { ...state, importTasks: updatedTasks };
     case 'set_closing_task':
       return { ...state, closingTask: action.payload };
-    case 'clear_images':
-      return { ...state, images: [] };
+
     default:
       return state;
   }

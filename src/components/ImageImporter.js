@@ -7,6 +7,7 @@ import useImageImporter from '../hooks/useImageImporter';
 const ImageImporter = ({ onDone, patient }) => {
   const {
     state: { images, importStatus, importTasks, closingTask },
+    clearImages,
   } = useContext(PatientContext);
 
   const { startImport, cleanImportSetup } = useImageImporter();
@@ -17,6 +18,9 @@ const ImageImporter = ({ onDone, patient }) => {
 
   const done = async () => {
     cleanImportSetup();
+    if (importStatus === 'DONE') {
+      clearImages();
+    }
     onDone();
   };
 
