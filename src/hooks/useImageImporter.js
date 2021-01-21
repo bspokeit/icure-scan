@@ -1,4 +1,4 @@
-import { fromPairs, last, toLower, compact } from 'lodash';
+import { compact, fromPairs, last, toLower } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';

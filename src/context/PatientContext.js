@@ -1,7 +1,7 @@
 import { Patient } from '@icure/api';
+import { chain } from 'lodash';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
-import _ from 'lodash';
 
 const patientReducer = (state, action) => {
   switch (action.type) {
@@ -55,7 +55,7 @@ const loadAccessLogs = (dispatch) => async (user) => {
       null
     );
 
-    const patientIds = _(logPage.rows)
+    const patientIds = chain(logPage.rows)
       .map('patientId')
       .compact()
       .uniq()
