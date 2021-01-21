@@ -1,20 +1,19 @@
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSelection from '../components/ImageSelection';
+import ImportController from '../components/ImportController';
 import PatientScans from '../components/PatientScans';
 import { Context as PatientContext } from '../context/PatientContext';
-import useImageImporter from '../hooks/useImageImporter';
 
-const PatientDetailScreen = ({ navigation }) => {
+const PatientDetailScreen = () => {
   const {
-    state: { images },
+    state: { images, importMode },
     collectImage,
+    setImportMode,
   } = useContext(PatientContext);
-
-  const { startImport } = useImageImporter();
 
   const cameraRequest = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -54,9 +53,12 @@ const PatientDetailScreen = ({ navigation }) => {
     }
   };
 
-  const processImages = async () => {
-    const patient = navigation.getParam('patient');
-    startImport(patient);
+  const activateImportMode = async () => {
+    setImportMode(true);
+  };
+
+  const deactivateImportMode = async () => {
+    setImportMode(false);
   };
 
   return (
@@ -82,7 +84,7 @@ const PatientDetailScreen = ({ navigation }) => {
           <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
         </TouchableOpacity>
         {images.length ? (
-          <TouchableOpacity activeOpacity={0.7} onPress={processImages}>
+          <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
             <Icon
               reverse
               raised
@@ -93,6 +95,13 @@ const PatientDetailScreen = ({ navigation }) => {
           </TouchableOpacity>
         ) : null}
       </View>
+      <Overlay
+        overlayStyle={styles.overlayStyle}
+        isVisible={importMode}
+        fullscreen
+      >
+        <ImportController onCancel={deactivateImportMode}></ImportController>
+      </Overlay>
     </SafeAreaView>
   );
 };
@@ -132,6 +141,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'space-around',
     flexDirection: 'row',
+  },
+  overlayStyle: {
+    width: '90%',
+    height: '90%',
+    borderColor: 'blue',
+    borderWidth: 2,
   },
 });
 

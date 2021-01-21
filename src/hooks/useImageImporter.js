@@ -1,10 +1,9 @@
-import { last, toLower, fromPairs } from 'lodash';
+import { fromPairs, last, toLower } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import { URI2Blob } from '../utils/formatHelper';
-import moment from 'moment';
 
 export default () => {
   const {

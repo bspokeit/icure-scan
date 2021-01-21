@@ -9,7 +9,6 @@ import {
 
 const ImageSelection = ({ images }) => {
   return (
-    //<>
     <FlatList
       style={styles.flatListStyle}
       numColumns={2}
@@ -34,7 +33,6 @@ const ImageSelection = ({ images }) => {
         </View>
       )}
     />
-    // </>
   );
 };
 

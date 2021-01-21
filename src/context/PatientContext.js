@@ -15,6 +15,8 @@ const patientReducer = (state, action) => {
       return { ...state, patientList: state.patientsLogs };
     case 'collect_image':
       return { ...state, images: [...state.images, action.payload] };
+    case 'set_import_mode':
+      return { ...state, importMode: action.payload };
     case 'clear_images':
       return { ...state, images: [] };
     default:
@@ -114,6 +116,10 @@ const clearImages = (dispatch) => async () => {
   dispatch({ type: 'clear_images' });
 };
 
+const setImportMode = (dispatch) => async (importMode) => {
+  dispatch({ type: 'set_import_mode', payload: importMode });
+};
+
 export const { Provider, Context } = createContext(
   patientReducer,
   {
@@ -122,6 +128,13 @@ export const { Provider, Context } = createContext(
     clearSearch,
     collectImage,
     clearImages,
+    setImportMode,
   },
-  { accessLogs: [], patientList: [], searching: false, images: [] }
+  {
+    accessLogs: [],
+    patientList: [],
+    searching: false,
+    images: [],
+    importMode: false,
+  }
 );
