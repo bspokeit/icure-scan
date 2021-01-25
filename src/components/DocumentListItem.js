@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 import { Context as PatientContext } from '../context/PatientContext';
 import useDocumentResolver from '../hooks/useDocumentResolver';
 
@@ -19,10 +19,16 @@ const DocumentListItem = ({ documentId }) => {
         <Image
           style={styles.imageStyle}
           source={{
-            uri: resolvedDocuments[documentId].content,
+            uri: resolvedDocuments[documentId]?.content,
           }}
         />
-      ) : null}
+      ) : (
+        <ActivityIndicator
+          style={styles.loaderStyle}
+          animating
+          color="#2089dc"
+        />
+      )}
     </View>
   );
 };
@@ -36,6 +42,11 @@ const styles = StyleSheet.create({
     margin: 1,
   },
   imageStyle: {
+    height: 120,
+    width: '100%',
+    backgroundColor: 'grey',
+  },
+  loaderStyle: {
     height: 120,
     width: '100%',
   },

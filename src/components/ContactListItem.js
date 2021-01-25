@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { Card } from 'react-native-elements';
 import DocumentListItem from '../components/DocumentListItem';
 import {
@@ -16,15 +16,21 @@ const ContactListItem = ({ contact }) => {
           Contact du {moment(contact.created).format('DD/MM/YYYY hh:MM')}
         </Card.Title>
         <Card.Divider />
-        {getDocumentServices(contact).map((s, i) => {
-          return (
-            <View key={i}>
-              <DocumentListItem
-                documentId={getDocumentIdFromService(s)}
-              ></DocumentListItem>
-            </View>
-          );
-        })}
+        <View>
+          <FlatList
+            style={styles.flatListStyle}
+            numColumns={3}
+            keyExtractor={(item) => item.id}
+            data={getDocumentServices(contact)}
+            renderItem={({ item }) => (
+              <View style={styles.imageContainerStyle}>
+                <DocumentListItem
+                  documentId={getDocumentIdFromService(item)}
+                ></DocumentListItem>
+              </View>
+            )}
+          />
+        </View>
       </Card>
     </View>
   );

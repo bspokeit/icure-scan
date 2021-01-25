@@ -2,6 +2,9 @@ import { Patient } from '@icure/api';
 import { chain, find, uniq } from 'lodash';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
+import moment from 'moment';
+
+const MAX_STORED_RESOLVED_DOCUMENTS = 50;
 
 const patientReducer = (state, action) => {
   switch (action.type) {
@@ -38,6 +41,7 @@ const patientReducer = (state, action) => {
     case 'collect_resolved_document':
       const updatedDocumentContent = { ...state.resolvedDocuments };
       updatedDocumentContent[action.payload.documentId] = {
+        ts: moment(),
         attachmentId: action.payload.attachmentId,
         content: action.payload.content,
       };
