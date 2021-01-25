@@ -5,11 +5,7 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import { URI2Blob } from '../utils/formatHelper';
 import { taskID } from '../utils/importHelper';
-
-const documentTags = [
-  { code: 'document', id: 'CD-ITEM|document|1', type: 'CD-ITEM', version: '1' },
-  { code: 'Plan', id: 'SOAP|Plan|1', type: 'SOAP', version: '1' },
-];
+import { DOCUMENT_SERVICE_TAG } from '../utils/contactHelper';
 
 //  TODO:
 //    1. processTask should be based on task type
@@ -96,7 +92,7 @@ export default () => {
               },
             ],
           ]),
-          tags: documentTags,
+          tags: DOCUMENT_SERVICE_TAG,
           label: 'imported document',
         });
     } catch (e) {
