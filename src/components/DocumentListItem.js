@@ -24,7 +24,7 @@ const DocumentListItem = ({ documentId }) => {
         />
       ) : (
         <ActivityIndicator
-          style={styles.loaderStyle}
+          style={styles.imageStyle}
           animating
           color="#2089dc"
         />
@@ -42,11 +42,6 @@ const styles = StyleSheet.create({
     margin: 1,
   },
   imageStyle: {
-    height: 120,
-    width: '100%',
-    backgroundColor: 'grey',
-  },
-  loaderStyle: {
     height: 120,
     width: '100%',
   },
