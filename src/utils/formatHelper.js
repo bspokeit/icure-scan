@@ -4,6 +4,18 @@ export const arrayBuffer2Base64 = (arrayBuffer, type = 'image/jpeg') => {
   )}`;
 };
 
+export const hexToBase64 = (hexStr) => {
+  return btoa(
+    [...hexStr].reduce(
+      (acc, _, i) =>
+        (acc += !((i - 1) & 1)
+          ? String.fromCharCode(parseInt(hexStr.substring(i - 1, i + 1), 16))
+          : ''),
+      ''
+    )
+  );
+};
+
 export const URI2Blob = async (uri) => {
   try {
     const response = await fetch(uri);

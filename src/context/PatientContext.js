@@ -35,6 +35,13 @@ const patientReducer = (state, action) => {
       return { ...state, closingTask: action.payload };
     case 'set_patient_contacts':
       return { ...state, patientContacts: action.payload };
+    case 'collect_resolved_document':
+      const updatedDocumentContent = { ...state.resolvedDocuments };
+      updatedDocumentContent[action.payload.documentId] = {
+        attachmentId: action.payload.attachmentId,
+        content: action.payload.content,
+      };
+      return { ...state, resolvedDocuments: updatedDocumentContent };
     default:
       return state;
   }
@@ -45,10 +52,10 @@ const loadAccessLogs = (dispatch) => async (user) => {
     dispatch({ type: 'set_searching', payload: true });
 
     const now = Date.now();
-    const threeDaysAgo = now - 3 * 24 * 60 * 60 * 1000;
+    const tenDaysAgo = now - 10 * 24 * 60 * 60 * 1000;
     const logPage = await api().accessLogApi.listAccessLogsWithUser(
       user,
-      threeDaysAgo,
+      tenDaysAgo,
       now,
       null,
       null,
@@ -188,8 +195,8 @@ const updateTaskStatus = (dispatch) => async (id, status) => {
   dispatch({ type: 'update_task_status', payload: { id, status } });
 };
 
-const setPatientContact = (dispatch) => async (contacts) => {
-  dispatch({ type: 'set_patient_contacts', payload: contacts });
+const collectResolvedDocument = (dispatch) => async (resolvedDocument) => {
+  dispatch({ type: 'collect_resolved_document', payload: resolvedDocument });
 };
 
 export const { Provider, Context } = createContext(
@@ -199,6 +206,7 @@ export const { Provider, Context } = createContext(
     searchPatients,
     clearSearch,
     getContacts,
+    collectResolvedDocument,
     collectImage,
     clearImages,
     setImportMode,
@@ -212,6 +220,7 @@ export const { Provider, Context } = createContext(
     patientList: [],
     searching: false,
     patientContacts: [],
+    resolvedDocuments: {},
     images: [],
     importMode: false,
     importStatus: 'PENDING',

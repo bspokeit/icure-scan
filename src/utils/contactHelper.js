@@ -25,3 +25,7 @@ export const getDocumentServices = (contact) => {
 
   return docServices;
 };
+
+export const getDocumentIdFromService = (service) => {
+  return service?.content?.fr?.documentId || '';
+};

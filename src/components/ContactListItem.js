@@ -1,14 +1,14 @@
 import moment from 'moment';
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Card } from 'react-native-elements';
-import { getDocumentServices } from '../utils/contactHelper';
+import DocumentListItem from '../components/DocumentListItem';
+import {
+  getDocumentIdFromService,
+  getDocumentServices,
+} from '../utils/contactHelper';
 
 const ContactListItem = ({ contact }) => {
-  useEffect(() => {
-    // console.log('contact: ', contact);
-  }, []);
-
   return (
     <View>
       <Card>
@@ -19,12 +19,9 @@ const ContactListItem = ({ contact }) => {
         {getDocumentServices(contact).map((s, i) => {
           return (
             <View key={i}>
-              {/* <Image
-                style={styles.image}
-                resizeMode="cover"
-                source={{ uri: u.avatar }}
-              /> */}
-              <Text>{s.id}</Text>
+              <DocumentListItem
+                documentId={getDocumentIdFromService(s)}
+              ></DocumentListItem>
             </View>
           );
         })}
