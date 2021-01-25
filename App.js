@@ -5,6 +5,7 @@ import { Provider as AuthProvider } from './src/context/AuthContext';
 import { Provider as CryptoProvider } from './src/context/CryptoContext';
 import { Provider as PatientProvider } from './src/context/PatientContext';
 import { Provider as SystemProvider } from './src/context/SystemContext';
+import PatientImportDocumentScreen from './src/screens/PatientImportDocumentScreen';
 import ImportKeyScreen from './src/screens/ImportKeyScreen';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -39,6 +40,7 @@ const switchNavigator = createSwitchNavigator({
   mainFlow: createStackNavigator({
     List: PatientListScreen,
     Detail: PatientDetailScreen,
+    Import: PatientImportDocumentScreen,
   }),
 });
 

@@ -13,7 +13,7 @@ const ContactListItem = ({ contact }) => {
     <View>
       <Card>
         <Card.Title>
-          Contact du {moment(contact.created).format('DD/MM/YYYY hh:MM')}
+          Contact du {moment(contact.created).format('DD/MM/YYYY')}
         </Card.Title>
         <Card.Divider />
         <View>

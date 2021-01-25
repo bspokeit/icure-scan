@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import ContactListItem from '../components/ContactListItem';
+import { Context as PatientContext } from '../context/PatientContext';
 
-const ContactList = ({ contacts }) => {
+const ContactList = () => {
+  const {
+    state: { patientContacts },
+  } = useContext(PatientContext);
+
   return (
     <FlatList
       style={styles.flatListStyle}
       keyExtractor={(item) => item.id}
-      data={contacts}
+      data={patientContacts}
       renderItem={({ item }) => (
         <ContactListItem contact={item}></ContactListItem>
       )}
@@ -18,14 +23,6 @@ const ContactList = ({ contacts }) => {
 const styles = StyleSheet.create({
   flatListStyle: {
     backgroundColor: 'white',
-  },
-  imageContainerStyle: {
-    flex: 1,
-    margin: 1,
-  },
-  imageStyle: {
-    height: 120,
-    width: '100%',
   },
 });
 

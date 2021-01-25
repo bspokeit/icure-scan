@@ -21,7 +21,7 @@ export default () => {
   } = useContext(AuthContext);
 
   const {
-    state: { images },
+    state: { patientDocuments },
     setImportStatus,
     setImportTasks,
     setClosingTask,
@@ -121,7 +121,7 @@ export default () => {
     cleanImportSetup();
     setImportStatus('ONGOING');
 
-    const tasks = images.map((image) => {
+    const tasks = patientDocuments.map((image) => {
       return {
         id: taskID(),
         image,

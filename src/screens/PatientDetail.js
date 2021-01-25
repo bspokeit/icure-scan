@@ -1,18 +1,14 @@
-import * as ImagePicker from 'expo-image-picker';
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Icon, Overlay } from 'react-native-elements';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ImageImporter from '../components/ImageImporter';
+import ContactList from '../components/ContactList';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
-import ContactList from '../components/ContactList';
 
 const PatientDetailScreen = ({ navigation }) => {
   const {
-    state: { images, importMode, patientContacts },
-    collectImage,
-    setImportMode,
+    state: { patientContacts },
     getContacts,
   } = useContext(PatientContext);
 
@@ -26,97 +22,25 @@ const PatientDetailScreen = ({ navigation }) => {
     getContacts(currentUser, patient);
   }, []);
 
-  const cameraRequest = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Sorry, we need Camera permissions to make this work!');
-    }
-
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 0.5,
-      allowsMultipleSelection: true,
-      base64: true,
-    });
-
-    if (!result.cancelled) {
-      collectImage(result);
-    }
-  };
-
-  const galleryRequest = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Sorry, we need MediaLibrary permissions to make this work!');
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 0.5,
-      allowsMultipleSelection: true,
-      base64: true,
-    });
-
-    if (!result.cancelled) {
-      collectImage(result);
-    }
-  };
-
-  const activateImportMode = async () => {
-    setImportMode(true);
-  };
-
-  const deactivateImportMode = async () => {
-    setImportMode(false);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.upperContainer}>
+      <View>
         {patientContacts.length ? (
           <View>
-            <ContactList contacts={patientContacts}></ContactList>
+            <ContactList></ContactList>
           </View>
         ) : null}
       </View>
       <View style={styles.actionButtonBlock}>
-        <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
-          <Icon
-            reverse
-            raised
-            name="images"
-            type="ionicon"
-            color="#00aced"
-            style={styles.actionButtonStyle}
-          />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {
+            navigation.navigate('Import', { patient });
+          }}
+        >
+          <Icon reverse raised name="add" type="ionicon" color="green" />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
-          <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
-        </TouchableOpacity>
-        {images.length ? (
-          <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
-            <Icon
-              reverse
-              raised
-              name="cloud-upload"
-              type="ionicon"
-              color="green"
-            />
-          </TouchableOpacity>
-        ) : null}
       </View>
-      <Overlay
-        overlayStyle={styles.overlayStyle}
-        isVisible={importMode}
-        fullscreen
-      >
-        <ImageImporter
-          onDone={deactivateImportMode}
-          patient={patient}
-        ></ImageImporter>
-      </Overlay>
     </SafeAreaView>
   );
 };
@@ -134,19 +58,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: -20, // TODO: fihure out this margin shift
   },
-  upperContainer: {
-    marginBottom: 80,
-  },
-  titleStyle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  textStyle: {
-    fontSize: 16,
-    textAlign: 'center',
-    padding: 10,
-  },
   actionButtonBlock: {
     position: 'absolute',
     height: 80,
@@ -154,12 +65,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'space-around',
+    paddingRight: 20,
+    justifyContent: 'flex-end',
     flexDirection: 'row',
-  },
-  overlayStyle: {
-    width: '90%',
-    height: '90%',
+    backgroundColor: 'transparent',
   },
 });
 

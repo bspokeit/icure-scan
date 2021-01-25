@@ -1,8 +1,8 @@
 import { Patient } from '@icure/api';
-import { chain, find, uniq } from 'lodash';
+import { chain, find, uniq, sortBy } from 'lodash';
+import moment from 'moment';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
-import moment from 'moment';
 
 const MAX_STORED_RESOLVED_DOCUMENTS = 50;
 
@@ -16,10 +16,13 @@ const patientReducer = (state, action) => {
       return { ...state, patientList: action.payload };
     case 'clear_search':
       return { ...state, patientList: state.patientsLogs };
-    case 'collect_image':
-      return { ...state, images: [...state.images, action.payload] };
+    case 'collect_document':
+      return {
+        ...state,
+        patientDocuments: [...state.patientDocuments, action.payload],
+      };
     case 'clear_images':
-      return { ...state, images: [] };
+      return { ...state, patientDocuments: [] };
     case 'set_import_mode':
       return { ...state, importMode: action.payload };
     case 'set_import_status':
@@ -37,7 +40,10 @@ const patientReducer = (state, action) => {
     case 'set_closing_task':
       return { ...state, closingTask: action.payload };
     case 'set_patient_contacts':
-      return { ...state, patientContacts: action.payload };
+      return {
+        ...state,
+        patientContacts: action.payload,
+      };
     case 'collect_resolved_document':
       const updatedDocumentContent = { ...state.resolvedDocuments };
       updatedDocumentContent[action.payload.documentId] = {
@@ -171,8 +177,8 @@ const getContacts = (dispatch) => async (user, patient) => {
   }
 };
 
-const collectImage = (dispatch) => async (image) => {
-  dispatch({ type: 'collect_image', payload: image });
+const collectDocument = (dispatch) => async (document) => {
+  dispatch({ type: 'collect_document', payload: document });
 };
 
 const clearImages = (dispatch) => async () => {
@@ -211,7 +217,7 @@ export const { Provider, Context } = createContext(
     clearSearch,
     getContacts,
     collectResolvedDocument,
-    collectImage,
+    collectDocument,
     clearImages,
     setImportMode,
     setImportStatus,
@@ -225,7 +231,7 @@ export const { Provider, Context } = createContext(
     searching: false,
     patientContacts: [],
     resolvedDocuments: {},
-    images: [],
+    patientDocuments: [],
     importMode: false,
     importStatus: 'PENDING',
     importTasks: [],

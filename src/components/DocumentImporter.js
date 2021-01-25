@@ -4,9 +4,9 @@ import { Button, Divider } from 'react-native-elements';
 import { Context as PatientContext } from '../context/PatientContext';
 import useImageImporter from '../hooks/useImageImporter';
 
-const ImageImporter = ({ onDone, patient }) => {
+const DocumentImporter = ({ onDone, patient }) => {
   const {
-    state: { images, importStatus, importTasks, closingTask },
+    state: { patientDocuments, importStatus, importTasks, closingTask },
     clearImages,
   } = useContext(PatientContext);
 
@@ -16,7 +16,7 @@ const ImageImporter = ({ onDone, patient }) => {
     await startImport(patient);
   };
 
-  const done = async () => {
+  const done = () => {
     cleanImportSetup();
     if (importStatus === 'DONE') {
       clearImages();
@@ -31,8 +31,8 @@ const ImageImporter = ({ onDone, patient }) => {
       <View style={styles.body}>
         {!importTasks?.length ? (
           <Text style={styles.bodyLine}>
-            Ready to import {images.length}{' '}
-            {images.length === 1 ? 'document' : 'documents'}
+            Ready to import {patientDocuments.length}{' '}
+            {patientDocuments.length === 1 ? 'document' : 'documents'}
           </Text>
         ) : null}
 
@@ -123,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageImporter;
+export default DocumentImporter;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   FlatList,
   Image,
@@ -6,14 +6,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Context as PatientContext } from '../context/PatientContext';
 
-const ImageSelection = ({ images }) => {
+const DocumentSelector = () => {
+  const {
+    state: { patientDocuments },
+  } = useContext(PatientContext);
   return (
     <FlatList
       style={styles.flatListStyle}
       numColumns={2}
       keyExtractor={(item) => item.uri}
-      data={images}
+      data={patientDocuments}
       renderItem={({ item }) => (
         <View style={styles.imageContainerStyle}>
           <TouchableOpacity
@@ -51,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageSelection;
+export default DocumentSelector;
