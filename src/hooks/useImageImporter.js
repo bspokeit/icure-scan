@@ -3,9 +3,9 @@ import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
+import { DOCUMENT_SERVICE_TAG } from '../utils/contactHelper';
 import { URI2Blob } from '../utils/formatHelper';
 import { taskID } from '../utils/importHelper';
-import { DOCUMENT_SERVICE_TAG } from '../utils/contactHelper';
 
 //  TODO:
 //    1. processTask should be based on task type
@@ -133,7 +133,6 @@ export default () => {
     setImportTasks(tasks);
 
     const services = [];
-    const subContacts = [];
 
     try {
       for (const task of tasks) {
