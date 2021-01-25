@@ -1,5 +1,5 @@
 import { Patient } from '@icure/api';
-import { chain } from 'lodash';
+import { chain, find, uniq } from 'lodash';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
 
@@ -33,7 +33,8 @@ const patientReducer = (state, action) => {
       return { ...state, importTasks: updatedTasks };
     case 'set_closing_task':
       return { ...state, closingTask: action.payload };
-
+    case 'set_patient_contacts':
+      return { ...state, patientContacts: action.payload };
     default:
       return state;
   }
@@ -123,6 +124,42 @@ const addPatient = (dispatch) => async (user) => {
   );
 };
 
+const getContacts = (dispatch) => async (user, patient) => {
+  try {
+    const sfks = await api().cryptoApi.extractSFKsHierarchyFromDelegations(
+      patient,
+      user.healthcarePartyId
+    );
+
+    const secretForeignKey = find(sfks, {
+      hcpartyId: user.healthcarePartyId,
+    });
+
+    if (!secretForeignKey || !secretForeignKey.extractedKeys.length) {
+      throw new Error('No secret foreing key has been found!');
+    }
+
+    const filter = {
+      $type: 'ServiceByHcPartyTagCodeDateFilter',
+      healthcarePartyId: user.healthcarePartyId,
+      patientSecretForeignKey: secretForeignKey.extractedKeys[0],
+      tagType: 'CD-ITEM',
+      tagCode: 'document',
+    };
+
+    const servicesByTags = await api().contactApi.filterServicesBy(null, null, {
+      filter,
+    });
+
+    const contacts = await api().contactApi.getContactsWithUser(user, {
+      ids: uniq(servicesByTags.rows.map((s) => s.contactId)),
+    });
+    dispatch({ type: 'set_patient_contacts', payload: contacts });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const collectImage = (dispatch) => async (image) => {
   dispatch({ type: 'collect_image', payload: image });
 };
@@ -151,12 +188,17 @@ const updateTaskStatus = (dispatch) => async (id, status) => {
   dispatch({ type: 'update_task_status', payload: { id, status } });
 };
 
+const setPatientContact = (dispatch) => async (contacts) => {
+  dispatch({ type: 'set_patient_contacts', payload: contacts });
+};
+
 export const { Provider, Context } = createContext(
   patientReducer,
   {
     loadAccessLogs,
     searchPatients,
     clearSearch,
+    getContacts,
     collectImage,
     clearImages,
     setImportMode,
@@ -169,6 +211,7 @@ export const { Provider, Context } = createContext(
     accessLogs: [],
     patientList: [],
     searching: false,
+    patientContacts: [],
     images: [],
     importMode: false,
     importStatus: 'PENDING',

@@ -1,21 +1,30 @@
 import * as ImagePicker from 'expo-image-picker';
-import React, { useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageImporter from '../components/ImageImporter';
-import ImageSelection from '../components/ImageSelection';
-import PatientScans from '../components/PatientScans';
+import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
+import ContactList from '../components/ContactList';
 
 const PatientDetailScreen = ({ navigation }) => {
   const {
-    state: { images, importMode },
+    state: { images, importMode, patientContacts },
     collectImage,
     setImportMode,
+    getContacts,
   } = useContext(PatientContext);
 
+  const {
+    state: { currentUser },
+  } = useContext(AuthContext);
+
   const patient = navigation.getParam('patient');
+
+  useEffect(() => {
+    getContacts(currentUser, patient);
+  }, []);
 
   const cameraRequest = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -66,10 +75,11 @@ const PatientDetailScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
-        {images.length ? (
-          <ImageSelection images={images}></ImageSelection>
+        {patientContacts.length ? (
+          <View>
+            <ContactList contacts={patientContacts}></ContactList>
+          </View>
         ) : null}
-        {!images.length ? <PatientScans images={images}></PatientScans> : null}
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>

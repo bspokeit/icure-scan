@@ -6,6 +6,11 @@ import { Context as PatientContext } from '../context/PatientContext';
 import { URI2Blob } from '../utils/formatHelper';
 import { taskID } from '../utils/importHelper';
 
+const documentTags = [
+  { code: 'document', id: 'CD-ITEM|document|1', type: 'CD-ITEM', version: '1' },
+  { code: 'Plan', id: 'SOAP|Plan|1', type: 'SOAP', version: '1' },
+];
+
 //  TODO:
 //    1. processTask should be based on task type
 //    2. we should have a tack dedicated context
@@ -68,7 +73,6 @@ export default () => {
 
   const processTask = async (task) => {
     let service = null;
-    let subContact = null;
     let status = { succesfull: true, error: null };
 
     try {
@@ -92,19 +96,9 @@ export default () => {
               },
             ],
           ]),
-          tags: [
-            {
-              type: 'CD-TRANSACTION',
-              code: task.image.type || 'icure-scan-import',
-            },
-          ],
+          tags: documentTags,
           label: 'imported document',
         });
-
-      subContact = {
-        status: 64,
-        services: [{ serviceId: service.id }],
-      };
     } catch (e) {
       status = {
         succesfull: false,
@@ -117,7 +111,6 @@ export default () => {
 
     return {
       service,
-      subContact,
       status,
     };
   };
@@ -148,9 +141,8 @@ export default () => {
 
     try {
       for (const task of tasks) {
-        const { service, subContact } = await processTask(task);
+        const { service } = await processTask(task);
         services.push(service);
-        subContacts.push(subContact);
       }
     } catch (e) {
       console.log(e);
@@ -168,7 +160,14 @@ export default () => {
       const newContact = await buildNewContact(patient);
 
       newContact.services = compact([...services]);
-      newContact.subContacts = compact([...subContacts]);
+      newContact.subContacts = [
+        {
+          status: 64,
+          services: services.map((s) => {
+            return { serviceId: s.id };
+          }),
+        },
+      ];
 
       await api().contactApi.createContactWithUser(currentUser, newContact);
     } catch (err) {
