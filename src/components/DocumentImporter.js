@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Divider } from 'react-native-elements';
 import { Context as ImportContext } from '../context/ImportContext';
-import useImageImporter from '../hooks/useImageImporter';
+import useDocumentImporter from '../hooks/useDocumentImporter';
 
 const DocumentImporter = ({ onDone, patient }) => {
   const {
@@ -10,7 +10,7 @@ const DocumentImporter = ({ onDone, patient }) => {
     clearImages,
   } = useContext(ImportContext);
 
-  const { startImport, cleanImportSetup } = useImageImporter();
+  const { startImport, cleanImportSetup } = useDocumentImporter();
 
   const start = async () => {
     await startImport(patient);
