@@ -7,7 +7,7 @@ import useDocumentImporter from '../hooks/useDocumentImporter';
 const DocumentImporter = ({ onDone, patient }) => {
   const {
     state: { patientDocuments, importStatus, importTasks, closingTask },
-    clearImages,
+    clearDocuments,
   } = useContext(ImportContext);
 
   const { startImport, cleanImportSetup } = useDocumentImporter();
@@ -19,7 +19,7 @@ const DocumentImporter = ({ onDone, patient }) => {
   const done = () => {
     cleanImportSetup();
     if (importStatus === 'DONE') {
-      clearImages();
+      clearDocuments();
     }
     onDone();
   };

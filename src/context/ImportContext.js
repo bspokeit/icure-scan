@@ -7,7 +7,7 @@ const importReducer = (state, action) => {
         ...state,
         patientDocuments: [...state.patientDocuments, action.payload],
       };
-    case 'clear_images':
+    case 'clear_documents':
       return { ...state, patientDocuments: [] };
     case 'set_import_mode':
       return { ...state, importMode: action.payload };
@@ -34,8 +34,8 @@ const collectDocument = (dispatch) => async (document) => {
   dispatch({ type: 'collect_document', payload: document });
 };
 
-const clearImages = (dispatch) => async () => {
-  dispatch({ type: 'clear_images' });
+const clearDocuments = (dispatch) => async () => {
+  dispatch({ type: 'clear_documents' });
 };
 
 const setImportMode = (dispatch) => async (importMode) => {
@@ -62,7 +62,7 @@ export const { Provider, Context } = createContext(
   importReducer,
   {
     collectDocument,
-    clearImages,
+    clearDocuments,
     setImportMode,
     setImportStatus,
     setImportTasks,

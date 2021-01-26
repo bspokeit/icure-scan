@@ -19,7 +19,7 @@ const PatientListScreen = ({ navigation }) => {
     clearSearch,
   } = useContext(PatientContext);
 
-  const { clearImages } = useContext(ImportContext);
+  const { clearDocuments } = useContext(ImportContext);
 
   const [query, setQuery] = useState('');
 
@@ -33,7 +33,7 @@ const PatientListScreen = ({ navigation }) => {
     <PatientListItem
       patient={item}
       onSelection={() => {
-        clearImages();
+        clearDocuments();
         navigation.navigate('Detail', {
           patient: item,
         });
