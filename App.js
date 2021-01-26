@@ -3,13 +3,14 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { Provider as CryptoProvider } from './src/context/CryptoContext';
+import { Provider as ImportProvider } from './src/context/ImportContext';
 import { Provider as PatientProvider } from './src/context/PatientContext';
 import { Provider as SystemProvider } from './src/context/SystemContext';
-import PatientImportDocumentScreen from './src/screens/PatientImportDocumentScreen';
 import ImportKeyScreen from './src/screens/ImportKeyScreen';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import PatientDetailScreen from './src/screens/PatientDetail';
+import PatientImportDocumentScreen from './src/screens/PatientImportDocumentScreen';
 import PatientListScreen from './src/screens/PatientListScreen';
 import { setNavigator } from './src/utils/navigationHelper';
 
@@ -52,11 +53,13 @@ export default () => {
       <AuthProvider>
         <CryptoProvider>
           <PatientProvider>
-            <App
-              ref={(navigator) => {
-                setNavigator(navigator);
-              }}
-            />
+            <ImportProvider>
+              <App
+                ref={(navigator) => {
+                  setNavigator(navigator);
+                }}
+              />
+            </ImportProvider>
           </PatientProvider>
         </CryptoProvider>
       </AuthProvider>

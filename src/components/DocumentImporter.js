@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Divider } from 'react-native-elements';
-import { Context as PatientContext } from '../context/PatientContext';
+import { Context as ImportContext } from '../context/ImportContext';
 import useImageImporter from '../hooks/useImageImporter';
 
 const DocumentImporter = ({ onDone, patient }) => {
   const {
     state: { patientDocuments, importStatus, importTasks, closingTask },
     clearImages,
-  } = useContext(PatientContext);
+  } = useContext(ImportContext);
 
   const { startImport, cleanImportSetup } = useImageImporter();
 

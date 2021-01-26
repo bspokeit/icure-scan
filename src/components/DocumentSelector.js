@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Context as PatientContext } from '../context/PatientContext';
+import { Context as ImportContext } from '../context/ImportContext';
 
 const DocumentSelector = () => {
   const {
     state: { patientDocuments },
-  } = useContext(PatientContext);
+  } = useContext(ImportContext);
+
   return (
     <FlatList
       style={styles.flatListStyle}

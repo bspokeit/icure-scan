@@ -1,5 +1,5 @@
 import { Patient } from '@icure/api';
-import { chain, find, uniq, sortBy } from 'lodash';
+import { chain, find, uniq } from 'lodash';
 import moment from 'moment';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
@@ -16,29 +16,6 @@ const patientReducer = (state, action) => {
       return { ...state, patientList: action.payload };
     case 'clear_search':
       return { ...state, patientList: state.patientsLogs };
-    case 'collect_document':
-      return {
-        ...state,
-        patientDocuments: [...state.patientDocuments, action.payload],
-      };
-    case 'clear_images':
-      return { ...state, patientDocuments: [] };
-    case 'set_import_mode':
-      return { ...state, importMode: action.payload };
-    case 'set_import_status':
-      return { ...state, importStatus: action.payload };
-    case 'set_import_tasks':
-      return { ...state, importTasks: action.payload };
-    case 'update_task_status':
-      const updatedTasks = [...state.importTasks].map((t) => {
-        if (t.id === action.payload.id) {
-          t.importStatus = action.payload.status;
-        }
-        return t;
-      });
-      return { ...state, importTasks: updatedTasks };
-    case 'set_closing_task':
-      return { ...state, closingTask: action.payload };
     case 'set_patient_contacts':
       return {
         ...state,
@@ -177,34 +154,6 @@ const getContacts = (dispatch) => async (user, patient) => {
   }
 };
 
-const collectDocument = (dispatch) => async (document) => {
-  dispatch({ type: 'collect_document', payload: document });
-};
-
-const clearImages = (dispatch) => async () => {
-  dispatch({ type: 'clear_images' });
-};
-
-const setImportMode = (dispatch) => async (importMode) => {
-  dispatch({ type: 'set_import_mode', payload: importMode });
-};
-
-const setImportStatus = (dispatch) => async (status) => {
-  dispatch({ type: 'set_import_status', payload: status });
-};
-
-const setImportTasks = (dispatch) => async (tasks) => {
-  dispatch({ type: 'set_import_tasks', payload: tasks });
-};
-
-const setClosingTask = (dispatch) => async (task) => {
-  dispatch({ type: 'set_closing_task', payload: task });
-};
-
-const updateTaskStatus = (dispatch) => async (id, status) => {
-  dispatch({ type: 'update_task_status', payload: { id, status } });
-};
-
 const collectResolvedDocument = (dispatch) => async (resolvedDocument) => {
   dispatch({ type: 'collect_resolved_document', payload: resolvedDocument });
 };
@@ -217,13 +166,6 @@ export const { Provider, Context } = createContext(
     clearSearch,
     getContacts,
     collectResolvedDocument,
-    collectDocument,
-    clearImages,
-    setImportMode,
-    setImportStatus,
-    setImportTasks,
-    updateTaskStatus,
-    setClosingTask,
   },
   {
     accessLogs: [],
@@ -231,10 +173,5 @@ export const { Provider, Context } = createContext(
     searching: false,
     patientContacts: [],
     resolvedDocuments: {},
-    patientDocuments: [],
-    importMode: false,
-    importStatus: 'PENDING',
-    importTasks: [],
-    closingTask: null,
   }
 );

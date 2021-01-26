@@ -2,7 +2,7 @@ import { compact, fromPairs, last, toLower } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
-import { Context as PatientContext } from '../context/PatientContext';
+import { Context as ImportContext } from '../context/ImportContext';
 import { DOCUMENT_SERVICE_TAG } from '../utils/contactHelper';
 import { URI2Blob } from '../utils/formatHelper';
 import { taskID } from '../utils/importHelper';
@@ -24,9 +24,9 @@ export default () => {
     state: { patientDocuments },
     setImportStatus,
     setImportTasks,
-    setClosingTask,
     updateTaskStatus,
-  } = useContext(PatientContext);
+    setClosingTask,
+  } = useContext(ImportContext);
 
   const buildNewContact = async (patient) => {
     try {

@@ -5,14 +5,14 @@ import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DocumentImporter from '../components/DocumentImporter';
 import DocumentSelector from '../components/DocumentSelector';
-import { Context as PatientContext } from '../context/PatientContext';
+import { Context as ImportContext } from '../context/ImportContext';
 
 const PatientImportDocumentScreen = ({ navigation }) => {
   const {
     state: { patientDocuments, importMode },
     collectDocument,
     setImportMode,
-  } = useContext(PatientContext);
+  } = useContext(ImportContext);
 
   const patient = navigation.getParam('patient');
 

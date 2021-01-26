@@ -4,6 +4,7 @@ import { SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PatientListItem from '../components/PatientListItem';
 import { Context as AuthContext } from '../context/AuthContext';
+import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
 
 const PatientListScreen = ({ navigation }) => {
@@ -16,8 +17,9 @@ const PatientListScreen = ({ navigation }) => {
     loadAccessLogs,
     searchPatients,
     clearSearch,
-    clearImages,
   } = useContext(PatientContext);
+
+  const { clearImages } = useContext(ImportContext);
 
   const [query, setQuery] = useState('');
 
