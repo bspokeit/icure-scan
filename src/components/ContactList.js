@@ -16,6 +16,10 @@ const ContactList = () => {
       renderItem={({ item }) => (
         <ContactListItem contact={item}></ContactListItem>
       )}
+      initialNumToRender={2}
+      maxToRenderPerBatch={1}
+      updateCellsBatchingPeriod={3}
+      windowSize={3}
     />
   );
 };
