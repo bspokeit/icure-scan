@@ -40,7 +40,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
     });
 
     if (!result.cancelled) {
-      collectDocument(result);
+      collectDocument(patient.id, result);
     }
   };
 
@@ -59,7 +59,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
     });
 
     if (!result.cancelled) {
-      collectDocument(result);
+      collectDocument(patient.id, result);
     }
   };
 

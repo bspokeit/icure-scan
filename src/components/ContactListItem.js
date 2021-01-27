@@ -8,17 +8,17 @@ import {
   getDocumentServices,
 } from '../utils/contactHelper';
 
-const ContactListItem = ({ contact }) => {
+const ContactListItem = ({ patientId, contact }) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
     setServices(getDocumentServices(contact));
-    console.log(getDocumentIdFromService(services[0]));
   }, []);
 
   return (
     <ListItem bottomDivider>
       <DocumentListItem
+        patientId={patientId}
         documentId={getDocumentIdFromService(services[0])}
       ></DocumentListItem>
       <ListItem.Content>
@@ -26,7 +26,7 @@ const ContactListItem = ({ contact }) => {
           Contact du {moment(contact.created).format('DD/MM/YYYY')}
         </ListItem.Title>
         <ListItem.Subtitle>
-          <Text style={styles.subTitle}>{services.length} documents</Text>
+          <Text style={styles.subTitle}>{services.length} document(s)</Text>
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />

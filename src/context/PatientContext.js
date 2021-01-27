@@ -1,8 +1,11 @@
 import { Patient } from '@icure/api';
 import { chain, find, orderBy, uniq } from 'lodash';
-import moment from 'moment';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
+import {
+  collectContactsAction,
+  collectDocumentAction,
+} from './reducer-action/PatientReducerActions';
 
 const MAX_STORED_RESOLVED_DOCUMENTS = 50;
 
@@ -16,19 +19,10 @@ const patientReducer = (state, action) => {
       return { ...state, patientList: action.payload };
     case 'clear_search':
       return { ...state, patientList: state.patientsLogs };
-    case 'set_patient_contacts':
-      return {
-        ...state,
-        patientContacts: action.payload,
-      };
-    case 'collect_resolved_document':
-      const updatedDocumentContent = { ...state.resolvedDocuments };
-      updatedDocumentContent[action.payload.documentId] = {
-        ts: moment(),
-        attachmentId: action.payload.attachmentId,
-        content: action.payload.content,
-      };
-      return { ...state, resolvedDocuments: updatedDocumentContent };
+    case 'collect_contacts':
+      return collectContactsAction(state, action);
+    case 'collect_document':
+      return collectDocumentAction(state, action);
     default:
       return state;
   }
@@ -39,7 +33,7 @@ const loadAccessLogs = (dispatch) => async (user) => {
     dispatch({ type: 'set_searching', payload: true });
 
     const now = Date.now();
-    const tenDaysAgo = now - 10 * 24 * 60 * 60 * 1000;
+    const tenDaysAgo = now - 20 * 24 * 60 * 60 * 1000;
     const logPage = await api().accessLogApi.listAccessLogsWithUser(
       user,
       tenDaysAgo,
@@ -150,16 +144,22 @@ const getContacts = (dispatch) => async (user, patient) => {
     });
 
     dispatch({
-      type: 'set_patient_contacts',
-      payload: orderBy(contacts, ['created'], ['desc']),
+      type: 'collect_contacts',
+      payload: {
+        patientId: patient.id,
+        contacts: orderBy(contacts, ['created'], ['desc']),
+      },
     });
   } catch (e) {
     console.log(e);
   }
 };
 
-const collectResolvedDocument = (dispatch) => async (resolvedDocument) => {
-  dispatch({ type: 'collect_resolved_document', payload: resolvedDocument });
+const collectDocuments = (dispatch) => async ({ patientId, documents }) => {
+  dispatch({
+    type: 'collect_document',
+    payload: { patientId, documents },
+  });
 };
 
 export const { Provider, Context } = createContext(
@@ -169,13 +169,13 @@ export const { Provider, Context } = createContext(
     searchPatients,
     clearSearch,
     getContacts,
-    collectResolvedDocument,
+    collectDocuments,
   },
   {
     accessLogs: [],
     patientList: [],
     searching: false,
-    patientContacts: [],
-    resolvedDocuments: {},
+    contacts: {},
+    documents: {},
   }
 );

@@ -8,7 +8,7 @@ import { Context as PatientContext } from '../context/PatientContext';
 
 const PatientDetailScreen = ({ navigation }) => {
   const {
-    state: { patientContacts },
+    state: { contacts },
     getContacts,
   } = useContext(PatientContext);
 
@@ -25,9 +25,9 @@ const PatientDetailScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        {patientContacts.length ? (
+        {!!contacts && contacts[patient.id] && contacts[patient.id].length ? (
           <View>
-            <ContactList></ContactList>
+            <ContactList patientId={patient.id}></ContactList>
           </View>
         ) : null}
       </View>

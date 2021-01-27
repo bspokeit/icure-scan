@@ -3,18 +3,18 @@ import { FlatList, StyleSheet } from 'react-native';
 import ContactListItem from '../components/ContactListItem';
 import { Context as PatientContext } from '../context/PatientContext';
 
-const ContactList = () => {
+const ContactList = ({ patientId }) => {
   const {
-    state: { patientContacts },
+    state: { contacts },
   } = useContext(PatientContext);
 
   return (
     <FlatList
       style={styles.flatListStyle}
       keyExtractor={(item) => item.id}
-      data={patientContacts}
+      data={contacts[patientId]}
       renderItem={({ item }) => (
-        <ContactListItem contact={item}></ContactListItem>
+        <ContactListItem patientId={patientId} contact={item}></ContactListItem>
       )}
       initialNumToRender={2}
       maxToRenderPerBatch={1}

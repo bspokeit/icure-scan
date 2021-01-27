@@ -5,17 +5,20 @@ import { hexToBase64 } from '../utils/formatHelper';
 
 export default () => {
   const {
-    state: { resolvedDocuments },
-    collectResolvedDocument,
+    state: { documents },
+    collectDocuments,
   } = useContext(PatientContext);
 
-  const fetchDocument = async (documentId) => {
-    if (!!resolvedDocuments && resolvedDocuments[documentId]) {
+  const fetchDocument = async (patientId, documentId) => {
+    if (documents[patientId] && documents[patientId][documentId]) {
       return;
     }
     try {
       const { attachmentId } = await api().documentApi.getDocument(documentId);
-      collectResolvedDocument({ documentId, attachmentId, content: null });
+      collectDocuments({
+        patientId,
+        documents: [{ documentId, attachmentId, content: null }],
+      });
       const contentAsArrayBuffer = await api().documentApi.getAttachmentAs(
         documentId,
         attachmentId
@@ -25,10 +28,15 @@ export default () => {
         api().cryptoApi.utils.ua2hex(contentAsArrayBuffer)
       )}`;
 
-      collectResolvedDocument({
-        documentId,
-        attachmentId,
-        content,
+      collectDocuments({
+        patientId,
+        documents: [
+          {
+            documentId,
+            attachmentId,
+            content,
+          },
+        ],
       });
     } catch (e) {
       console.log(e);

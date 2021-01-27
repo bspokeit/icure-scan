@@ -3,27 +3,39 @@ import { View } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { Context as PatientContext } from '../context/PatientContext';
 import useDocumentResolver from '../hooks/useDocumentResolver';
+import { isEmpty } from 'lodash';
 
-const DocumentListItem = ({ documentId }) => {
+const DocumentListItem = ({ patientId, documentId }) => {
   const {
-    state: { resolvedDocuments },
+    state: { documents },
   } = useContext(PatientContext);
   const { fetchDocument } = useDocumentResolver();
 
   useEffect(() => {
     if (!!documentId) {
-      fetchDocument(documentId);
+      fetchDocument(patientId, documentId);
     }
   }, [documentId]);
 
+  const getContent = () => {
+    //  Currently we take the first content for a given documentId. In the future, we might support
+    //  multi content (multi attachment) document.
+    const documentContent =
+      documents && documents[patientId] && documents[patientId][documentId]
+        ? documents[patientId][documentId]
+        : {};
+
+    return !isEmpty(documentContent)
+      ? documentContent[Object.keys(documentContent)[0]]
+      : null;
+  };
+
   return (
     <View>
-      {resolvedDocuments &&
-      resolvedDocuments[documentId] &&
-      resolvedDocuments[documentId].content ? (
+      {getContent() ? (
         <Avatar
           source={{
-            uri: resolvedDocuments[documentId]?.content,
+            uri: getContent(),
           }}
           size="medium"
         />

@@ -30,8 +30,8 @@ const importReducer = (state, action) => {
   }
 };
 
-const collectDocument = (dispatch) => async (document) => {
-  dispatch({ type: 'collect_document', payload: document });
+const collectDocument = (dispatch) => async (patientId, document) => {
+  dispatch({ type: 'collect_document', payload: { patientId, document } });
 };
 
 const clearDocuments = (dispatch) => async () => {
