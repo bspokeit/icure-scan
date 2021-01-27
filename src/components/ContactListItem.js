@@ -1,6 +1,7 @@
 import moment from 'moment';
-import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import DocumentListItem from '../components/DocumentListItem';
 import {
   getDocumentIdFromService,
@@ -8,71 +9,34 @@ import {
 } from '../utils/contactHelper';
 
 const ContactListItem = ({ contact }) => {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    setServices(getDocumentServices(contact));
+    console.log(getDocumentIdFromService(services[0]));
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.itemHeader}>
-        <Text style={styles.itemHeaderText}>
+    <ListItem bottomDivider>
+      <DocumentListItem
+        documentId={getDocumentIdFromService(services[0])}
+      ></DocumentListItem>
+      <ListItem.Content>
+        <ListItem.Title>
           Contact du {moment(contact.created).format('DD/MM/YYYY')}
-        </Text>
-      </View>
-      <View style={styles.itemContent}>
-        <FlatList
-          style={styles.flatListStyle}
-          numColumns={3}
-          keyExtractor={(item) => item.id}
-          data={getDocumentServices(contact)}
-          renderItem={({ item }) => (
-            <View style={styles.imageContainerStyle}>
-              <DocumentListItem
-                documentId={getDocumentIdFromService(item)}
-              ></DocumentListItem>
-            </View>
-          )}
-          initialNumToRender={2}
-          maxToRenderPerBatch={1}
-          updateCellsBatchingPeriod={3}
-          windowSize={3}
-        />
-      </View>
-    </View>
+        </ListItem.Title>
+        <ListItem.Subtitle>
+          <Text style={styles.subTitle}>{services.length} documents</Text>
+        </ListItem.Subtitle>
+      </ListItem.Content>
+      <ListItem.Chevron />
+    </ListItem>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 15,
-  },
-  flatListStyle: {
-    backgroundColor: 'white',
-  },
-  imageContainerStyle: {
-    flex: 1,
-    margin: 1,
-  },
-  imageStyle: {
-    height: 120,
-    width: '100%',
-  },
-  itemHeader: {
-    flex: 1,
-    height: 36,
-    borderColor: 'blue',
-    borderWidth: 1,
-    marginLeft: 5,
-    marginRight: 5,
-  },
-  itemHeaderText: {
-    color: 'blue',
-    flex: 1,
-    flexDirection: 'row',
-    fontSize: 16,
-    paddingLeft: 15,
-    textAlignVertical: 'center',
-  },
-  itemContent: {
-    flex: 1,
-    marginLeft: 5,
-    marginRight: 5,
+  subTitle: {
+    fontSize: 14,
   },
 });
 

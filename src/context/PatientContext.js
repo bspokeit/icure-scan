@@ -1,5 +1,5 @@
 import { Patient } from '@icure/api';
-import { chain, find, uniq } from 'lodash';
+import { chain, find, orderBy, uniq } from 'lodash';
 import moment from 'moment';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
@@ -148,7 +148,11 @@ const getContacts = (dispatch) => async (user, patient) => {
     const contacts = await api().contactApi.getContactsWithUser(user, {
       ids: uniq(servicesByTags.rows.map((s) => s.contactId)),
     });
-    dispatch({ type: 'set_patient_contacts', payload: contacts });
+
+    dispatch({
+      type: 'set_patient_contacts',
+      payload: orderBy(contacts, ['created'], ['desc']),
+    });
   } catch (e) {
     console.log(e);
   }
