@@ -1,4 +1,4 @@
-import { uniqBy, groupBy } from 'lodash';
+import { uniqBy, groupBy, orderBy } from 'lodash';
 
 export const collectContactsAction = (state, action) => {
   const { patientId, contacts } = action.payload;
@@ -11,13 +11,17 @@ export const collectContactsAction = (state, action) => {
   }
 
   //  Collect the patient contacts
-  updatedStateContacts[patientId] = uniqBy(
-    [...updatedStateContacts[patientId], ...contacts],
-    'id'
+  updatedStateContacts[patientId] = orderBy(
+    uniqBy([...updatedStateContacts[patientId], ...contacts], 'id'),
+    ['created'],
+    ['desc']
   );
 
   // And return the updated state
-  return { ...state, contacts: updatedStateContacts };
+  return {
+    ...state,
+    contacts: updatedStateContacts,
+  };
 };
 
 /**

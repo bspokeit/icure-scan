@@ -1,5 +1,4 @@
-import { Patient } from '@icure/api';
-import { chain, find, orderBy, uniq } from 'lodash';
+import { chain, find, uniq } from 'lodash';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
 import {
@@ -98,20 +97,6 @@ const clearSearch = (dispatch) => async () => {
   });
 };
 
-const addPatient = (dispatch) => async (user) => {
-  const patient = await api().patientApi.createPatientWithUser(
-    user,
-    await api().patientApi.newInstance(
-      user,
-      new Patient({
-        lastName: 'Obama',
-        firstName: 'Barack',
-        note: 'A secured note that is encrypted',
-      })
-    )
-  );
-};
-
 const getContacts = (dispatch) => async (user, patient) => {
   try {
     const sfks = await api().cryptoApi.extractSFKsHierarchyFromDelegations(
@@ -147,7 +132,7 @@ const getContacts = (dispatch) => async (user, patient) => {
       type: 'collect_contacts',
       payload: {
         patientId: patient.id,
-        contacts: orderBy(contacts, ['created'], ['desc']),
+        contacts: contacts,
       },
     });
   } catch (e) {
