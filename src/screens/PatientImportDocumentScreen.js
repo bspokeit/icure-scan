@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DocumentGallery from '../components/DocumentGallery';
+import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import DocumentImporter from '../components/DocumentImporter';
 import { Context as ImportContext } from '../context/ImportContext';
 
@@ -66,7 +66,9 @@ const PatientImportDocumentScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
-        {importDocuments.length ? <DocumentGallery></DocumentGallery> : null}
+        {importDocuments.length ? (
+          <ImportDocumentGallery></ImportDocumentGallery>
+        ) : null}
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>

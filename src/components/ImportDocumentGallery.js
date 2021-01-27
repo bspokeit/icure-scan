@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Context as ImportContext } from '../context/ImportContext';
 
-const DocumentGallery = () => {
+const ImportDocumentGallery = () => {
   const {
     state: { importDocuments },
   } = useContext(ImportContext);
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DocumentGallery;
+export default ImportDocumentGallery;
