@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Context as ImportContext } from '../context/ImportContext';
 
-const DocumentSelector = () => {
+const DocumentGallery = () => {
   const {
     state: { patientDocuments },
   } = useContext(ImportContext);
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DocumentSelector;
+export default DocumentGallery;
