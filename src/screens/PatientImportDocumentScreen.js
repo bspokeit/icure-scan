@@ -3,8 +3,8 @@ import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import DocumentImporter from '../components/DocumentImporter';
+import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import { Context as ImportContext } from '../context/ImportContext';
 
 const PatientImportDocumentScreen = ({ navigation }) => {

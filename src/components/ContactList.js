@@ -2,8 +2,9 @@ import React, { useContext } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import ContactListItem from '../components/ContactListItem';
 import { Context as PatientContext } from '../context/PatientContext';
+import { navigate } from '../utils/navigationHelper';
 
-const ContactList = ({ patientId }) => {
+const ContactList = ({ patient }) => {
   const {
     state: { contacts },
   } = useContext(PatientContext);
@@ -12,9 +13,18 @@ const ContactList = ({ patientId }) => {
     <FlatList
       style={styles.flatListStyle}
       keyExtractor={(item) => item.id}
-      data={contacts[patientId]}
+      data={contacts[patient.id]}
       renderItem={({ item }) => (
-        <ContactListItem patientId={patientId} contact={item}></ContactListItem>
+        <ContactListItem
+          patient={patient}
+          contact={item}
+          onSelection={() => {
+            navigate('Gallery', {
+              patient: patient,
+              contact: item,
+            });
+          }}
+        ></ContactListItem>
       )}
       initialNumToRender={2}
       maxToRenderPerBatch={1}

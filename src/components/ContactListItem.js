@@ -8,7 +8,7 @@ import {
   getDocumentServices,
 } from '../utils/contactHelper';
 
-const ContactListItem = ({ patientId, contact }) => {
+const ContactListItem = ({ patient, contact, onSelection }) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
@@ -16,9 +16,9 @@ const ContactListItem = ({ patientId, contact }) => {
   }, []);
 
   return (
-    <ListItem bottomDivider>
+    <ListItem onPress={onSelection} bottomDivider>
       <DocumentListItem
-        patientId={patientId}
+        patientId={patient.id}
         documentId={getDocumentIdFromService(services[0])}
       ></DocumentListItem>
       <ListItem.Content>

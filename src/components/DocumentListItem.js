@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { Context as PatientContext } from '../context/PatientContext';
 import useDocumentResolver from '../hooks/useDocumentResolver';

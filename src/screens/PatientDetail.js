@@ -27,7 +27,7 @@ const PatientDetailScreen = ({ navigation }) => {
       <View>
         {!!contacts && contacts[patient.id] && contacts[patient.id].length ? (
           <View>
-            <ContactList patientId={patient.id}></ContactList>
+            <ContactList patient={patient}></ContactList>
           </View>
         ) : null}
       </View>
