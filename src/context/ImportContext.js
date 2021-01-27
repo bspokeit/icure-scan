@@ -5,10 +5,10 @@ const importReducer = (state, action) => {
     case 'collect_document':
       return {
         ...state,
-        patientDocuments: [...state.patientDocuments, action.payload],
+        importDocuments: [...state.importDocuments, action.payload],
       };
     case 'clear_documents':
-      return { ...state, patientDocuments: [] };
+      return { ...state, importDocuments: [] };
     case 'set_import_mode':
       return { ...state, importMode: action.payload };
     case 'set_import_status':
@@ -30,8 +30,8 @@ const importReducer = (state, action) => {
   }
 };
 
-const collectDocument = (dispatch) => async (patientId, document) => {
-  dispatch({ type: 'collect_document', payload: { patientId, document } });
+const collectDocument = (dispatch) => async (document) => {
+  dispatch({ type: 'collect_document', payload: document });
 };
 
 const clearDocuments = (dispatch) => async () => {
@@ -70,7 +70,7 @@ export const { Provider, Context } = createContext(
     setClosingTask,
   },
   {
-    patientDocuments: [],
+    importDocuments: [],
     importMode: false,
     importStatus: 'PENDING',
     importTasks: [],

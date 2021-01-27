@@ -10,7 +10,7 @@ import { Context as ImportContext } from '../context/ImportContext';
 
 const DocumentGallery = () => {
   const {
-    state: { patientDocuments },
+    state: { importDocuments },
   } = useContext(ImportContext);
 
   return (
@@ -18,7 +18,7 @@ const DocumentGallery = () => {
       style={styles.flatListStyle}
       numColumns={2}
       keyExtractor={(item) => item.uri}
-      data={patientDocuments}
+      data={importDocuments}
       renderItem={({ item }) => (
         <View style={styles.imageContainerStyle}>
           <TouchableOpacity

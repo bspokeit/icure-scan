@@ -9,7 +9,7 @@ import { Context as ImportContext } from '../context/ImportContext';
 
 const PatientImportDocumentScreen = ({ navigation }) => {
   const {
-    state: { patientDocuments, importMode },
+    state: { importDocuments, importMode },
     collectDocument,
     setImportMode,
   } = useContext(ImportContext);
@@ -40,7 +40,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
     });
 
     if (!result.cancelled) {
-      collectDocument(patient.id, result);
+      collectDocument(result);
     }
   };
 
@@ -59,14 +59,14 @@ const PatientImportDocumentScreen = ({ navigation }) => {
     });
 
     if (!result.cancelled) {
-      collectDocument(patient.id, result);
+      collectDocument(result);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
-        {patientDocuments.length ? <DocumentGallery></DocumentGallery> : null}
+        {importDocuments.length ? <DocumentGallery></DocumentGallery> : null}
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
@@ -82,7 +82,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
         <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
           <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
         </TouchableOpacity>
-        {patientDocuments.length ? (
+        {importDocuments.length ? (
           <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
             <Icon
               reverse

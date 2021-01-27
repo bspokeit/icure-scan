@@ -6,7 +6,7 @@ import useDocumentImporter from '../hooks/useDocumentImporter';
 
 const DocumentImporter = ({ onDone, patient }) => {
   const {
-    state: { patientDocuments, importStatus, importTasks, closingTask },
+    state: { importDocuments, importStatus, importTasks, closingTask },
     clearDocuments,
   } = useContext(ImportContext);
 
@@ -31,8 +31,8 @@ const DocumentImporter = ({ onDone, patient }) => {
       <View style={styles.body}>
         {!importTasks?.length ? (
           <Text style={styles.bodyLine}>
-            Ready to import {patientDocuments.length}{' '}
-            {patientDocuments.length === 1 ? 'document' : 'documents'}
+            Ready to import {importDocuments.length}{' '}
+            {importDocuments.length === 1 ? 'document' : 'documents'}
           </Text>
         ) : null}
 
