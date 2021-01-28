@@ -3,30 +3,32 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import DocumentListItem from '../components/DocumentListItem';
-import {
-  getDocumentIdFromService,
-  getDocumentServices,
-} from '../utils/contactHelper';
+import useDocumentResolver from '../hooks/useDocumentResolver';
+//import { getDocumentIdFromService } from '../utils/contactHelper';
+import { first } from 'lodash';
 
 const ContactListItem = ({ patient, contact, onSelection }) => {
   const [services, setServices] = useState([]);
+  const { fetchContactDocumentIds } = useDocumentResolver();
 
-  useEffect(() => {
-    setServices(getDocumentServices(contact));
-  }, []);
+  // useEffect(() => {
+  //   setServices(fetchContactServices(contact));
+  // }, []);
 
   return (
     <ListItem onPress={onSelection} bottomDivider>
       <DocumentListItem
         patientId={patient.id}
-        documentId={getDocumentIdFromService(services[0])}
+        documentId={first(fetchContactDocumentIds(contact))}
       ></DocumentListItem>
       <ListItem.Content>
         <ListItem.Title>
           Contact du {moment(contact.created).format('DD/MM/YYYY')}
         </ListItem.Title>
         <ListItem.Subtitle>
-          <Text style={styles.subTitle}>{services.length} document(s)</Text>
+          <Text style={styles.subTitle}>
+            {fetchContactDocumentIds(contact).length} document(s)
+          </Text>
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />

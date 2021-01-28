@@ -1,6 +1,11 @@
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as PatientContext } from '../context/PatientContext';
+import {
+  extractContactServices,
+  extractDocumentIdFromService,
+} from '../utils/contactHelper';
+import { uniq } from 'lodash';
 
 export default () => {
   const {
@@ -40,5 +45,10 @@ export default () => {
     }
   };
 
-  return { fetchDocument };
+  const fetchContactDocumentIds = (contact) => {
+    const services = extractContactServices(contact);
+    return uniq(services.map(extractDocumentIdFromService));
+  };
+
+  return { fetchDocument, fetchContactDocumentIds };
 };

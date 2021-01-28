@@ -3,7 +3,7 @@ export const DOCUMENT_SERVICE_TAG = [
   { code: 'Plan', id: 'SOAP|Plan|1', type: 'SOAP', version: '1' },
 ];
 
-export const getDocumentServices = (contact) => {
+export const extractContactServices = (contact) => {
   if (!contact || !contact.services || !contact.services.length) {
     return [];
   }
@@ -26,6 +26,6 @@ export const getDocumentServices = (contact) => {
   return docServices;
 };
 
-export const getDocumentIdFromService = (service) => {
-  return service?.content?.fr?.documentId || '';
+export const extractDocumentIdFromService = (service) => {
+  return service?.content?.fr?.documentId || null;
 };
