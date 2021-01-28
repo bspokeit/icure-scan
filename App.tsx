@@ -1,5 +1,9 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  NavigationContainerComponent,
+} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { Provider as CryptoProvider } from './src/context/CryptoContext';
@@ -40,7 +44,7 @@ export default () => {
           <PatientProvider>
             <ImportProvider>
               <App
-                ref={(navigator) => {
+                ref={(navigator: NavigationContainerComponent) => {
                   setNavigator(navigator);
                 }}
               />

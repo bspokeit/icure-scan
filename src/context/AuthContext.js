@@ -39,11 +39,7 @@ const login = (dispatch) => async ({ username, password }) => {
       });
     } else {
       const authHeader = {
-        Authorization: `Basic ${
-          typeof btoa !== 'undefined'
-            ? btoa(`${username}:${password}`)
-            : Buffer.from(`${username}:${password}`).toString('base64')
-        }`,
+        Authorization: `Basic ${btoa(`${username}:${password}`)}`,
       };
       await SecureStore.setItemAsync(
         CREDENTIAL_KEY,

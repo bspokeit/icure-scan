@@ -1,41 +1,47 @@
 import { compact } from 'lodash';
 import moment from 'moment';
 
-export const yearString2Int = (yearStr) => {
+export interface DateStructure {
+  year?: number;
+  month?: number;
+  day?: number;
+}
+
+export const yearString2Int = (yearStr: string): number | undefined => {
   if (!yearStr || yearStr.length !== 4) {
-    return null;
+    return undefined;
   }
 
   const yearCandidate = parseInt(yearStr);
 
   if (isNaN(yearCandidate)) {
-    return null;
+    return undefined;
   }
 
   return yearCandidate;
 };
 
-const MONTH_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const MONTH_VALUES: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export const monthString2Int = (monthStr) => {
+export const monthString2Int = (monthStr: string): number | undefined => {
   if (!monthStr || monthStr.length !== 2) {
-    return null;
+    return undefined;
   }
 
   const monthCandidate = parseInt(monthStr);
 
   if (isNaN(monthCandidate)) {
-    return null;
+    return undefined;
   }
 
   if (!MONTH_VALUES.includes(monthCandidate)) {
-    return null;
+    return undefined;
   }
 
   return monthCandidate;
 };
 
-const DAY_VALUES = [
+const DAY_VALUES: number[] = [
   1,
   2,
   3,
@@ -69,30 +75,30 @@ const DAY_VALUES = [
   31,
 ];
 
-export const dayString2Int = (dayStr) => {
+export const dayString2Int = (dayStr: string): number | undefined => {
   if (!dayStr || dayStr.length !== 2) {
-    return null;
+    return undefined;
   }
 
   const dayCandidate = parseInt(dayStr);
 
   if (isNaN(dayCandidate)) {
-    return null;
+    return undefined;
   }
 
   if (!DAY_VALUES.includes(dayCandidate)) {
-    return null;
+    return undefined;
   }
 
   return dayCandidate;
 };
 
-export const iCureDateParser = (iCureDate) => {
+export const iCureDateParser = (iCureDate: number): DateStructure => {
   if (!iCureDate || iCureDate.toString().length !== 8) {
     return {
-      year: null,
-      month: null,
-      day: null,
+      year: undefined,
+      month: undefined,
+      day: undefined,
     };
   }
 
@@ -107,7 +113,7 @@ export const iCureDateParser = (iCureDate) => {
   return dateCandidate;
 };
 
-export const parsedDate2String = (parsedDate) => {
+export const parsedDate2String = (parsedDate: DateStructure) => {
   const { year, month, day } = parsedDate;
 
   if (year) {
@@ -152,7 +158,7 @@ export const parsedDate2String = (parsedDate) => {
   }
 };
 
-export const parsedDate2Age = (parsedDate) => {
+export const parsedDate2Age = (parsedDate: DateStructure) => {
   const { year, month, day } = parsedDate;
 
   if (year) {
@@ -208,7 +214,7 @@ export const parsedDate2Age = (parsedDate) => {
   }
 };
 
-export const iCureDateOfBirth = (iCureDate) => {
+export const iCureDateOfBirth = (iCureDate: number) => {
   const parsedDate = iCureDateParser(iCureDate);
 
   const stringRepresentation = parsedDate2String(parsedDate);
@@ -220,13 +226,13 @@ export const iCureDateOfBirth = (iCureDate) => {
   }
 };
 
-export const iCureDateOfBirth2Age = (iCureDate) => {
+export const iCureDateOfBirth2Age = (iCureDate: number) => {
   const parsedDate = iCureDateParser(iCureDate);
 
   return `${parsedDate2Age(parsedDate)} ans`;
 };
 
-export const dateOfBirthInfo = (iCureDate) => {
+export const dateOfBirthInfo = (iCureDate: number) => {
   const parsedDate = iCureDateParser(iCureDate);
 
   const dateRepresentation = parsedDate2String(parsedDate);

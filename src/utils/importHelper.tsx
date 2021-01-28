@@ -1,3 +1,3 @@
-export const taskID = () => {
+export const taskID = (): string => {
   return Math.random().toString(36).substr(2, 9) + '';
 };
