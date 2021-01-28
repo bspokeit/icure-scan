@@ -13,7 +13,7 @@ const PatientListScreen = ({ navigation }) => {
   } = useContext(AuthContext);
 
   const {
-    state: { patientList, searching },
+    state: { list, searching },
     loadAccessLogs,
     searchPatients,
     clearSearch,
@@ -65,7 +65,7 @@ const PatientListScreen = ({ navigation }) => {
       />
       <FlatList
         keyExtractor={keyExtractor}
-        data={patientList}
+        data={list}
         renderItem={renderItem}
       />
     </SafeAreaView>
