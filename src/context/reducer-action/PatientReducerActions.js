@@ -43,7 +43,7 @@ export const collectContactsAction = (state, action) => {
  *      documents: [{
  *              documentId: string,
  *              attachmentId: string,
- *              content: Base64 string
+ *              url: Base64 string
  *          },
  *          ...
  *      ]
@@ -70,7 +70,7 @@ export const collectDocumentAction = (state, action) => {
 
     const attachmentsContent = {};
     contentGroupedByDocumentId[docId].forEach((docContent) => {
-      attachmentsContent[docContent.attachmentId] = docContent.content;
+      attachmentsContent[docContent.attachmentId] = docContent.url;
     });
 
     updatedStateDocuments[patientId][docId] = {

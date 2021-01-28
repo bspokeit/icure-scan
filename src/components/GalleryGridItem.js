@@ -1,10 +1,12 @@
 import { isEmpty } from 'lodash';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import ImageView from 'react-native-image-viewing';
 import { Context as PatientContext } from '../context/PatientContext';
 import useDocumentResolver from '../hooks/useDocumentResolver';
 
 const GalleryGridItem = ({ patientId, documentId }) => {
+  const [fullScreen, setFullScreen] = useState(false);
   const {
     state: { documents },
   } = useContext(PatientContext);
@@ -31,21 +33,31 @@ const GalleryGridItem = ({ patientId, documentId }) => {
 
   if (getContent()) {
     return (
-      <View style={styles.imageContainerStyle}>
-        <TouchableOpacity
-          key={getContent().id}
-          style={{ flex: 1 }}
-          onPress={() => {
-            console.log('Image click !');
-          }}
-        >
-          <Image
-            style={styles.imageStyle}
-            source={{
-              uri: getContent(),
+      <View style={styles.container}>
+        <View style={styles.imageContainerStyle}>
+          <TouchableOpacity
+            //key={getContent().id}
+            style={{ flex: 1 }}
+            onPress={() => {
+              console.log('Image click !');
+              setFullScreen(true);
             }}
-          />
-        </TouchableOpacity>
+          >
+            <Image
+              style={styles.imageStyle}
+              source={{
+                uri: getContent(),
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <ImageView
+          images={[{ uri: getContent() }]}
+          imageIndex={0}
+          visible={fullScreen}
+          onRequestClose={() => setFullScreen(false)}
+        />
       </View>
     );
   } else {
@@ -58,6 +70,9 @@ const GalleryGridItem = ({ patientId, documentId }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   imageContainerStyle: {
     flex: 1,
     flexDirection: 'column',

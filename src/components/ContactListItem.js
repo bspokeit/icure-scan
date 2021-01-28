@@ -1,20 +1,13 @@
+import { first } from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import DocumentListItem from '../components/DocumentListItem';
 import useDocumentResolver from '../hooks/useDocumentResolver';
-//import { getDocumentIdFromService } from '../utils/contactHelper';
-import { first } from 'lodash';
 
 const ContactListItem = ({ patient, contact, onSelection }) => {
-  const [services, setServices] = useState([]);
   const { fetchContactDocumentIds } = useDocumentResolver();
-
-  // useEffect(() => {
-  //   setServices(fetchContactServices(contact));
-  // }, []);
-
   return (
     <ListItem onPress={onSelection} bottomDivider>
       <DocumentListItem

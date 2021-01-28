@@ -1,6 +1,5 @@
 import React from 'react';
-import { FlatList, Modal, StyleSheet, View } from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import { FlatList, StyleSheet, View } from 'react-native';
 import useDocumentResolver from '../hooks/useDocumentResolver';
 import GalleryGridItem from './GalleryGridItem';
 
@@ -23,10 +22,6 @@ const DocumentGallery = ({ patient, contact }) => {
           );
         }}
       />
-
-      <Modal visible={false} transparent={true}>
-        {/* <ImageViewer imageUrls={images} /> */}
-      </Modal>
     </View>
   );
 };
