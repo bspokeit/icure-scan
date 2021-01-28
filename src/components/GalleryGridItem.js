@@ -36,10 +36,8 @@ const GalleryGridItem = ({ patientId, documentId }) => {
       <View style={styles.container}>
         <View style={styles.imageContainerStyle}>
           <TouchableOpacity
-            //key={getContent().id}
             style={{ flex: 1 }}
             onPress={() => {
-              console.log('Image click !');
               setFullScreen(true);
             }}
           >
