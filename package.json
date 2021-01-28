@@ -10,6 +10,7 @@
   "dependencies": {
     "@icure/api": "github:bspokeit/icc-api#msrcrypto-compatibility",
     "@react-native-community/masked-view": "^0.1.10",
+    "@terrylinla/react-native-sketch-canvas": "^0.8.0",
     "expo": "~40.0.0",
     "expo-camera": "~9.1.0",
     "expo-document-picker": "~8.4.1",

@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import { Context as ImportContext } from '../context/ImportContext';
+import { navigate } from '../utils/navigationHelper';
 
 const ImportDocumentGallery = () => {
   const {
@@ -25,7 +26,7 @@ const ImportDocumentGallery = () => {
             key={item.uri}
             style={{ flex: 1 }}
             onPress={() => {
-              console.log('Image click !');
+              navigate('Draw');
             }}
           >
             <Image

@@ -7,6 +7,7 @@ import { Provider as ImportProvider } from './src/context/ImportContext';
 import { Provider as PatientProvider } from './src/context/PatientContext';
 import { Provider as SystemProvider } from './src/context/SystemContext';
 import DocumentGalleryScreen from './src/screens/DocumentGalleryScreen';
+import ImportDocumentDrawScreen from './src/screens/ImportDocumentDrawScreen';
 import ImportKeyScreen from './src/screens/ImportKeyScreen';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -25,6 +26,7 @@ const switchNavigator = createSwitchNavigator({
     Detail: PatientDetailScreen,
     Gallery: DocumentGalleryScreen,
     Import: PatientImportDocumentScreen,
+    Draw: ImportDocumentDrawScreen,
   }),
 });
 
