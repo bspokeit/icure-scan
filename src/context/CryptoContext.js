@@ -80,8 +80,8 @@ const importAndValidatePrivateKey = async (hcp, privateKey) => {
     .then(() => {
       return validatePrivateKey(hcp);
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      console.error(error);
       return false;
     });
 };
@@ -126,8 +126,8 @@ const importPrivateKey = (dispatch) => async (hcp, privateKey) => {
       type: 'set_private_key_import',
       payload: { [hcp.id]: false },
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
     await clearPrivateKeyData(dispatch)(hcp);
 
     dispatch({

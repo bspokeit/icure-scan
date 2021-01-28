@@ -13,7 +13,11 @@ const ContactList = ({ patient }) => {
     <FlatList
       style={styles.flatListStyle}
       keyExtractor={(item) => item.id}
-      data={contacts[patient.id]}
+      data={
+        contacts && contacts[patient.id] && contacts[patient.id].length
+          ? contacts[patient.id]
+          : []
+      }
       renderItem={({ item }) => (
         <ContactListItem
           patient={patient}
@@ -26,10 +30,6 @@ const ContactList = ({ patient }) => {
           }}
         ></ContactListItem>
       )}
-      initialNumToRender={2}
-      maxToRenderPerBatch={1}
-      updateCellsBatchingPeriod={3}
-      windowSize={3}
     />
   );
 };

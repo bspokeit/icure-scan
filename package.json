@@ -28,6 +28,7 @@
     "react-native-elements": "^3.0.1",
     "react-native-fast-image": "^8.3.4",
     "react-native-gesture-handler": "~1.8.0",
+    "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.0",

@@ -24,8 +24,8 @@ const KeyImporter = ({ hcp, headerText, buttonText, loadedText }) => {
           return importPrivateKey(hcp, privateKey);
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.error(error);
       });
   };
 

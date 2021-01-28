@@ -75,8 +75,8 @@ const login = (dispatch) => async ({ username, password }) => {
 
       navigate('ImportKey');
     }
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
     dispatch({
       type: 'add_error',
       payload: 'Something went wrong with login',
@@ -95,8 +95,8 @@ const autoLogin = (dispatch) => async () => {
     } else {
       navigate('Login');
     }
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
     navigate('Login');
   }
 };

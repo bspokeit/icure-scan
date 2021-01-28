@@ -1,36 +1,21 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ContactList from '../components/ContactList';
-import { Context as AuthContext } from '../context/AuthContext';
-import { Context as PatientContext } from '../context/PatientContext';
+import useContactResolver from '../hooks/useContactResolver';
 
 const PatientDetailScreen = ({ navigation }) => {
-  const {
-    state: { contacts },
-    getContacts,
-  } = useContext(PatientContext);
-
-  const {
-    state: { currentUser },
-  } = useContext(AuthContext);
-
   const patient = navigation.getParam('patient');
+  const { fetchContacts } = useContactResolver();
 
   useEffect(() => {
-    getContacts(currentUser, patient);
+    fetchContacts(patient);
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        {!!contacts && contacts[patient.id] && contacts[patient.id].length ? (
-          <View>
-            <ContactList patient={patient}></ContactList>
-          </View>
-        ) : null}
-      </View>
+      <ContactList patient={patient}></ContactList>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity
           activeOpacity={0.7}

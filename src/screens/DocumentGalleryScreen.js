@@ -1,26 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DocumentGallery from '../components/DocumentGallery';
-import { Context as AuthContext } from '../context/AuthContext';
-import { Context as PatientContext } from '../context/PatientContext';
 
 const DocumentGalleryScreen = ({ navigation }) => {
-  const {
-    state: { contacts },
-    getContacts,
-  } = useContext(PatientContext);
-
-  const {
-    state: { currentUser },
-  } = useContext(AuthContext);
-
   const patient = navigation.getParam('patient');
   const contact = navigation.getParam('contact');
-
-  useEffect(() => {
-    getContacts(currentUser, patient);
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -11,7 +11,7 @@ export const initCrypto = async () => {
     await isoCrypto.ensureSecure();
     return true;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return false;
   }
 };

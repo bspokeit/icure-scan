@@ -38,8 +38,8 @@ export default () => {
           },
         ],
       });
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
     }
   };
   return { fetchDocument };

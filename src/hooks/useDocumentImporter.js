@@ -95,12 +95,12 @@ export default () => {
           tags: DOCUMENT_SERVICE_TAG,
           label: 'imported document',
         });
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       status = {
         succesfull: false,
-        error: e,
+        error,
       };
-      console.log(e);
     }
 
     updateTaskStatus(task.id, 'DONE');
@@ -139,8 +139,8 @@ export default () => {
         const { service } = await processTask(task);
         services.push(service);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
     }
 
     const closingTasks = {
@@ -165,8 +165,8 @@ export default () => {
       ];
 
       await api().contactApi.createContactWithUser(currentUser, newContact);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
 
     setClosingTask({ ...closingTasks, importStatus: 'DONE' });

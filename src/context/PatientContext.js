@@ -1,4 +1,4 @@
-import { chain, find, uniq } from 'lodash';
+import { chain } from 'lodash';
 import { getApi as api } from '../api/icure';
 import createContext from './createContext';
 import {
@@ -63,7 +63,7 @@ const loadAccessLogs = (dispatch) => async (user) => {
 
     dispatch({ type: 'set_searching', payload: false });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     dispatch({ type: 'set_search', payload: [] });
     dispatch({ type: 'set_patient_logs', payload: [] });
     dispatch({ type: 'set_searching', payload: false });
@@ -85,7 +85,7 @@ const searchPatients = (dispatch) => async (user, term) => {
     dispatch({ type: 'set_search', payload: search.rows });
     dispatch({ type: 'set_searching', payload: false });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     dispatch({ type: 'set_search', payload: [] });
     dispatch({ type: 'set_searching', payload: false });
   }
@@ -97,53 +97,17 @@ const clearSearch = (dispatch) => async () => {
   });
 };
 
-const getContacts = (dispatch) => async (user, patient) => {
-  try {
-    const sfks = await api().cryptoApi.extractSFKsHierarchyFromDelegations(
-      patient,
-      user.healthcarePartyId
-    );
-
-    const secretForeignKey = find(sfks, {
-      hcpartyId: user.healthcarePartyId,
-    });
-
-    if (!secretForeignKey || !secretForeignKey.extractedKeys.length) {
-      throw new Error('No secret foreing key has been found!');
-    }
-
-    const filter = {
-      $type: 'ServiceByHcPartyTagCodeDateFilter',
-      healthcarePartyId: user.healthcarePartyId,
-      patientSecretForeignKey: secretForeignKey.extractedKeys[0],
-      tagType: 'CD-ITEM',
-      tagCode: 'document',
-    };
-
-    const servicesByTags = await api().contactApi.filterServicesBy(null, null, {
-      filter,
-    });
-
-    const contacts = await api().contactApi.getContactsWithUser(user, {
-      ids: uniq(servicesByTags.rows.map((s) => s.contactId)),
-    });
-
-    dispatch({
-      type: 'collect_contacts',
-      payload: {
-        patientId: patient.id,
-        contacts: contacts,
-      },
-    });
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 const collectDocuments = (dispatch) => async ({ patientId, documents }) => {
   dispatch({
     type: 'collect_document',
     payload: { patientId, documents },
+  });
+};
+
+const collectContacts = (dispatch) => async ({ patientId, contacts }) => {
+  dispatch({
+    type: 'collect_contacts',
+    payload: { patientId, contacts },
   });
 };
 
@@ -153,8 +117,8 @@ export const { Provider, Context } = createContext(
     loadAccessLogs,
     searchPatients,
     clearSearch,
-    getContacts,
     collectDocuments,
+    collectContacts,
   },
   {
     accessLogs: [],
