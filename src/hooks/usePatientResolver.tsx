@@ -1,4 +1,4 @@
-import { User } from '@icure/api';
+import { Patient, User } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
@@ -7,7 +7,7 @@ import { Context as PatientContext } from '../context/PatientContext';
 export default () => {
   const { setSearching, setLogs, setList } = useContext(PatientContext);
 
-  const loadLogs = async (user: User) => {
+  const loadLogs = async (user: User): Promise<void> => {
     try {
       setSearching(true);
 
@@ -64,10 +64,10 @@ export default () => {
         25,
         undefined
       );
-      setList(search.rows);
+      setList(search.rows as Array<Patient>);
     } catch (error) {
       console.error(error);
-      setList([]);
+      setList([] as Array<Patient>);
     }
 
     setSearching(false);

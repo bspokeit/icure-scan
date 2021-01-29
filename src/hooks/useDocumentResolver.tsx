@@ -1,3 +1,4 @@
+import { Contact, Patient } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
@@ -13,21 +14,30 @@ export default () => {
     collectDocuments,
   } = useContext(PatientContext);
 
-  const fetchDocument = async (patientId, documentId) => {
+  const fetchDocument = async (
+    patientId: string,
+    documentId: string
+  ): Promise<void> => {
     if (documents[patientId] && documents[patientId][documentId]) {
       return;
     }
 
     try {
       const { attachmentId } = await api().documentApi.getDocument(documentId);
+
+      if (!attachmentId) {
+        return;
+      }
+
       collectDocuments({
         patientId,
-        documents: [{ documentId, attachmentId, url: null }],
+        documents: [{ documentId, attachmentId, url: undefined }],
       });
 
       const attachmentURL = await api().documentApi.getAttachmentUrl(
         documentId,
-        attachmentId
+        attachmentId,
+        []
       );
 
       collectDocuments({
@@ -45,15 +55,23 @@ export default () => {
     }
   };
 
-  const fetchContactDocumentIds = (contact) => {
+  const fetchContactDocumentIds = (contact: Contact) => {
     return _.chain(extractContactServices(contact))
       .map(extractDocumentIdFromService)
+      .compact()
       .uniq()
       .value();
   };
 
-  const fetchContactAttachmentURLs = (patient, contact) => {
+  const fetchContactAttachmentURLs = (
+    patient: Patient,
+    contact: Contact
+  ): Array<{ url: string }> => {
     const documentIds = fetchContactDocumentIds(contact);
+
+    if (!patient.id) {
+      return [];
+    }
 
     if (!documentIds || !documentIds.length || !documents[patient.id]) {
       return [];
@@ -61,20 +79,17 @@ export default () => {
 
     const formattedUrls = _.chain(documentIds)
       .map((docId) => {
-        return documents[patient.id][docId];
+        return documents[patient.id!!][docId];
       })
       .map((dc) => {
-        return !!dc ? Object.values(dc) : null;
+        return !!dc ? Object.values(dc) : undefined;
       })
       .flatMap()
-      .uniq()
       .compact()
-      .map((v) => {
-        return { url: v };
-      })
+      .uniq()
       .value();
 
-    return formattedUrls;
+    return formattedUrls.map((v: string) => ({ url: v }));
   };
 
   return { fetchDocument, fetchContactDocumentIds, fetchContactAttachmentURLs };

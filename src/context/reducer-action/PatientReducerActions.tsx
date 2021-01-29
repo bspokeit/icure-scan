@@ -8,9 +8,9 @@ export type PatientContactState = {
 
 //  Tensor like structure
 export type PatientDocumentState = {
-  [PatientId: string]: {
-    [DocumentId: string]: {
-      [AttachentId: string]: string;
+  [patientId: string]: {
+    [documentId: string]: {
+      [attachentId: string]: string;
     };
   };
 };
