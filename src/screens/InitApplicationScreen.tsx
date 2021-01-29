@@ -3,16 +3,24 @@ import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  NavigationSwitchScreenComponent,
+  NavigationSwitchScreenProps,
+} from 'react-navigation';
 import Spacer from '../components/Spacer';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
+import useSystem from '../hooks/useSystem';
 
-const InitApplicationScreen = () => {
+interface Props extends NavigationSwitchScreenProps {}
+
+const InitApplicationScreen: NavigationSwitchScreenComponent<Props> = () => {
   const {
     state: { systemReady, cryptoReady, storeReady, checkCompleted },
-    checkSystem,
   } = useContext(SystemContext);
   const { autoLogin } = useContext(AuthContext);
+
+  const { checkSystem } = useSystem();
 
   useEffect(() => {
     checkSystem();

@@ -131,10 +131,10 @@ export const Provider: React.FC = ({ children }) => {
     resetSearch: resetSearch(dispatch),
     setLogs: setLogs(dispatch),
     setList: setList(dispatch),
-
     collectDocuments: collectDocuments(dispatch),
     collectContacts: collectContacts(dispatch),
   };
+
   return (
     <Context.Provider value={{ state, ...dispatcher }}>
       {children}
