@@ -8,6 +8,7 @@ import {
   IccHcpartyXApi,
   IccPatientXApi,
   IccUserXApi,
+  WebSession,
   XHR,
 } from '@icure/api';
 import { IccAccesslogXApi } from '@icure/api/dist/icc-x-api/icc-accesslog-x-api';
@@ -22,7 +23,7 @@ export interface IcureAPI {
   documentApi: IccDocumentXApi;
 }
 
-export interface Credentials {
+export interface Credentials extends WebSession{
   username: string;
   password: string;
 }
@@ -44,9 +45,9 @@ export const initCrypto = async (): Promise<boolean> => {
 let authAPI: IccAuthApi;
 let api: IcureAPI;
 
-export const getAuthAPI = (headers: Array<XHR.Header>): IccAuthApi => {
+export const getAuthAPI = (): IccAuthApi => {
   if (!authAPI) {
-    authAPI = new IccAuthApi(API_URL, { ...headers });
+    authAPI = new IccAuthApi(API_URL, {});
   }
 
   return authAPI;

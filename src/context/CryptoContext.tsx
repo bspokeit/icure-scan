@@ -5,7 +5,10 @@ import {
   CryptoState,
 } from './reducer-action/CryptoReducerActions';
 
-const cryptoReducer = (state: CryptoState, action: CryptoAction) => {
+const cryptoReducer = (
+  state: CryptoState,
+  action: CryptoAction
+): CryptoState => {
   switch (action.type) {
     case CryptoActionTypes.SetKeyImport:
       const keyImports = { ...state.keyImports, ...action.payload };

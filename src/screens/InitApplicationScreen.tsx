@@ -7,8 +7,8 @@ import {
   NavigationSwitchScreenComponent,
   NavigationSwitchScreenProps,
 } from 'react-navigation';
-import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
+import useAuth from '../hooks/useAuth';
 import useSystem from '../hooks/useSystem';
 
 interface Props extends NavigationSwitchScreenProps {}
@@ -17,8 +17,8 @@ const InitApplicationScreen: NavigationSwitchScreenComponent<Props> = () => {
   const {
     state: { systemReady, cryptoReady, storeReady, checkCompleted },
   } = useContext(SystemContext);
-  const { autoLogin } = useContext(AuthContext);
 
+  const { autoLogin } = useAuth();
   const { checkSystem } = useSystem();
 
   useEffect(() => {

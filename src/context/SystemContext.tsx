@@ -65,7 +65,7 @@ const defaultSystemState: SystemState = {
   storeReady: false,
   systemReady: false,
   checkCompleted: false,
-  error: '',
+  error: undefined,
 };
 
 const defaultSystemDispatcher = {

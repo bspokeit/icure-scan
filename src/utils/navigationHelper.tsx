@@ -10,7 +10,7 @@ export const setNavigator = (nav: NavigationContainerComponent): void => {
   navigator = nav;
 };
 
-export const navigate = (routeName: string, params: NavigationParams) => {
+export const navigate = (routeName: string, params?: NavigationParams) => {
   if (navigator) {
     navigator.dispatch(
       NavigationActions.navigate({

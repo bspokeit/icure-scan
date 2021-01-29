@@ -5,7 +5,7 @@ export interface SystemState {
   storeReady: boolean;
   systemReady: boolean;
   checkCompleted: boolean;
-  error: string;
+  error: string | undefined;
 }
 
 export enum SystemActionTypes {

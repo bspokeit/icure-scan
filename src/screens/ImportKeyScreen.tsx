@@ -17,7 +17,7 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
   navigation,
 }) => {
   const {
-    state: { currentHcp, parentHcp },
+    state: { currentHcp, currentParentHcp },
   } = useContext(AuthContext);
   const {
     state: { keys, keyImports },
@@ -25,7 +25,7 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
 
   const { importPrivateKeysFromStorage } = useCrypto();
 
-  const hcps = compact([currentHcp, parentHcp]);
+  const hcps = compact([currentHcp, currentParentHcp]);
 
   const autoImports = hcps.map((hcp) => {
     return { id: hcp.id, imported: false };
@@ -39,7 +39,7 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
 
   useEffect(() => {
     autoImports.forEach((ai) => {
-      ai.imported = !!keys[ai.id] && !keyImports[ai.id];
+      ai.imported = !!keys[ai.id!!] && !keyImports[ai.id!!];
     });
 
     if (autoImports.every((ai) => ai.imported)) {
@@ -58,9 +58,9 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
         ></KeyImporter>
       ) : null}
 
-      {parentHcp ? (
+      {currentParentHcp ? (
         <KeyImporter
-          hcp={parentHcp}
+          hcp={currentParentHcp}
           headerText="Parent private key"
           loadedText="Your parent key is imported !"
           buttonText="Select your parent key"
