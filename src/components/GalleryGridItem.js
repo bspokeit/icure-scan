@@ -3,14 +3,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import ImageView from 'react-native-image-viewing';
 import { Context as PatientContext } from '../context/PatientContext';
-import useDocumentResolver from '../hooks/useDocumentResolver';
+import useDocument from '../hooks/useDocument';
 
 const GalleryGridItem = ({ patientId, documentId }) => {
   const [fullScreen, setFullScreen] = useState(false);
   const {
     state: { documents },
   } = useContext(PatientContext);
-  const { fetchDocument } = useDocumentResolver();
+  const { fetchDocument } = useDocument();
 
   useEffect(() => {
     if (!!documentId) {

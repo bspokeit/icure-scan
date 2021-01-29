@@ -6,7 +6,7 @@ import PatientListItem from '../components/PatientListItem';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
-import usePatientResolver from '../hooks/usePatientResolver';
+import usePatient from '../hooks/usePatient';
 
 const PatientListScreen = ({ navigation }) => {
   const {
@@ -20,7 +20,7 @@ const PatientListScreen = ({ navigation }) => {
 
   const { clearDocuments } = useContext(ImportContext);
 
-  const { loadLogs, searchPatients } = usePatientResolver();
+  const { loadLogs, searchPatients } = usePatient();
 
   const [query, setQuery] = useState('');
 

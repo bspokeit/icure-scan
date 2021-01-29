@@ -4,10 +4,10 @@ import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import DocumentListItem from '../components/DocumentListItem';
-import useDocumentResolver from '../hooks/useDocumentResolver';
+import useDocument from '../hooks/useDocument';
 
 const ContactListItem = ({ patient, contact, onSelection }) => {
-  const { fetchContactDocumentIds } = useDocumentResolver();
+  const { fetchContactDocumentIds } = useDocument();
   return (
     <ListItem onPress={onSelection} bottomDivider>
       <DocumentListItem

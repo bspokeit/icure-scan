@@ -3,13 +3,13 @@ import React, { useContext, useEffect } from 'react';
 import { View } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { Context as PatientContext } from '../context/PatientContext';
-import useDocumentResolver from '../hooks/useDocumentResolver';
+import useDocument from '../hooks/useDocument';
 
 const DocumentListItem = ({ patientId, documentId }) => {
   const {
     state: { documents },
   } = useContext(PatientContext);
-  const { fetchDocument } = useDocumentResolver();
+  const { fetchDocument } = useDocument();
 
   useEffect(() => {
     if (!!documentId) {

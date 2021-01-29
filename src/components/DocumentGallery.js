@@ -1,10 +1,10 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import useDocumentResolver from '../hooks/useDocumentResolver';
+import useDocument from '../hooks/useDocument';
 import GalleryGridItem from './GalleryGridItem';
 
 const DocumentGallery = ({ patient, contact }) => {
-  const { fetchContactDocumentIds } = useDocumentResolver();
+  const { fetchContactDocumentIds } = useDocument();
 
   return (
     <View style={styles.container}>

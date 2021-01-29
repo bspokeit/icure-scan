@@ -3,11 +3,11 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ContactList from '../components/ContactList';
-import useContactResolver from '../hooks/useContactResolver';
+import useContact from '../hooks/useContact';
 
 const PatientDetailScreen = ({ navigation }) => {
   const patient = navigation.getParam('patient');
-  const { fetchContacts } = useContactResolver();
+  const { fetchContacts } = useContact();
 
   useEffect(() => {
     fetchContacts(patient);
