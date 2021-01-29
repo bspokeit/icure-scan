@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
-import Spacer from './Spacer';
 
 const LoginForm = ({
   errorMessage,
@@ -30,7 +29,6 @@ const LoginForm = ({
         autoCorrect={false}
         onSubmitEditing={tryToSubmit}
       />
-      <Spacer />
       <Input
         secureTextEntry
         label="Password"
@@ -46,14 +44,13 @@ const LoginForm = ({
           <Text style={styles.errorMessage}>I'm an error{errorMessage}</Text>
         </View>
       ) : null}
-      <Spacer>
-        <Button
-          title={submitButtonText}
-          onPress={() => onSubmit({ username, password })}
-          disabled={disabled || !username || !password || loginOngoing}
-          loading={loginOngoing}
-        />
-      </Spacer>
+      <Button
+        style={styles.submitButton}
+        title={submitButtonText}
+        onPress={() => onSubmit({ username, password })}
+        disabled={disabled || !username || !password || loginOngoing}
+        loading={loginOngoing}
+      />
     </View>
   );
 };
@@ -67,6 +64,10 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     color: '#2089dc',
+    margin: 15,
+  },
+  submitButton: {
+    margin: 15,
   },
   errorMessage: {
     alignItems: 'center',

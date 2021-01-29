@@ -7,7 +7,6 @@ import {
   NavigationSwitchScreenComponent,
   NavigationSwitchScreenProps,
 } from 'react-navigation';
-import Spacer from '../components/Spacer';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as SystemContext } from '../context/SystemContext';
 import useSystem from '../hooks/useSystem';
@@ -89,17 +88,15 @@ const InitApplicationScreen: NavigationSwitchScreenComponent<Props> = () => {
       ) : null}
 
       {storeReady && cryptoReady ? (
-        <Spacer>
-          <View style={styles.horizontal}>
-            <ActivityIndicator
-              style={styles.textIcon}
-              animating
-              color="#2089dc"
-              size="small"
-            />
-            <Text>Attempting to log you in...</Text>
-          </View>
-        </Spacer>
+        <View style={[styles.horizontal, styles.extraMargin]}>
+          <ActivityIndicator
+            style={styles.textIcon}
+            animating
+            color="#2089dc"
+            size="small"
+          />
+          <Text>Attempting to log you in...</Text>
+        </View>
       ) : null}
     </SafeAreaView>
   );
@@ -125,6 +122,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 10,
+  },
+  extraMargin: {
+    margin: 15,
   },
 });
 
