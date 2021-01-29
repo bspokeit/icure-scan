@@ -6,6 +6,7 @@ import PatientListItem from '../components/PatientListItem';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
+import usePatientResolver from '../hooks/usePatientResolver';
 
 const PatientListScreen = ({ navigation }) => {
   const {
@@ -14,17 +15,17 @@ const PatientListScreen = ({ navigation }) => {
 
   const {
     state: { list, searching },
-    loadAccessLogs,
-    searchPatients,
-    clearSearch,
+    resetSearch,
   } = useContext(PatientContext);
 
   const { clearDocuments } = useContext(ImportContext);
 
+  const { loadLogs, searchPatients } = usePatientResolver();
+
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    loadAccessLogs(currentUser);
+    loadLogs(currentUser);
   }, []);
 
   const keyExtractor = (item) => item.id;
@@ -43,7 +44,7 @@ const PatientListScreen = ({ navigation }) => {
 
   const searchClearRequest = () => {
     if (!searching) {
-      clearSearch();
+      resetSearch();
     }
   };
 

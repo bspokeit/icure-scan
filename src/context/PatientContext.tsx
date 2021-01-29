@@ -1,6 +1,4 @@
-import { User } from '@icure/api';
-import { chain } from 'lodash';
-import { getApi as api } from '../api/icure';
+import { Patient } from '@icure/api';
 import createContext from './createContext';
 import {
   CollectContactActionPayload,
@@ -21,7 +19,7 @@ const patientReducer = (
       return { ...state, searching: action.payload };
     case PatientActionTypes.SetSearch:
       return { ...state, list: action.payload };
-    case PatientActionTypes.ClearSearch:
+    case PatientActionTypes.ResetSearch:
       return { ...state, list: state.logs };
     case PatientActionTypes.SetLogs:
       return { ...state, logs: action.payload };
@@ -34,81 +32,36 @@ const patientReducer = (
   }
 };
 
-const loadAccessLogs = (dispatch: React.Dispatch<PatientAction>) => async (
-  user: User
+const setSearching = (dispatch: React.Dispatch<PatientAction>) => async (
+  searching: boolean
 ) => {
-  try {
-    dispatch({ type: PatientActionTypes.SetSearching, payload: true });
-
-    const now = Date.now();
-    const tenDaysAgo = now - 20 * 24 * 60 * 60 * 1000;
-    const logPage = await api().accessLogApi.listAccessLogsWithUser(
-      user,
-      tenDaysAgo,
-      now,
-      undefined,
-      undefined,
-      25,
-      undefined
-    );
-
-    const patientIds = chain(logPage.rows)
-      .map('patientId')
-      .compact()
-      .uniq()
-      .value();
-
-    if (patientIds && patientIds.length) {
-      const patientfromLogs = await api().patientApi.getPatientsWithUser(user, {
-        ids: patientIds,
-      });
-
-      dispatch({ type: PatientActionTypes.SetLogs, payload: patientfromLogs });
-      dispatch({
-        type: PatientActionTypes.SetSearch,
-        payload: patientfromLogs,
-      });
-    } else {
-      dispatch({ type: PatientActionTypes.SetLogs, payload: [] });
-      dispatch({ type: PatientActionTypes.SetSearch, payload: [] });
-    }
-
-    dispatch({ type: PatientActionTypes.SetSearching, payload: false });
-  } catch (error) {
-    console.error(error);
-    dispatch({ type: PatientActionTypes.SetSearch, payload: [] });
-    dispatch({ type: PatientActionTypes.SetLogs, payload: [] });
-    dispatch({ type: PatientActionTypes.SetSearching, payload: false });
-  }
-};
-
-const searchPatients = (dispatch: React.Dispatch<PatientAction>) => async (
-  user: User,
-  term: string
-): Promise<void> => {
-  try {
-    dispatch({ type: PatientActionTypes.SetSearching, payload: true });
-    const search = await api().patientApi.findByNameBirthSsinAutoWithUser(
-      user,
-      user.healthcarePartyId,
-      term,
-      undefined,
-      undefined,
-      25,
-      undefined
-    );
-    dispatch({ type: PatientActionTypes.SetSearch, payload: search.rows });
-    dispatch({ type: PatientActionTypes.SetSearching, payload: false });
-  } catch (error) {
-    console.error(error);
-    dispatch({ type: PatientActionTypes.SetSearch, payload: [] });
-    dispatch({ type: PatientActionTypes.SetSearching, payload: false });
-  }
-};
-
-const clearSearch = (dispatch: React.Dispatch<PatientAction>) => async () => {
   dispatch({
-    type: PatientActionTypes.ClearSearch,
+    type: PatientActionTypes.SetSearching,
+    payload: searching,
+  });
+};
+
+const resetSearch = (dispatch: React.Dispatch<PatientAction>) => async () => {
+  dispatch({
+    type: PatientActionTypes.ResetSearch,
+  });
+};
+
+const setList = (dispatch: React.Dispatch<PatientAction>) => async (
+  list: Array<Patient>
+) => {
+  dispatch({
+    type: PatientActionTypes.SetSearch,
+    payload: list,
+  });
+};
+
+const setLogs = (dispatch: React.Dispatch<PatientAction>) => async (
+  logs: Array<Patient>
+) => {
+  dispatch({
+    type: PatientActionTypes.SetLogs,
+    payload: logs,
   });
 };
 
@@ -135,9 +88,10 @@ const collectContacts = (dispatch: React.Dispatch<PatientAction>) => async ({
 export const { Provider, Context } = createContext(
   patientReducer,
   {
-    loadAccessLogs,
-    searchPatients,
-    clearSearch,
+    setSearching,
+    setLogs,
+    setList,
+    resetSearch,
     collectDocuments,
     collectContacts,
   },
@@ -147,5 +101,5 @@ export const { Provider, Context } = createContext(
     searching: false,
     contacts: {},
     documents: {},
-  } as PatientState
+  }
 );

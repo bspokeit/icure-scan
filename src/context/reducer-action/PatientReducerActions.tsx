@@ -26,7 +26,7 @@ export interface PatientState {
 export enum PatientActionTypes {
   SetSearching = 'SET_SEARCHING',
   SetSearch = 'SET_SEARCH',
-  ClearSearch = 'CLEAR_SEARCH',
+  ResetSearch = 'CLEAR_SEARCH',
   SetLogs = 'SET_PATIENT_LOGS',
   CollectContacts = 'COLLECT_CONTACTS',
   CollectDocuments = 'COLLECT_DOCUMENTS',
@@ -51,7 +51,7 @@ export interface PatientDocumentActionPayload {
 export type PatientActionPayloadTypes = {
   [PatientActionTypes.SetSearching]: boolean;
   [PatientActionTypes.SetSearch]: Array<Patient>;
-  [PatientActionTypes.ClearSearch]: undefined;
+  [PatientActionTypes.ResetSearch]: undefined;
   [PatientActionTypes.SetLogs]: Array<Patient>;
   [PatientActionTypes.CollectContacts]: CollectContactActionPayload;
   [PatientActionTypes.CollectDocuments]: CollectDocumentActionPayload;
