@@ -1,10 +1,6 @@
-import { CodeStub, Contact, Service } from '@icure/api';
+import { Contact, Service } from '@icure/api';
 import { findIndex } from 'lodash';
-
-export const DOCUMENT_SERVICE_TAGS: CodeStub[] = [
-  { code: 'document', id: 'CD-ITEM|document|1', type: 'CD-ITEM', version: '1' },
-  { code: 'Plan', id: 'SOAP|Plan|1', type: 'SOAP', version: '1' },
-];
+import { DOCUMENT_SERVICE_TAGS } from '../constant';
 
 export const extractContactServices = (contact: Contact): Service[] => {
   if (!contact || !contact.services || !contact.services.length) {

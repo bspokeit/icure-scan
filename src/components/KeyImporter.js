@@ -5,12 +5,14 @@ import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, Text } from 'react-native-elements';
 import { Context as CryptoContext } from '../context/CryptoContext';
+import useCrypto from '../hooks/useCrypto';
 
 const KeyImporter = ({ hcp, headerText, buttonText, loadedText }) => {
   const {
     state: { keys, keyImports },
-    importPrivateKey,
   } = useContext(CryptoContext);
+
+  const { importPrivateKey } = useCrypto();
 
   const onImportPress = () => {
     getDocumentAsync()

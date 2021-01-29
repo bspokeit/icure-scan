@@ -1,4 +1,3 @@
-import { LoDashExplicitStringWrapper } from 'lodash';
 import { ActionMap } from '../../models';
 
 export interface SystemState {

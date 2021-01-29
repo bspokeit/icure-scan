@@ -35,13 +35,13 @@ const systemReducer = (
 
 const setCryptoReady = (dispatch: React.Dispatch<SystemAction>) => async (
   status: boolean
-) => {
+): Promise<void> => {
   dispatch({ type: SystemActionTypes.SetCryptoReady, payload: status });
 };
 
 const setStoreReady = (dispatch: React.Dispatch<SystemAction>) => async (
   status: boolean
-) => {
+): Promise<void> => {
   dispatch({
     type: SystemActionTypes.SetSecureStoreAvailable,
     payload: status,
@@ -50,13 +50,13 @@ const setStoreReady = (dispatch: React.Dispatch<SystemAction>) => async (
 
 const setSystemChecked = (dispatch: React.Dispatch<SystemAction>) => async (
   status: boolean
-) => {
+): Promise<void> => {
   dispatch({ type: SystemActionTypes.SetCheckCompleted, payload: status });
 };
 
 const setError = (dispatch: React.Dispatch<SystemAction>) => async (
   error: any
-) => {
+): Promise<void> => {
   dispatch({ type: SystemActionTypes.SetError, payload: error });
 };
 
@@ -68,11 +68,11 @@ const defaultSystemState: SystemState = {
   error: '',
 };
 
-const systemDefaultDispatcher = {
-  setCryptoReady: (_: boolean) => Promise.resolve(),
-  setStoreReady: (_: boolean) => Promise.resolve(),
-  setSystemChecked: (_: boolean) => Promise.resolve(),
-  setError: (_: any) => Promise.resolve(),
+const defaultSystemDispatcher = {
+  setCryptoReady: (_a: boolean) => Promise.resolve(),
+  setStoreReady: (_a: boolean) => Promise.resolve(),
+  setSystemChecked: (_a: boolean) => Promise.resolve(),
+  setError: (_a: any) => Promise.resolve(),
 };
 
 export const Context = createContext<{
@@ -83,7 +83,7 @@ export const Context = createContext<{
   setError: (error: any) => Promise<void>;
 }>({
   state: defaultSystemState,
-  ...systemDefaultDispatcher,
+  ...defaultSystemDispatcher,
 });
 
 export const Provider: React.FC = ({ children }) => {

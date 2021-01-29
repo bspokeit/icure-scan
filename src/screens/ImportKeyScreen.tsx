@@ -9,6 +9,7 @@ import {
 import KeyImporter from '../components/KeyImporter';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as CryptoContext } from '../context/CryptoContext';
+import useCrypto from '../hooks/useCrypto';
 
 interface Props extends NavigationSwitchScreenProps {}
 
@@ -20,8 +21,9 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
   } = useContext(AuthContext);
   const {
     state: { keys, keyImports },
-    importPrivateKeysFromStorage,
   } = useContext(CryptoContext);
+
+  const { importPrivateKeysFromStorage } = useCrypto();
 
   const hcps = compact([currentHcp, parentHcp]);
 

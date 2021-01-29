@@ -87,7 +87,7 @@ const collectDocuments = (dispatch: React.Dispatch<PatientAction>) => async ({
   });
 };
 
-const patientDefaultValues: PatientState = {
+const defaultPatientState: PatientState = {
   logs: [],
   list: [],
   searching: false,
@@ -95,13 +95,13 @@ const patientDefaultValues: PatientState = {
   documents: {},
 };
 
-const patientDefaultDispatcher = {
-  setSearching: (_: boolean) => Promise.resolve(),
+const defaultPatientDispatcher = {
+  setSearching: (_a: boolean) => Promise.resolve(),
   resetSearch: () => Promise.resolve(),
-  setLogs: (_: Array<Patient>) => Promise.resolve(),
-  setList: (_: Array<Patient>) => Promise.resolve(),
-  collectContacts: (_: CollectContactActionPayload) => Promise.resolve(),
-  collectDocuments: (_: CollectDocumentActionPayload) => Promise.resolve(),
+  setLogs: (_a: Array<Patient>) => Promise.resolve(),
+  setList: (_a: Array<Patient>) => Promise.resolve(),
+  collectContacts: (_a: CollectContactActionPayload) => Promise.resolve(),
+  collectDocuments: (_a: CollectDocumentActionPayload) => Promise.resolve(),
 };
 
 export const Context = createContext<{
@@ -119,12 +119,12 @@ export const Context = createContext<{
     documents,
   }: CollectDocumentActionPayload) => Promise<void>;
 }>({
-  state: patientDefaultValues,
-  ...patientDefaultDispatcher,
+  state: defaultPatientState,
+  ...defaultPatientDispatcher,
 });
 
 export const Provider: React.FC = ({ children }) => {
-  const [state, dispatch] = useReducer(patientReducer, patientDefaultValues);
+  const [state, dispatch] = useReducer(patientReducer, defaultPatientState);
 
   const dispatcher = {
     setSearching: setSearching(dispatch),
