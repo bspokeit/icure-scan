@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
-import { DOCUMENT_SERVICE_TAG } from '../utils/contactHelper';
+import { DOCUMENT_SERVICE_TAGS } from '../utils/contactHelper';
 import { URI2Blob } from '../utils/formatHelper';
 import { taskID } from '../utils/importHelper';
 
@@ -92,7 +92,7 @@ export default () => {
               },
             ],
           ]),
-          tags: DOCUMENT_SERVICE_TAG,
+          tags: DOCUMENT_SERVICE_TAGS,
           label: 'imported document',
         });
     } catch (error) {

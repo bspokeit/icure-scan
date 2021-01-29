@@ -1,10 +1,16 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  NavigationSwitchScreenComponent,
+  NavigationSwitchScreenProps,
+} from 'react-navigation';
 import LoginForm from '../components/LoginForm';
 import { Context as AuthContext } from '../context/AuthContext';
 
-const LoginScreen = () => {
+interface Props extends NavigationSwitchScreenProps {}
+
+const LoginScreen: NavigationSwitchScreenComponent<Props> = () => {
   const { state, login } = useContext(AuthContext);
 
   return (

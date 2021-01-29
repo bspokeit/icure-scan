@@ -2,11 +2,19 @@ import { compact } from 'lodash';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  NavigationSwitchScreenComponent,
+  NavigationSwitchScreenProps,
+} from 'react-navigation';
 import KeyImporter from '../components/KeyImporter';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as CryptoContext } from '../context/CryptoContext';
 
-const ImportKeyScreen = ({ navigation }) => {
+interface Props extends NavigationSwitchScreenProps {}
+
+const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
+  navigation,
+}) => {
   const {
     state: { currentHcp, parentHcp },
   } = useContext(AuthContext);
