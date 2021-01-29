@@ -15,7 +15,7 @@ import ImportDocumentDrawScreen from './src/screens/ImportDocumentDrawScreen';
 import ImportKeyScreen from './src/screens/ImportKeyScreen';
 import InitApplicationScreen from './src/screens/InitApplicationScreen';
 import LoginScreen from './src/screens/LoginScreen';
-import PatientDetailScreen from './src/screens/PatientDetail';
+import PatientDetailScreen from './src/screens/PatientDetailScreen';
 import PatientImportDocumentScreen from './src/screens/PatientImportDocumentScreen';
 import PatientListScreen from './src/screens/PatientListScreen';
 import { setNavigator } from './src/utils/navigationHelper';

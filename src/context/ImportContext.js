@@ -4,6 +4,7 @@ const importReducer = (state, action) => {
   switch (action.type) {
     case 'collect_document':
       return {
+        
         ...state,
         importDocuments: [...state.importDocuments, action.payload],
       };
