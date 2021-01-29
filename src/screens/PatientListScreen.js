@@ -18,7 +18,7 @@ const PatientListScreen = ({ navigation }) => {
     resetSearch,
   } = useContext(PatientContext);
 
-  const { clearDocuments } = useContext(ImportContext);
+  const { clear } = useContext(ImportContext);
 
   const { loadLogs, searchPatients } = usePatient();
 
@@ -34,7 +34,7 @@ const PatientListScreen = ({ navigation }) => {
     <PatientListItem
       patient={item}
       onSelection={() => {
-        clearDocuments();
+        clear();
         navigation.navigate('Detail', {
           patient: item,
         });

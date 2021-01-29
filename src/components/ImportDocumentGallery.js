@@ -11,7 +11,7 @@ import { navigate } from '../utils/navigationHelper';
 
 const ImportDocumentGallery = () => {
   const {
-    state: { importDocuments },
+    state: { documents },
   } = useContext(ImportContext);
 
   return (
@@ -19,7 +19,7 @@ const ImportDocumentGallery = () => {
       style={styles.flatListStyle}
       numColumns={2}
       keyExtractor={(item) => item.uri}
-      data={importDocuments}
+      data={documents}
       renderItem={({ item }) => (
         <View style={styles.imageContainerStyle}>
           <TouchableOpacity

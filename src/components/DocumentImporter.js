@@ -6,8 +6,8 @@ import useImporter from '../hooks/useImporter';
 
 const DocumentImporter = ({ onDone, patient }) => {
   const {
-    state: { importDocuments, importStatus, importTasks, closingTask },
-    clearDocuments,
+    state: { documents, status, tasks, final },
+    clear,
   } = useContext(ImportContext);
 
   const { startImport, cleanImportSetup } = useImporter();
@@ -18,8 +18,8 @@ const DocumentImporter = ({ onDone, patient }) => {
 
   const done = () => {
     cleanImportSetup();
-    if (importStatus === 'DONE') {
-      clearDocuments();
+    if (status === 'DONE') {
+      clear();
     }
     onDone();
   };
@@ -29,24 +29,24 @@ const DocumentImporter = ({ onDone, patient }) => {
       <Text style={styles.title}>Import to Cloud</Text>
       <Divider style={{ backgroundColor: 'blue' }} />
       <View style={styles.body}>
-        {!importTasks?.length ? (
+        {!tasks?.length ? (
           <Text style={styles.bodyLine}>
-            Ready to import {importDocuments.length}{' '}
-            {importDocuments.length === 1 ? 'document' : 'documents'}
+            Ready to import {documents.length}{' '}
+            {documents.length === 1 ? 'document' : 'documents'}
           </Text>
         ) : null}
 
-        {importTasks?.length ? (
+        {tasks?.length ? (
           <Text style={styles.bodyLine}>
             Import ongoing{' '}
-            {`${importTasks.filter((t) => t.importStatus === 'DONE').length}/${
-              importTasks.length
+            {`${tasks.filter((t) => t.status === 'DONE').length}/${
+              tasks.length
             }`}
           </Text>
         ) : null}
 
-        {closingTask ? (
-          closingTask.importStatus === 'PENDING' ? (
+        {final ? (
+          final.status === 'PENDING' ? (
             <Text style={styles.bodyLine}>Finalisation ongoing</Text>
           ) : (
             <Text style={styles.bodyLine}>Done!</Text>
@@ -54,7 +54,7 @@ const DocumentImporter = ({ onDone, patient }) => {
         ) : null}
       </View>
       <Divider style={{ backgroundColor: 'blue' }} />
-      {importStatus === 'DONE' ? (
+      {status === 'DONE' ? (
         <View style={styles.controller}>
           <Button
             buttonStyle={styles.control}
@@ -69,14 +69,14 @@ const DocumentImporter = ({ onDone, patient }) => {
             type="outline"
             onPress={done}
             title="Cancel"
-            disabled={importStatus === 'ONGOING'}
+            disabled={status === 'ONGOING'}
           ></Button>
           <Button
             buttonStyle={styles.control}
             onPress={start}
             title="Start"
-            disabled={importStatus === 'ONGOING'}
-            loading={importStatus === 'ONGOING'}
+            disabled={status === 'ONGOING'}
+            loading={status === 'ONGOING'}
           ></Button>
         </View>
       )}

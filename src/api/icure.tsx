@@ -6,10 +6,10 @@ import {
   IccCryptoXApi,
   IccDocumentXApi,
   IccHcpartyXApi,
+  IccMessageXApi,
   IccPatientXApi,
   IccUserXApi,
   WebSession,
-  XHR,
 } from '@icure/api';
 import { IccAccesslogXApi } from '@icure/api/dist/icc-x-api/icc-accesslog-x-api';
 
@@ -21,9 +21,10 @@ export interface IcureAPI {
   accessLogApi: IccAccesslogXApi;
   contactApi: IccContactXApi;
   documentApi: IccDocumentXApi;
+  messageApi: IccMessageXApi;
 }
 
-export interface Credentials extends WebSession{
+export interface Credentials extends WebSession {
   username: string;
   password: string;
 }

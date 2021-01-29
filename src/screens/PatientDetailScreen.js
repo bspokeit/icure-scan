@@ -6,7 +6,7 @@ import ContactList from '../components/ContactList';
 import useContact from '../hooks/useContact';
 
 const PatientDetailScreen = ({ navigation }) => {
-  const patient = navigation.getParam('patient');
+  const patient = navigation.getParam('patient', null);
   const { fetchContacts } = useContact();
 
   useEffect(() => {

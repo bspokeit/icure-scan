@@ -1,41 +1,40 @@
+import { Patient } from '@icure/api';
 import { compact, fromPairs, last, toLower } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
+import { DOCUMENT_SERVICE_TAGS } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
-import { DOCUMENT_SERVICE_TAGS } from '../utils/contactHelper';
+import { ImportStatus } from '../context/reducer-action/ImportReducerActions';
+import {
+  ImportTask,
+  ImportTaskDocument,
+  ImportTaskStatus,
+  ImportTaskType,
+} from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
-import { taskID } from '../utils/importHelper';
 
-//  TODO:
-//    1. processTask should be based on task type
-//    2. we should have a tack dedicated context
-//    3. Rename image to document (more generic)
-//    4. Isolate build function in an helper file ?
-//    5. Create enum for status and types
-//    6. Avoid copying image in the tasks
-//    7. Handle failure in import flow
 export default () => {
   const {
     state: { currentUser },
   } = useContext(AuthContext);
 
   const {
-    state: { importDocuments },
-    setImportStatus,
-    setImportTasks,
-    updateTaskStatus,
-    setClosingTask,
+    state: { documents },
+    setStatus,
+    setTasks,
+    updateTask,
+    setFinal,
   } = useContext(ImportContext);
 
-  const buildNewContact = async (patient) => {
+  const buildNewContact = async (patient: Patient) => {
     try {
       const newContact = await api().contactApi.newInstance(
-        currentUser,
+        currentUser!!,
         patient,
         {
-          author: currentUser.id,
-          responsible: currentUser.healthcarePartyId,
+          author: currentUser!!.id,
+          responsible: currentUser!!.healthcarePartyId,
           subContacts: [],
           services: [],
         }
@@ -47,19 +46,24 @@ export default () => {
     }
   };
 
-  const buildNewDocument = async (image) => {
-    const ext = last(image.uri.split('.'));
+  //  TODO: cleanup this function and figure out if the message is required
+  const buildNewDocument = async (image: ImportTaskDocument) => {
+    const ext = last(image.uri!!.split('.')) || 'jpg';
     let mimeType = toLower(ext);
     mimeType =
       mimeType === 'jpg' ? 'jpeg' : mimeType === 'tif' ? 'tiff' : mimeType;
     try {
-      const document = await api().documentApi.newInstance(currentUser, null, {
-        name: `${api().cryptoApi.randomUuid()}-from-icure-scan`,
-        mainUti: api().documentApi.uti(
-          mimeType === 'pdf' ? 'application/pdf' : 'image/' + mimeType,
-          ext
-        ),
-      });
+      const document = await api().documentApi.newInstance(
+        currentUser!!,
+        await api().messageApi.newInstance(currentUser!!, {}),
+        {
+          name: `${api().cryptoApi.randomUuid()}-from-icure-scan`,
+          mainUti: api().documentApi.uti(
+            mimeType === 'pdf' ? 'application/pdf' : 'image/' + mimeType,
+            ext
+          ),
+        }
+      );
 
       return await api().documentApi.createDocument(document);
     } catch (e) {
@@ -67,22 +71,26 @@ export default () => {
     }
   };
 
-  const processTask = async (task) => {
+  const processTask = async (task: ImportTask) => {
     let service = null;
     let status = { succesfull: true, error: null };
 
     try {
-      const document = await buildNewDocument(task.image);
+      const document = await buildNewDocument(task.document!!);
+
+      if (!document) {
+        throw new Error(`Impossible to create Document for task: ${task}`);
+      }
 
       await api().documentApi.setDocumentAttachment(
-        document.id,
+        document.id!!,
         '',
-        await URI2Blob(task.image.uri)
+        await (await URI2Blob(task.document!!.uri)).arrayBuffer()
       );
 
       service = api()
         .contactApi.service()
-        .newInstance(currentUser, {
+        .newInstance(currentUser!!, {
           content: fromPairs([
             [
               'fr', // TODO: fix this hardcoding...
@@ -103,7 +111,7 @@ export default () => {
       };
     }
 
-    updateTaskStatus(task.id, 'DONE');
+    updateTask(task.id, ImportTaskStatus.Done);
 
     return {
       service,
@@ -112,25 +120,20 @@ export default () => {
   };
 
   const cleanImportSetup = async () => {
-    setImportTasks([]);
-    setClosingTask(null);
-    setImportStatus('PENDING');
+    setTasks([]);
+    setFinal(undefined);
+    setStatus(ImportStatus.Pending);
   };
 
-  const startImport = async (patient) => {
+  const startImport = async (patient: Patient) => {
     cleanImportSetup();
-    setImportStatus('ONGOING');
+    setStatus(ImportStatus.Ongoing);
 
-    const tasks = importDocuments.map((image) => {
-      return {
-        id: taskID(),
-        image,
-        type: 'DOCUMENT_IMPORT',
-        importStatus: 'PENDING',
-      };
+    const tasks: Array<ImportTask> = documents.map((doc) => {
+      return new ImportTask({ document: doc });
     });
 
-    setImportTasks(tasks);
+    setTasks(tasks);
 
     const services = [];
 
@@ -143,13 +146,8 @@ export default () => {
       console.error(error);
     }
 
-    const closingTasks = {
-      id: taskID(),
-      type: 'CONTACT_IMPORT',
-      importStatus: 'PENDING',
-    };
-
-    setClosingTask(closingTasks);
+    const closingTasks = new ImportTask({ type: ImportTaskType.Final });
+    setFinal(closingTasks);
 
     try {
       const newContact = await buildNewContact(patient);
@@ -164,14 +162,14 @@ export default () => {
         },
       ];
 
-      await api().contactApi.createContactWithUser(currentUser, newContact);
+      await api().contactApi.createContactWithUser(currentUser!!, newContact);
     } catch (error) {
       console.error(error);
     }
 
-    setClosingTask({ ...closingTasks, importStatus: 'DONE' });
+    setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
 
-    setImportStatus('DONE');
+    setStatus(ImportStatus.Done);
   };
 
   return { startImport, cleanImportSetup };

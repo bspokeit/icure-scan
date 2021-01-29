@@ -6,22 +6,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import { Context as ImportContext } from '../context/ImportContext';
+import { ImagePickerConverter } from '../models/core/import-task.model';
 
 const PatientImportDocumentScreen = ({ navigation }) => {
   const {
-    state: { importDocuments, importMode },
-    collectDocument,
-    setImportMode,
+    state: { documents, active },
+    collect,
+    activate,
   } = useContext(ImportContext);
 
   const patient = navigation.getParam('patient');
 
   const activateImportMode = async () => {
-    setImportMode(true);
+    activate(true);
   };
 
   const deactivateImportMode = async () => {
-    setImportMode(false);
+    activate(false);
     navigation.goBack();
   };
 
@@ -31,17 +32,9 @@ const PatientImportDocumentScreen = ({ navigation }) => {
       alert('Sorry, we need Camera permissions to make this work!');
     }
 
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 0.5,
-      allowsMultipleSelection: true,
-      base64: true,
-    });
+    let result = await ImagePicker.launchCameraAsync(IMPORT_OPTION);
 
-    if (!result.cancelled) {
-      collectDocument(result);
-    }
+    collect(ImagePickerConverter(result));
   };
 
   const galleryRequest = async () => {
@@ -50,23 +43,15 @@ const PatientImportDocumentScreen = ({ navigation }) => {
       alert('Sorry, we need MediaLibrary permissions to make this work!');
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 0.5,
-      allowsMultipleSelection: true,
-      base64: true,
-    });
+    let result = await ImagePicker.launchImageLibraryAsync(IMPORT_OPTION);
 
-    if (!result.cancelled) {
-      collectDocument(result);
-    }
+    collect(ImagePickerConverter(result));
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
-        {importDocuments.length ? (
+        {documents.length ? (
           <ImportDocumentGallery></ImportDocumentGallery>
         ) : null}
       </View>
@@ -84,7 +69,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
         <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
           <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
         </TouchableOpacity>
-        {importDocuments.length ? (
+        {documents.length ? (
           <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
             <Icon
               reverse
@@ -96,11 +81,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
           </TouchableOpacity>
         ) : null}
       </View>
-      <Overlay
-        overlayStyle={styles.overlayStyle}
-        isVisible={importMode}
-        fullscreen
-      >
+      <Overlay overlayStyle={styles.overlayStyle} isVisible={active} fullscreen>
         <DocumentImporter
           onDone={deactivateImportMode}
           patient={patient}
