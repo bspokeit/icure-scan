@@ -59,9 +59,7 @@ const PatientImportDocumentScreen: NavigationStackScreenComponent<Props> = ({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
-        {documents.length ? (
-          <ImportDocumentGallery></ImportDocumentGallery>
-        ) : null}
+        <ImportDocumentGallery></ImportDocumentGallery>
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
@@ -106,7 +104,8 @@ const styles = StyleSheet.create({
     marginTop: -20, // TODO: fihure out this margin shift
   },
   upperContainer: {
-    // marginBottom: 80,
+    height: '100%',
+    marginBottom: 80,
   },
   actionButtonBlock: {
     position: 'absolute',

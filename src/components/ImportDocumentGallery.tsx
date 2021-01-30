@@ -3,6 +3,7 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,6 +14,16 @@ const ImportDocumentGallery: React.FC = () => {
   const {
     state: { documents },
   } = useContext(ImportContext);
+
+  if (!documents || !documents.length) {
+    return (
+      <View style={styles.default}>
+        <Text style={styles.defaultText}>
+          Select files (.jpeg) or take new pictures...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -43,6 +54,14 @@ const ImportDocumentGallery: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  default: {
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: -100,
+  },
+  defaultText: {
+    textAlign: 'center',
+  },
   flatListStyle: {
     backgroundColor: 'white',
   },
