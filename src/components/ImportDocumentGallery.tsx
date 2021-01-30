@@ -9,7 +9,7 @@ import {
 import { Context as ImportContext } from '../context/ImportContext';
 import { navigate } from '../utils/navigationHelper';
 
-const ImportDocumentGallery = () => {
+const ImportDocumentGallery: React.FC = () => {
   const {
     state: { documents },
   } = useContext(ImportContext);
@@ -18,7 +18,7 @@ const ImportDocumentGallery = () => {
     <FlatList
       style={styles.flatListStyle}
       numColumns={2}
-      keyExtractor={(item) => item.uri}
+      keyExtractor={(item, index) => item.uri || index.toString()}
       data={documents}
       renderItem={({ item }) => (
         <View style={styles.imageContainerStyle}>

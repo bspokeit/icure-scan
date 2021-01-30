@@ -92,16 +92,16 @@ export default () => {
     return formattedUrls.map((v: string) => ({ url: v }));
   };
 
+  //  Currently we take the first content for a given documentId. In the future, we might support
+  //  multi content (multi attachment) document.
   const documentContent = (patientId: string, documentId: string) => {
-    //  Currently we take the first content for a given documentId. In the future, we might support
-    //  multi content (multi attachment) document.
-    const documentContent =
+    const docContent =
       documents && documents[patientId] && documents[patientId][documentId]
         ? documents[patientId][documentId]
         : {};
 
-    return _.isEmpty(documentContent)
-      ? documentContent[Object.keys(documentContent)[0]]
+    return !_.isEmpty(docContent)
+      ? docContent[Object.keys(docContent)[0]]
       : null;
   };
 

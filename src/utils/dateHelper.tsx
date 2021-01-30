@@ -93,7 +93,7 @@ export const dayString2Int = (dayStr: string): number | undefined => {
   return dayCandidate;
 };
 
-export const iCureDateParser = (iCureDate: number): DateStructure => {
+export const iCureDateParser = (iCureDate?: number): DateStructure => {
   if (!iCureDate || iCureDate.toString().length !== 8) {
     return {
       year: undefined,
@@ -232,7 +232,7 @@ export const iCureDateOfBirth2Age = (iCureDate: number) => {
   return `${parsedDate2Age(parsedDate)} ans`;
 };
 
-export const dateOfBirthInfo = (iCureDate: number) => {
+export const dateOfBirthInfo = (iCureDate?: number) => {
   const parsedDate = iCureDateParser(iCureDate);
 
   const dateRepresentation = parsedDate2String(parsedDate);

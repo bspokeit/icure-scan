@@ -1,11 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
+import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
 import { arrayBuffer2Base64 } from '../utils/formatHelper';
 
-const PatientListItem = ({ patient, onSelection }) => {
+interface Props {
+  patient: Patient;
+  onSelection: () => void;
+}
+
+const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
   return (
     <ListItem onPress={onSelection} bottomDivider>
       {patient.picture ? (

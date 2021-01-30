@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
+import { Credentials } from '../api/icure';
 
-const LoginForm = ({
+interface Props {
+  errorMessage?: string;
+  onSubmit: (_: Credentials) => void;
+  submitButtonText: string;
+  loginOngoing: boolean;
+  disabled: boolean;
+}
+
+const LoginForm: React.FC<Props> = ({
   errorMessage,
   onSubmit,
   submitButtonText,
@@ -19,7 +28,7 @@ const LoginForm = ({
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <Input
         label="Username"
         labelStyle={styles.labelStyle}
@@ -51,20 +60,18 @@ const LoginForm = ({
         disabled={disabled || !username || !password || loginOngoing}
         loading={loginOngoing}
       />
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    fontSize: 16,
-  },
   center: {
     alignItems: 'center',
   },
   labelStyle: {
     color: '#2089dc',
     margin: 15,
+    fontSize: 16,
   },
   submitButton: {
     margin: 15,

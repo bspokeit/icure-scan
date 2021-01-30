@@ -6,8 +6,21 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Card, Text } from 'react-native-elements';
 import { Context as CryptoContext } from '../context/CryptoContext';
 import useCrypto from '../hooks/useCrypto';
+import { HealthcareParty } from '../models';
 
-const KeyImporter = ({ hcp, headerText, buttonText, loadedText }) => {
+interface Props {
+  hcp: HealthcareParty;
+  headerText: string;
+  buttonText: string;
+  loadedText: string;
+}
+
+const KeyImporter: React.FC<Props> = ({
+  hcp,
+  headerText,
+  buttonText,
+  loadedText,
+}) => {
   const {
     state: { keys, keyImports },
   } = useContext(CryptoContext);

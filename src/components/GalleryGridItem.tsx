@@ -10,6 +10,7 @@ interface Props {
 
 const GalleryGridItem: React.FC<Props> = ({ patientId, documentId }) => {
   const [fullScreen, setFullScreen] = useState(false);
+
   const { fetchDocument, documentContent } = useDocument();
 
   useEffect(() => {

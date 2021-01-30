@@ -1,7 +1,7 @@
 import { Address } from '@icure/api';
 import { compact, find, first } from 'lodash';
 
-export const mainAddress = (addresses: Address[]): Address => {
+export const mainAddress = (addresses?: Address[]): Address => {
   return (
     find(addresses, (a) => {
       return a.addressType === Address.AddressTypeEnum.Home;
@@ -11,7 +11,7 @@ export const mainAddress = (addresses: Address[]): Address => {
   );
 };
 
-export const addressAsString = (addresses: Address[]): string => {
+export const addressAsString = (addresses?: Address[]): string => {
   const address = mainAddress(addresses);
 
   if (address) {
