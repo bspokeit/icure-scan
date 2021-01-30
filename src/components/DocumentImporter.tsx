@@ -86,6 +86,7 @@ const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
           <Text style={styles.bodyLine}>Finalisation ongoing</Text>
         ) : null}
       </View>
+      <Divider style={{ backgroundColor: 'blue' }} />
       <View style={styles.controller}>
         <Button
           buttonStyle={styles.control}
