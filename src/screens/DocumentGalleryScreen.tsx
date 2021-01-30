@@ -1,11 +1,20 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  NavigationStackScreenComponent,
+  NavigationStackScreenProps,
+  StackHeaderProps,
+} from 'react-navigation-stack';
 import DocumentGallery from '../components/DocumentGallery';
 
-const DocumentGalleryScreen = ({ navigation }) => {
-  const patient = navigation.getParam('patient');
-  const contact = navigation.getParam('contact');
+interface Props extends NavigationStackScreenProps {}
+
+const DocumentGalleryScreen: NavigationStackScreenComponent<Props> = ({
+  navigation,
+}) => {
+  const patient = navigation.state.params?.patient;
+  const contact = navigation.state.params?.contact;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -15,9 +24,10 @@ const DocumentGalleryScreen = ({ navigation }) => {
 };
 
 DocumentGalleryScreen.navigationOptions = ({ navigation }) => {
-  const patient = navigation.getParam('patient');
+  const patient = navigation.state.params?.patient;
+  const contact = navigation.state.params?.contact;
   return {
-    headerTitle: `${patient.firstName} ${patient.lastName}`,
+    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
   };
 };
 

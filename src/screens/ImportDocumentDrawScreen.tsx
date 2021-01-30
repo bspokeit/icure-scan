@@ -1,8 +1,14 @@
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import {
+  NavigationStackScreenComponent,
+  NavigationStackScreenProps,
+} from 'react-navigation-stack';
 
-const ImportDocumentDrawScreen = () => {
+interface Props extends NavigationStackScreenProps {}
+
+const ImportDocumentDrawScreen: NavigationStackScreenComponent<Props> = () => {
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
