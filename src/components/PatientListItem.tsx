@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 import { Patient } from '../models';
@@ -12,6 +12,14 @@ interface Props {
 }
 
 const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
+  const [dob, setDob] = useState('');
+  const [add, setAdd] = useState('');
+
+  useEffect(() => {
+    setDob(dateOfBirthInfo(patient.dateOfBirth));
+    setAdd(addressAsString(patient.addresses));
+  }, []);
+
   return (
     <ListItem onPress={onSelection} bottomDivider>
       {patient.picture ? (
@@ -36,16 +44,18 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
       )}
       <ListItem.Content>
         <ListItem.Title>{`${patient.firstName} ${patient.lastName}`}</ListItem.Title>
-        <ListItem.Subtitle>
-          <Text style={styles.subTitle}>
-            {dateOfBirthInfo(patient.dateOfBirth)}
-          </Text>
-        </ListItem.Subtitle>
-        <ListItem.Subtitle>
-          <Text style={styles.subTitle}>
-            {addressAsString(patient.addresses)}
-          </Text>
-        </ListItem.Subtitle>
+        {dob ? (
+          <ListItem.Subtitle>
+            <Text style={styles.subTitle}>{dob}</Text>
+          </ListItem.Subtitle>
+        ) : null}
+        {add ? (
+          <ListItem.Subtitle>
+            <Text style={styles.subTitle}>
+              {addressAsString(patient.addresses)}
+            </Text>
+          </ListItem.Subtitle>
+        ) : null}
       </ListItem.Content>
       <ListItem.Chevron />
     </ListItem>
