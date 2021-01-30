@@ -1,4 +1,3 @@
-import { Patient } from '@icure/api';
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { SearchBar } from 'react-native-elements';
@@ -12,6 +11,7 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import usePatient from '../hooks/usePatient';
+import { Patient } from '../models';
 
 interface Props extends NavigationStackScreenProps {}
 
@@ -37,7 +37,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
     loadLogs(currentUser!!);
   }, []);
 
-  const keyExtractor = (item: Patient) => item.id!!;
+  const keyExtractor = (item: Patient) => item.id;
 
   const renderItem = ({ item }: { item: Patient }) => (
     <PatientListItem

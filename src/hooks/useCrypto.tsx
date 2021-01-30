@@ -1,10 +1,10 @@
-import { HealthcareParty } from '@icure/api';
 import * as SecureStore from 'expo-secure-store';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { PRIVATE_KEY_POSTFIX_1, PRIVATE_KEY_POSTFIX_2 } from '../constant';
 import { Context as CryptoContext } from '../context/CryptoContext';
+import { HealthcareParty } from '../models';
 
 export default () => {
   const { setKeyImport, setKey, deleteKey } = useContext(CryptoContext);
@@ -71,7 +71,7 @@ export default () => {
   ): Promise<boolean> => {
     return api()
       .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(
-        hcp.id!!,
+        hcp.id,
         api().cryptoApi.utils.hex2ua(privateKey)
       )
       .then(() => {
@@ -85,13 +85,13 @@ export default () => {
 
   const clearPrivateKeyData = async (hcp: HealthcareParty): Promise<void> => {
     await removePrivateKeyFromStorage(hcp);
-    deleteKey(hcp.id!!);
+    deleteKey(hcp.id);
   };
 
   const importPrivateKeyFromStorage = async (
     hcp: HealthcareParty
   ): Promise<void> => {
-    setKeyImport(hcp.id!!, true);
+    setKeyImport(hcp.id, true);
 
     try {
       const privateKey = await getPrivateKeyFromStorage(hcp);
@@ -103,28 +103,28 @@ export default () => {
       const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
 
       if (keyImported) {
-        setKey(hcp.id!!, privateKey);
+        setKey(hcp.id, privateKey);
       } else {
         await clearPrivateKeyData(hcp);
       }
     } catch (err) {
       await clearPrivateKeyData(hcp);
     }
-    setKeyImport(hcp.id!!, false);
+    setKeyImport(hcp.id, false);
   };
 
   const importPrivateKey = async (
     hcp: HealthcareParty,
     privateKey: string
   ): Promise<void> => {
-    setKeyImport(hcp.id!!, true);
+    setKeyImport(hcp.id, true);
 
     try {
       const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
 
       if (keyImported) {
         await addPrivateKeyToStorage(hcp, privateKey);
-        setKey(hcp.id!!, privateKey);
+        setKey(hcp.id, privateKey);
       } else {
         await clearPrivateKeyData(hcp);
       }
@@ -133,12 +133,12 @@ export default () => {
       await clearPrivateKeyData(hcp);
     }
 
-    setKeyImport(hcp.id!!, true);
+    setKeyImport(hcp.id, true);
   };
 
   const importPrivateKeysFromStorage = async (hcps: Array<HealthcareParty>) => {
     _.forEach(hcps, (hcp) => {
-      setKeyImport(hcp.id!!, true);
+      setKeyImport(hcp.id, true);
     });
 
     return _.reduce(

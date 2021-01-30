@@ -1,4 +1,3 @@
-import { Patient } from '@icure/api';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -12,6 +11,7 @@ import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import { IMPORT_OPTION } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
+import { Patient } from '../models';
 import { ImagePickerConverter } from '../models/core/import-task.model';
 
 interface Props extends NavigationStackScreenProps {}
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   overlayStyle: {
     width: '90%',
-    height: '90%',
+    height: '60%',
   },
 });
 

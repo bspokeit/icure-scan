@@ -1,4 +1,3 @@
-import { Contact, Patient } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
@@ -7,6 +6,7 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import { ImportStatus } from '../context/reducer-action/ImportReducerActions';
+import { Contact, Document, Patient } from '../models';
 import {
   ImportTask,
   ImportTaskDocument,
@@ -83,7 +83,9 @@ export default () => {
     newContent: ProcessTaskNewContent
   ): Promise<void> => {
     try {
-      const document = await buildNewDocument(task.document!!);
+      const document: Document = new Document(
+        await buildNewDocument(task.document!!)
+      );
 
       if (!document) {
         throw new Error(`Impossible to create Document for task: ${task}`);
@@ -92,7 +94,7 @@ export default () => {
       newContent.documents.push(document);
 
       await api().documentApi.setDocumentAttachment(
-        document.id!!,
+        document.id,
         '',
         (await URI2Blob(task.document!!.uri)) as any
       );
@@ -179,7 +181,7 @@ export default () => {
 
       setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
 
-      collectContacts({ patientId: patient.id!!, contacts: [newContact] });
+      collectContacts({ patientId: patient.id, contacts: [newContact] });
     } catch (error) {
       //  Something wrong happened. The import flow should be stopped and created object cleaned up.
       console.error(error);

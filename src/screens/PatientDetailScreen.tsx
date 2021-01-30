@@ -1,4 +1,3 @@
-import { Patient } from '@icure/api';
 import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
@@ -9,6 +8,7 @@ import {
 } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
 import useContact from '../hooks/useContact';
+import { Patient } from '../models';
 
 interface Props extends NavigationStackScreenProps {}
 

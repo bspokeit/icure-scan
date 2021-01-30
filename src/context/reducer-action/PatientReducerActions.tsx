@@ -1,6 +1,5 @@
-import { Contact, Patient } from '@icure/api';
 import { groupBy, orderBy, uniqBy } from 'lodash';
-import { ActionMap } from '../../models';
+import { ActionMap, Contact, Patient } from '../../models';
 
 export type PatientContactState = {
   [patienId: string]: Array<Contact>;

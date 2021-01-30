@@ -1,5 +1,7 @@
-import { Contact, Document, Service } from '@icure/api';
 import * as ImagePicker from 'expo-image-picker';
+import { Contact } from './contact.model';
+import { Document } from './document.model';
+import { Service } from './service.model';
 
 export const taskID = (): string => {
   return Math.random().toString(36).substr(2, 9) + '';

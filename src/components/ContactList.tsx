@@ -1,10 +1,15 @@
 import React, { useContext } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import ContactListItem from '../components/ContactListItem';
 import { Context as PatientContext } from '../context/PatientContext';
+import { Patient } from '../models';
 import { navigate } from '../utils/navigationHelper';
+import ContactListItem from './ContactListItem';
 
-const ContactList = ({ patient }) => {
+interface Props {
+  patient: Patient;
+}
+
+const ContactList: React.FC<Props> = ({ patient }) => {
   const {
     state: { contacts },
   } = useContext(PatientContext);

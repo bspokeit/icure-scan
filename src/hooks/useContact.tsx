@@ -2,7 +2,6 @@ import {
   AbstractFilterService,
   FilterChainService,
   ListOfIds,
-  Patient,
 } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
@@ -10,6 +9,7 @@ import { getApi as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
+import { Patient } from '../models';
 import { FilterType } from '../utils/filterHelper';
 
 export default () => {
@@ -22,11 +22,11 @@ export default () => {
     try {
       const sfks = await api().cryptoApi.extractSFKsHierarchyFromDelegations(
         patient,
-        currentUser!!.healthcarePartyId
+        currentUser?.healthcarePartyId
       );
 
       const secretForeignKey = _.find(sfks, {
-        hcpartyId: currentUser!!.healthcarePartyId,
+        hcpartyId: currentUser?.healthcarePartyId,
       });
 
       if (!secretForeignKey || !secretForeignKey.extractedKeys.length) {
@@ -40,7 +40,7 @@ export default () => {
             (t) =>
               new AbstractFilterService({
                 $type: FilterType.ServiceByHcPartyTagCodeDateFilter,
-                healthcarePartyId: currentUser!!.healthcarePartyId,
+                healthcarePartyId: currentUser?.healthcarePartyId,
                 patientSecretForeignKey: secretForeignKey.extractedKeys[0],
                 tagType: t.type,
                 tagCode: t.code,
@@ -65,7 +65,7 @@ export default () => {
         } as ListOfIds
       );
 
-      collectContacts({ patientId: patient.id!!, contacts });
+      collectContacts({ patientId: patient.id, contacts });
     } catch (error) {
       console.error(error);
     }

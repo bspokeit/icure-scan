@@ -1,15 +1,17 @@
-import { Contact, Service } from '@icure/api';
+import * as _ from 'lodash';
 import { findIndex } from 'lodash';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
+import { Contact, Service } from '../models';
 
 export const extractContactServices = (contact: Contact): Service[] => {
   if (!contact || !contact.services || !contact.services.length) {
     return [];
   }
 
-  const docServices = contact.services.filter((s: Service) => {
+  const docServices = _.filter(contact.services || [], (s) => {
     return (
       !!s &&
+      !!s.id &&
       !!s.tags &&
       s.tags.length >= 2 &&
       DOCUMENT_SERVICE_TAGS.every((docTag) => {
@@ -23,7 +25,7 @@ export const extractContactServices = (contact: Contact): Service[] => {
     );
   });
 
-  return docServices;
+  return docServices as Service[];
 };
 
 export const extractDocumentIdFromService = (

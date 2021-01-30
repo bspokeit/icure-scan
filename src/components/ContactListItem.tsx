@@ -1,12 +1,24 @@
+
 import { first } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import DocumentListItem from '../components/DocumentListItem';
 import useDocument from '../hooks/useDocument';
+import { Contact, Patient } from '../models';
+import DocumentListItem from './DocumentListItem';
 
-const ContactListItem = ({ patient, contact, onSelection }) => {
+interface Props {
+  patient: Patient;
+  contact: Contact;
+  onSelection: () => void;
+}
+
+const ContactListItem: React.FC<Props> = ({
+  patient,
+  contact,
+  onSelection,
+}) => {
   const { fetchContactDocumentIds } = useDocument();
   return (
     <ListItem onPress={onSelection} bottomDivider>

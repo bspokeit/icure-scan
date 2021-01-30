@@ -1,5 +1,5 @@
-import { HealthcareParty, User } from '@icure/api';
 import React, { createContext, useReducer } from 'react';
+import { HealthcareParty, User } from '../models';
 import {
   AuthAction,
   AuthActionTypes,

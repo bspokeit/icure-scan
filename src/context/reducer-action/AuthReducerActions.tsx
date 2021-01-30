@@ -1,5 +1,4 @@
-import { HealthcareParty, User, XHR } from '@icure/api';
-import { ActionMap } from '../../models';
+import { ActionMap, HealthcareParty, User } from '../../models';
 
 export interface AuthorizationHeader {
   Authorization: string;

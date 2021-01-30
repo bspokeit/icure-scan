@@ -5,7 +5,12 @@ import { Avatar } from 'react-native-elements';
 import { Context as PatientContext } from '../context/PatientContext';
 import useDocument from '../hooks/useDocument';
 
-const DocumentListItem = ({ patientId, documentId }) => {
+interface Props {
+  patientId: string;
+  documentId?: string;
+}
+
+const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
   const {
     state: { documents },
   } = useContext(PatientContext);
@@ -17,12 +22,17 @@ const DocumentListItem = ({ patientId, documentId }) => {
     }
   }, [documentId]);
 
-  const getContent = () => {
+  const getContent = (docId?: string) => {
     //  Currently we take the first content for a given documentId. In the future, we might support
     //  multi content (multi attachment) document.
+
+    if (!docId) {
+      return null;
+    }
+
     const documentContent =
-      documents && documents[patientId] && documents[patientId][documentId]
-        ? documents[patientId][documentId]
+      documents && documents[patientId] && documents[patientId][docId]
+        ? documents[patientId][docId]
         : {};
 
     return !isEmpty(documentContent)
@@ -30,16 +40,9 @@ const DocumentListItem = ({ patientId, documentId }) => {
       : null;
   };
 
-  return (
-    <View>
-      {getContent() ? (
-        <Avatar
-          source={{
-            uri: getContent(),
-          }}
-          size="medium"
-        />
-      ) : (
+  if (!documentId || !getContent(documentId)) {
+    return (
+      <View>
         <Avatar
           size="medium"
           icon={{
@@ -49,7 +52,18 @@ const DocumentListItem = ({ patientId, documentId }) => {
             color: 'grey',
           }}
         />
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View>
+      <Avatar
+        source={{
+          uri: getContent(documentId)!!,
+        }}
+        size="medium"
+      />
     </View>
   );
 };

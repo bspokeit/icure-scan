@@ -39,7 +39,7 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
 
   useEffect(() => {
     autoImports.forEach((ai) => {
-      ai.imported = !!keys[ai.id!!] && !keyImports[ai.id!!];
+      ai.imported = !!keys[ai.id] && !keyImports[ai.id];
     });
 
     if (autoImports.every((ai) => ai.imported)) {

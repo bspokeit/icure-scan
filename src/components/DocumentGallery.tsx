@@ -1,9 +1,15 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import useDocument from '../hooks/useDocument';
+import { Contact, Patient } from '../models';
 import GalleryGridItem from './GalleryGridItem';
 
-const DocumentGallery = ({ patient, contact }) => {
+interface Props {
+  patient: Patient;
+  contact: Contact;
+}
+
+const DocumentGallery: React.FC<Props> = ({ patient, contact }) => {
   const { fetchContactDocumentIds } = useDocument();
 
   return (

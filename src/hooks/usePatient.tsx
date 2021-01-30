@@ -1,8 +1,8 @@
-import { Patient, User } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as PatientContext } from '../context/PatientContext';
+import { Patient, User } from '../models';
 
 export default () => {
   const { setSearching, setLogs, setList } = useContext(PatientContext);

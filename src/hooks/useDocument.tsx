@@ -1,8 +1,8 @@
-import { Contact, Patient } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { Context as PatientContext } from '../context/PatientContext';
+import { Contact, Patient } from '../models';
 import {
   extractContactServices,
   extractDocumentIdFromService,
@@ -79,7 +79,7 @@ export default () => {
 
     const formattedUrls = _.chain(documentIds)
       .map((docId) => {
-        return documents[patient.id!!][docId];
+        return documents[patient.id][docId];
       })
       .map((dc) => {
         return !!dc ? Object.values(dc) : undefined;

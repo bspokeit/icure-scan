@@ -1,5 +1,5 @@
-import { Patient } from '@icure/api';
 import React, { createContext, useReducer } from 'react';
+import { Patient } from '../models';
 import {
   CollectContactActionPayload,
   collectContactsAction,
