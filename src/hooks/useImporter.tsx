@@ -1,10 +1,11 @@
-import { Patient } from '@icure/api';
+import { Contact, Patient } from '@icure/api';
 import { compact, fromPairs, last, toLower } from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
+import { Context as PatientContext } from '../context/PatientContext';
 import { ImportStatus } from '../context/reducer-action/ImportReducerActions';
 import {
   ImportTask,
@@ -14,10 +15,14 @@ import {
 } from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
 
+// TODO: better handle error in the flow and cleanup if something goes wrong
+
 export default () => {
   const {
     state: { currentUser },
   } = useContext(AuthContext);
+
+  const { collectContacts } = useContext(PatientContext);
 
   const {
     state: { documents },
@@ -85,7 +90,7 @@ export default () => {
       await api().documentApi.setDocumentAttachment(
         document.id!!,
         '',
-        await (await URI2Blob(task.document!!.uri)).arrayBuffer()
+        (await URI2Blob(task.document!!.uri)) as any
       );
 
       service = api()
@@ -150,10 +155,10 @@ export default () => {
     setFinal(closingTasks);
 
     try {
-      const newContact = await buildNewContact(patient);
+      const contact = await buildNewContact(patient);
 
-      newContact.services = compact([...services]);
-      newContact.subContacts = [
+      contact.services = compact([...services]);
+      contact.subContacts = [
         {
           status: 64,
           services: services.map((s) => {
@@ -162,7 +167,12 @@ export default () => {
         },
       ];
 
-      await api().contactApi.createContactWithUser(currentUser!!, newContact);
+      const newContact: Contact = await api().contactApi.createContactWithUser(
+        currentUser!!,
+        contact
+      );
+
+      collectContacts({ patientId: patient.id!!, contacts: [newContact] });
     } catch (error) {
       console.error(error);
     }

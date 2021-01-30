@@ -1,21 +1,31 @@
+import { Patient } from '@icure/api';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  NavigationStackScreenComponent,
+  NavigationStackScreenProps,
+} from 'react-navigation-stack';
 import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
+import { IMPORT_OPTION } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { ImagePickerConverter } from '../models/core/import-task.model';
 
-const PatientImportDocumentScreen = ({ navigation }) => {
+interface Props extends NavigationStackScreenProps {}
+
+const PatientImportDocumentScreen: NavigationStackScreenComponent<Props> = ({
+  navigation,
+}) => {
   const {
     state: { documents, active },
     collect,
     activate,
   } = useContext(ImportContext);
 
-  const patient = navigation.getParam('patient');
+  const patient: Patient = navigation.state.params?.patient;
 
   const activateImportMode = async () => {
     activate(true);
@@ -33,7 +43,6 @@ const PatientImportDocumentScreen = ({ navigation }) => {
     }
 
     let result = await ImagePicker.launchCameraAsync(IMPORT_OPTION);
-
     collect(ImagePickerConverter(result));
   };
 
@@ -44,7 +53,6 @@ const PatientImportDocumentScreen = ({ navigation }) => {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync(IMPORT_OPTION);
-
     collect(ImagePickerConverter(result));
   };
 
@@ -57,14 +65,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
-          <Icon
-            reverse
-            raised
-            name="images"
-            type="ionicon"
-            color="#00aced"
-            style={styles.actionButtonStyle}
-          />
+          <Icon reverse raised name="images" type="ionicon" color="#00aced" />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
           <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
@@ -81,7 +82,7 @@ const PatientImportDocumentScreen = ({ navigation }) => {
           </TouchableOpacity>
         ) : null}
       </View>
-      <Overlay overlayStyle={styles.overlayStyle} isVisible={active} fullscreen>
+      <Overlay overlayStyle={styles.overlayStyle} isVisible={active} fullScreen>
         <DocumentImporter
           onDone={deactivateImportMode}
           patient={patient}
@@ -92,9 +93,9 @@ const PatientImportDocumentScreen = ({ navigation }) => {
 };
 
 PatientImportDocumentScreen.navigationOptions = ({ navigation }) => {
-  const patient = navigation.getParam('patient');
+  const patient: Patient = navigation.state.params?.patient;
   return {
-    headerTitle: `${patient.firstName} ${patient.lastName}`,
+    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
   };
 };
 
