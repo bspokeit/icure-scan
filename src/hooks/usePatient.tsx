@@ -5,7 +5,9 @@ import { Context as PatientContext } from '../context/PatientContext';
 import { Patient, User } from '../models';
 
 export default () => {
-  const { setSearching, setLogs, setList } = useContext(PatientContext);
+  const { setSearching, setLogs, setList, resetSearch } = useContext(
+    PatientContext
+  );
 
   const loadLogs = async (user: User): Promise<void> => {
     try {
@@ -53,6 +55,10 @@ export default () => {
   };
 
   const searchPatients = async (user: User, term: string): Promise<void> => {
+    if (!term) {
+      resetSearch();
+      return;
+    }
     try {
       setSearching(true);
       const search = await api().patientApi.findByNameBirthSsinAutoWithUser(
