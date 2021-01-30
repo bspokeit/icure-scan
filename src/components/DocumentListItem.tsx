@@ -1,8 +1,6 @@
-import { isEmpty } from 'lodash';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import { Context as PatientContext } from '../context/PatientContext';
 import useDocument from '../hooks/useDocument';
 
 interface Props {
@@ -11,10 +9,7 @@ interface Props {
 }
 
 const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
-  const {
-    state: { documents },
-  } = useContext(PatientContext);
-  const { fetchDocument } = useDocument();
+  const { fetchDocument, documentContent } = useDocument();
 
   useEffect(() => {
     if (!!documentId) {
@@ -22,25 +17,7 @@ const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
     }
   }, [documentId]);
 
-  const getContent = (docId?: string) => {
-    //  Currently we take the first content for a given documentId. In the future, we might support
-    //  multi content (multi attachment) document.
-
-    if (!docId) {
-      return null;
-    }
-
-    const documentContent =
-      documents && documents[patientId] && documents[patientId][docId]
-        ? documents[patientId][docId]
-        : {};
-
-    return !isEmpty(documentContent)
-      ? documentContent[Object.keys(documentContent)[0]]
-      : null;
-  };
-
-  if (!documentId || !getContent(documentId)) {
+  if (!documentId || !documentContent(patientId, documentId)) {
     return (
       <View>
         <Avatar
@@ -60,7 +37,7 @@ const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
     <View>
       <Avatar
         source={{
-          uri: getContent(documentId)!!,
+          uri: documentContent(patientId, documentId)!!,
         }}
         size="medium"
       />

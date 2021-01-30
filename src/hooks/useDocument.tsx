@@ -92,5 +92,23 @@ export default () => {
     return formattedUrls.map((v: string) => ({ url: v }));
   };
 
-  return { fetchDocument, fetchContactDocumentIds, fetchContactAttachmentURLs };
+  const documentContent = (patientId: string, documentId: string) => {
+    //  Currently we take the first content for a given documentId. In the future, we might support
+    //  multi content (multi attachment) document.
+    const documentContent =
+      documents && documents[patientId] && documents[patientId][documentId]
+        ? documents[patientId][documentId]
+        : {};
+
+    return _.isEmpty(documentContent)
+      ? documentContent[Object.keys(documentContent)[0]]
+      : null;
+  };
+
+  return {
+    fetchDocument,
+    fetchContactDocumentIds,
+    fetchContactAttachmentURLs,
+    documentContent,
+  };
 };
