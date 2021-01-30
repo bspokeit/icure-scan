@@ -1,5 +1,5 @@
 import { Contact, Patient } from '@icure/api';
-import { compact, fromPairs, last, toLower } from 'lodash';
+import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
@@ -12,6 +12,7 @@ import {
   ImportTaskDocument,
   ImportTaskStatus,
   ImportTaskType,
+  ProcessTaskNewContent,
 } from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
 
@@ -30,6 +31,7 @@ export default () => {
     setTasks,
     updateTask,
     setFinal,
+    reset,
   } = useContext(ImportContext);
 
   const buildNewContact = async (patient: Patient) => {
@@ -53,8 +55,8 @@ export default () => {
 
   //  TODO: cleanup this function and figure out if the message is required
   const buildNewDocument = async (image: ImportTaskDocument) => {
-    const ext = last(image.uri!!.split('.')) || 'jpg';
-    let mimeType = toLower(ext);
+    const ext = _.last(image.uri!!.split('.')) || 'jpg';
+    let mimeType = _.toLower(ext);
     mimeType =
       mimeType === 'jpg' ? 'jpeg' : mimeType === 'tif' ? 'tiff' : mimeType;
     try {
@@ -76,10 +78,10 @@ export default () => {
     }
   };
 
-  const processTask = async (task: ImportTask) => {
-    let service = null;
-    let status = { succesfull: true, error: null };
-
+  const processTask = async (
+    task: ImportTask,
+    newContent: ProcessTaskNewContent
+  ): Promise<void> => {
     try {
       const document = await buildNewDocument(task.document!!);
 
@@ -87,16 +89,18 @@ export default () => {
         throw new Error(`Impossible to create Document for task: ${task}`);
       }
 
+      newContent.documents.push(document);
+
       await api().documentApi.setDocumentAttachment(
         document.id!!,
         '',
         (await URI2Blob(task.document!!.uri)) as any
       );
 
-      service = api()
+      const service = api()
         .contactApi.service()
         .newInstance(currentUser!!, {
-          content: fromPairs([
+          content: _.fromPairs([
             [
               'fr', // TODO: fix this hardcoding...
               {
@@ -108,30 +112,24 @@ export default () => {
           tags: DOCUMENT_SERVICE_TAGS,
           label: 'imported document',
         });
+
+      if (!service) {
+        throw new Error(
+          `Impossible to create Service for document: ${document}`
+        );
+      }
+
+      newContent.services.push(service);
+      updateTask(task.id, ImportTaskStatus.Done);
     } catch (error) {
       console.error(error);
-      status = {
-        succesfull: false,
-        error,
-      };
+      updateTask(task.id, ImportTaskStatus.Done);
+      throw error;
     }
-
-    updateTask(task.id, ImportTaskStatus.Done);
-
-    return {
-      service,
-      status,
-    };
-  };
-
-  const cleanImportSetup = async () => {
-    setTasks([]);
-    setFinal(undefined);
-    setStatus(ImportStatus.Pending);
   };
 
   const startImport = async (patient: Patient) => {
-    cleanImportSetup();
+    reset();
     setStatus(ImportStatus.Ongoing);
 
     const tasks: Array<ImportTask> = documents.map((doc) => {
@@ -140,15 +138,20 @@ export default () => {
 
     setTasks(tasks);
 
-    const services = [];
+    //  This object is responsible to collect all new content for further treatment or cleanup
+    const newContent: ProcessTaskNewContent = {
+      services: [],
+      documents: [],
+    };
 
     try {
       for (const task of tasks) {
-        const { service } = await processTask(task);
-        services.push(service);
+        await processTask(task, newContent);
       }
     } catch (error) {
+      //  Something wrong happened. The import flow should be stopped and created object cleaned up.
       console.error(error);
+      return cleanAfterError(newContent);
     }
 
     const closingTasks = new ImportTask({ type: ImportTaskType.Final });
@@ -157,11 +160,11 @@ export default () => {
     try {
       const contact = await buildNewContact(patient);
 
-      contact.services = compact([...services]);
+      contact.services = _.chain(newContent.services).compact().value();
       contact.subContacts = [
         {
           status: 64,
-          services: services.map((s) => {
+          services: contact.services.map((s) => {
             return { serviceId: s.id };
           }),
         },
@@ -172,15 +175,60 @@ export default () => {
         contact
       );
 
+      newContent.contact = newContact;
+
+      setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
+
       collectContacts({ patientId: patient.id!!, contacts: [newContact] });
     } catch (error) {
+      //  Something wrong happened. The import flow should be stopped and created object cleaned up.
       console.error(error);
+      setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
+      return cleanAfterError(newContent);
     }
-
-    setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
 
     setStatus(ImportStatus.Done);
   };
 
-  return { startImport, cleanImportSetup };
+  /**
+   * Note: currently the server returns 500 Internal Servor Error on delete requests...
+   * The triggers a exception from the XHRError construtor of the icc-api
+   * (error.message is not defined and conflict with defined typings...)
+   */
+  const cleanAfterError = async (
+    contentToClean: ProcessTaskNewContent
+  ): Promise<void> => {
+    const documentIdsToClean = _.chain(contentToClean.documents)
+      .compact()
+      .map('id')
+      .compact()
+      .value();
+
+    const contactToClean = contentToClean.contact;
+
+    try {
+      for (const docId of documentIdsToClean) {
+        try {
+          await api().documentApi.deleteAttachment(docId);
+        } catch (error) {
+          //  Nothing else to do...
+        }
+      }
+      await api().documentApi.deleteDocument(documentIdsToClean.join(','));
+    } catch (error) {
+      //  Nothing else to do...
+    }
+
+    if (contactToClean && contactToClean.id) {
+      try {
+        await api().contactApi.deleteContacts(contactToClean.id);
+      } catch (error) {
+        //  Nothing else to do...
+      }
+    }
+
+    setStatus(ImportStatus.Error);
+  };
+
+  return { startImport };
 };

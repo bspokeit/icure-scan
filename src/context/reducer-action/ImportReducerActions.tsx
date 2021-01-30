@@ -9,12 +9,13 @@ export enum ImportStatus {
   Pending = 'PENDING',
   Ongoing = 'ONGOING',
   Done = 'DONE',
+  Error = 'ERROR'
 }
 
 export interface ImportState {
   active: boolean;
-  status: ImportStatus;
   documents: ImportTaskDocument[];
+  status: ImportStatus;
   tasks: ImportTask[];
   final?: ImportTask;
 }
@@ -22,6 +23,7 @@ export interface ImportState {
 export enum ImportActionTypes {
   Collect = 'COLLECT',
   Clear = 'CLEAR',
+  Reset = 'RESET',
   Activate = 'SET_MODE',
   SetStatus = 'SET_STATUS',
   SetTasks = 'SET_TASKS',
@@ -32,6 +34,7 @@ export enum ImportActionTypes {
 export type ImportActionPayloadTypes = {
   [ImportActionTypes.Collect]: ImportTaskDocument;
   [ImportActionTypes.Clear]: undefined;
+  [ImportActionTypes.Reset]: undefined;
   [ImportActionTypes.Activate]: boolean;
   [ImportActionTypes.SetStatus]: ImportStatus;
   [ImportActionTypes.SetTasks]: Array<ImportTask>;

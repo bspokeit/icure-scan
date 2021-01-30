@@ -1,3 +1,4 @@
+import { Contact, Document, Service } from '@icure/api';
 import * as ImagePicker from 'expo-image-picker';
 
 export const taskID = (): string => {
@@ -46,3 +47,9 @@ export class ImportTaskDocument {
 export const ImagePickerConverter = (output: ImagePicker.ImagePickerResult) => {
   return new ImportTaskDocument({ ...output });
 };
+
+export interface ProcessTaskNewContent {
+  services: Array<Service>;
+  documents: Array<Document>;
+  contact?: Contact;
+}

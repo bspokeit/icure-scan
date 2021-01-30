@@ -8,21 +8,68 @@ const DocumentImporter = ({ onDone, patient }) => {
   const {
     state: { documents, status, tasks, final },
     clear,
+    activate,
+    reset,
   } = useContext(ImportContext);
 
-  const { startImport, cleanImportSetup } = useImporter();
+  const { startImport } = useImporter();
 
   const start = async () => {
     await startImport(patient);
   };
 
   const done = () => {
-    cleanImportSetup();
-    if (status === 'DONE') {
-      clear();
-    }
+    reset();
+    clear();
     onDone();
   };
+
+  const cancel = () => {
+    reset();
+    activate(false);
+  };
+
+  if (status === 'ERROR') {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Import to Cloud</Text>
+        <Divider style={{ backgroundColor: 'blue' }} />
+        <View style={styles.body}>
+          <Text style={styles.bodyLine}>
+            Something went wrong! Please, try again.
+          </Text>
+        </View>
+        <Divider style={{ backgroundColor: 'blue' }} />
+        <View style={styles.controller}>
+          <Button
+            buttonStyle={styles.control}
+            onPress={done}
+            title="Ok"
+          ></Button>
+        </View>
+      </View>
+    );
+  }
+
+  if (status === 'DONE') {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Import to Cloud</Text>
+        <Divider style={{ backgroundColor: 'blue' }} />
+        <View style={styles.body}>
+          <Text style={styles.bodyLine}>Import is done!</Text>
+        </View>
+        <Divider style={{ backgroundColor: 'blue' }} />
+        <View style={styles.controller}>
+          <Button
+            buttonStyle={styles.control}
+            onPress={done}
+            title="Ok"
+          ></Button>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -45,12 +92,8 @@ const DocumentImporter = ({ onDone, patient }) => {
           </Text>
         ) : null}
 
-        {final ? (
-          final.status === 'PENDING' ? (
-            <Text style={styles.bodyLine}>Finalisation ongoing</Text>
-          ) : (
-            <Text style={styles.bodyLine}>Done!</Text>
-          )
+        {final && final.status === 'PENDING' ? (
+          <Text style={styles.bodyLine}>Finalisation ongoing</Text>
         ) : null}
       </View>
       <Divider style={{ backgroundColor: 'blue' }} />
@@ -67,7 +110,7 @@ const DocumentImporter = ({ onDone, patient }) => {
           <Button
             buttonStyle={styles.control}
             type="outline"
-            onPress={done}
+            onPress={cancel}
             title="Cancel"
             disabled={status === 'ONGOING'}
           ></Button>

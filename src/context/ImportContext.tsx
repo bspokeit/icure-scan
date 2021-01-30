@@ -23,6 +23,13 @@ const importReducer = (
       };
     case ImportActionTypes.Clear:
       return { ...state, documents: [] };
+    case ImportActionTypes.Reset:
+      return {
+        ...state,
+        tasks: [],
+        final: undefined,
+        status: ImportStatus.Pending,
+      };
     case ImportActionTypes.Activate:
       return { ...state, active: action.payload };
     case ImportActionTypes.SetStatus:
@@ -89,6 +96,12 @@ const setFinal = (dispatch: React.Dispatch<ImportAction>) => async (
   dispatch({ type: ImportActionTypes.SetFinal, payload: task });
 };
 
+const reset = (
+  dispatch: React.Dispatch<ImportAction>
+) => async (): Promise<void> => {
+  dispatch({ type: ImportActionTypes.Reset });
+};
+
 const defaultImportState: ImportState = {
   active: false,
   status: ImportStatus.Pending,
@@ -99,6 +112,7 @@ const defaultImportState: ImportState = {
 const defaultImportDispatcher = {
   collect: (_a: ImportTaskDocument) => Promise.resolve(),
   clear: () => Promise.resolve(),
+  reset: () => Promise.resolve(),
   activate: (_a: boolean) => Promise.resolve(),
   setStatus: (_a: ImportStatus) => Promise.resolve(),
   setTasks: (_a: Array<ImportTask>) => Promise.resolve(),
@@ -110,6 +124,7 @@ export const Context = createContext<{
   state: ImportState;
   collect: (taskDoc: ImportTaskDocument) => Promise<void>;
   clear: () => Promise<void>;
+  reset: () => Promise<void>;
   activate: (active: boolean) => Promise<void>;
   setStatus: (status: ImportStatus) => Promise<void>;
   setTasks: (tasks: Array<ImportTask>) => Promise<void>;
@@ -126,6 +141,7 @@ export const Provider: React.FC = ({ children }) => {
   const dispatcher = {
     collect: collect(dispatch),
     clear: clear(dispatch),
+    reset: reset(dispatch),
     activate: activate(dispatch),
     setStatus: setStatus(dispatch),
     setTasks: setTasks(dispatch),
