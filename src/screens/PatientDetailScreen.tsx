@@ -1,12 +1,21 @@
+import { Patient } from '@icure/api';
 import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  NavigationStackScreenComponent,
+  NavigationStackScreenProps,
+} from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
 import useContact from '../hooks/useContact';
 
-const PatientDetailScreen = ({ navigation }) => {
-  const patient = navigation.getParam('patient', null);
+interface Props extends NavigationStackScreenProps {}
+
+const PatientDetailScreen: NavigationStackScreenComponent<Props> = ({
+  navigation,
+}) => {
+  const patient: Patient = navigation.state.params?.patient;
   const { fetchContacts } = useContact();
 
   useEffect(() => {
@@ -31,9 +40,9 @@ const PatientDetailScreen = ({ navigation }) => {
 };
 
 PatientDetailScreen.navigationOptions = ({ navigation }) => {
-  const patient = navigation.getParam('patient');
+  const patient: Patient = navigation.state.params?.patient;
   return {
-    headerTitle: `${patient.firstName} ${patient.lastName}`,
+    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
   };
 };
 
@@ -46,8 +55,7 @@ const styles = StyleSheet.create({
   actionButtonBlock: {
     position: 'absolute',
     height: 80,
-    width: '100%',
-    left: 0,
+    width: 110,
     right: 0,
     bottom: 0,
     paddingRight: 20,
