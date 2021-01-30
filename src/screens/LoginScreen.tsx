@@ -23,7 +23,7 @@ const LoginScreen: NavigationSwitchScreenComponent<Props> = () => {
         errorMessage={error}
         onSubmit={login}
         submitButtonText={!!authHeader ? 'You are logged in!' : 'Log in'}
-        loginOngoing={ongoing && !authHeader}
+        loginOngoing={!!ongoing && !authHeader}
         disabled={!!authHeader}
       />
     </SafeAreaView>

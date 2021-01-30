@@ -9,6 +9,7 @@ import {
 import { CREDENTIAL_KEY } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { AuthorizationHeader } from '../context/reducer-action/AuthReducerActions';
+import { User } from '../models';
 import { navigate } from '../utils/navigationHelper';
 
 export default () => {
@@ -54,7 +55,7 @@ export default () => {
         initApi({ username, password });
 
         const currentUser = await api().userApi.getCurrentUser();
-        setUser(currentUser);
+        setUser(currentUser as User);
 
         const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
         setHcp(currentHcp);

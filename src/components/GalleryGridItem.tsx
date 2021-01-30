@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   imagePlaceholderStyle: {
-    backgroundColor: 'blue',
+    backgroundColor: '#C0C0C0',
   },
 });
 
