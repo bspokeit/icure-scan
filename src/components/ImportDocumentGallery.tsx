@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import {
   FlatList,
   Image,
@@ -7,10 +7,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { MAIN_COLOR } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { navigate } from '../utils/navigationHelper';
 
 const ImportDocumentGallery: React.FC = () => {
+  const flatListRef = useRef<FlatList<any>>() as React.MutableRefObject<
+    FlatList<any>
+  >;
+
   const {
     state: { documents },
   } = useContext(ImportContext);
@@ -27,12 +32,14 @@ const ImportDocumentGallery: React.FC = () => {
 
   return (
     <FlatList
-      style={styles.flatListStyle}
+      style={styles.flatList}
       numColumns={2}
       keyExtractor={(item, index) => item.uri || index.toString()}
       data={documents}
+      ref={flatListRef}
+      onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
       renderItem={({ item }) => (
-        <View style={styles.imageContainerStyle}>
+        <View style={styles.container}>
           <TouchableOpacity
             key={item.uri}
             style={{ flex: 1 }}
@@ -54,25 +61,24 @@ const ImportDocumentGallery: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  flatList: { marginBottom: 72 },
   default: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: -100,
+    marginTop: 100,
   },
   defaultText: {
     textAlign: 'center',
+    color: MAIN_COLOR,
   },
-  flatListStyle: {
-    backgroundColor: 'white',
-  },
-  imageContainerStyle: {
+  container: {
     flex: 1,
-    flexDirection: 'column',
-    margin: 1,
+    margin: 6,
   },
   imageStyle: {
-    height: 120,
+    height: 140,
     width: '100%',
+    borderRadius: 6,
   },
 });
 
