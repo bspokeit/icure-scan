@@ -75,6 +75,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         loadingProps={{ color: BLUE, size: 'small' }}
         containerStyle={styles.searchContainer}
         inputContainerStyle={styles.searchInput}
+        searchIcon={{ color: BLUE }}
       />
       <FlatList
         keyExtractor={keyExtractor}
