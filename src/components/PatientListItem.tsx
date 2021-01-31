@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
-import { BLUE, DEFAULT_IMAGE_BACKGROUND, LIGHT_GREY } from '../constant';
+import { BLUE, DEFAULT_IMAGE_BACKGROUND, GREY, LIGHT_GREY } from '../constant';
 import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
@@ -48,7 +48,9 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
         />
       )}
       <ListItem.Content>
-        <ListItem.Title>{`${patient.firstName} ${patient.lastName}`}</ListItem.Title>
+        <ListItem.Title
+          style={styles.title}
+        >{`${patient.firstName} ${patient.lastName}`}</ListItem.Title>
         {dob ? (
           <ListItem.Subtitle>
             <Text style={styles.subTitle}>{dob}</Text>
@@ -62,7 +64,7 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
           </ListItem.Subtitle>
         ) : null}
       </ListItem.Content>
-      <ListItem.Chevron color={BLUE} />
+      <ListItem.Chevron color={GREY} />
     </ListItem>
   );
 };
@@ -75,8 +77,12 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     borderRadius: 8,
   },
+  title: {
+    color: GREY,
+  },
   subTitle: {
     fontSize: 12,
+    color: LIGHT_GREY,
   },
 });
 

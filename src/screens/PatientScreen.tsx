@@ -7,6 +7,7 @@ import {
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
+import PatientHeader from '../components/PatientHeader';
 import { GREEN } from '../constant';
 import useContact from '../hooks/useContact';
 import { Patient } from '../models';
@@ -25,7 +26,16 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <ContactList patient={patient}></ContactList>
+      <View style={styles.header}>
+        <PatientHeader
+          patient={patient}
+          goBack={() => navigation.goBack()}
+        ></PatientHeader>
+      </View>
+      <View style={styles.list}>
+        <ContactList patient={patient}></ContactList>
+      </View>
+
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -40,18 +50,25 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
   );
 };
 
-PatientScreen.navigationOptions = ({ navigation }) => {
-  const patient: Patient = navigation.state.params?.patient;
+PatientScreen.navigationOptions = () => {
   return {
-    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
+    headerShown: false,
   };
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -20, // TODO: fihure out this margin shift
+    paddingBottom: 8,
   },
+  header: {
+    height: 50,
+    margin: 8,
+    marginTop: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
+  },
+  list: {},
   actionButtonBlock: {
     position: 'absolute',
     height: 80,
