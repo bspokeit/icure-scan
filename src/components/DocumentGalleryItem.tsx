@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import ImageView from 'react-native-image-viewing';
-import { LIGHT_GREY } from '../constant';
+import { DEFAULT_IMAGE_BACKGROUND } from '../constant';
 import useDocument from '../hooks/useDocument';
 
 interface Props {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   imagePlaceholderStyle: {
-    backgroundColor: LIGHT_GREY,
+    backgroundColor: DEFAULT_IMAGE_BACKGROUND,
   },
 });
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
+import { DEFAULT_IMAGE_BACKGROUND } from '../constant';
 import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
@@ -37,8 +38,8 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
           icon={{
             name: 'user-circle',
             type: 'font-awesome',
-            size: 32,
-            color: 'grey',
+            size: 46,
+            color: DEFAULT_IMAGE_BACKGROUND,
           }}
         />
       )}
