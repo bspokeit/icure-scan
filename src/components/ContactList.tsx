@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native';
 import { Context as PatientContext } from '../context/PatientContext';
 import { Patient } from '../models';
 import { navigate } from '../utils/navigationHelper';
@@ -16,7 +16,6 @@ const ContactList: React.FC<Props> = ({ patient }) => {
 
   return (
     <FlatList
-      style={styles.flatListStyle}
       keyExtractor={(item) => item.id}
       data={
         contacts && contacts[patient.id] && contacts[patient.id].length
@@ -38,11 +37,5 @@ const ContactList: React.FC<Props> = ({ patient }) => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  flatListStyle: {
-    backgroundColor: 'white',
-  },
-});
 
 export default ContactList;

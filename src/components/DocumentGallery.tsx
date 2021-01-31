@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
   },
   flatListStyle: {
     flex: 1,
-    backgroundColor: 'white',
   },
 });
 

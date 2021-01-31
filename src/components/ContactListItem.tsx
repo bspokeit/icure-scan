@@ -1,9 +1,9 @@
-
 import { first } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { LIGHT_GREY } from '../constant';
 import useDocument from '../hooks/useDocument';
 import { Contact, Patient } from '../models';
 import DocumentAvatar from './DocumentAvatar';
@@ -21,7 +21,11 @@ const ContactListItem: React.FC<Props> = ({
 }) => {
   const { fetchContactDocumentIds } = useDocument();
   return (
-    <ListItem onPress={onSelection} bottomDivider>
+    <ListItem
+      onPress={onSelection}
+      containerStyle={styles.container}
+      underlayColor={LIGHT_GREY}
+    >
       <DocumentAvatar
         patientId={patient.id}
         documentId={first(fetchContactDocumentIds(contact))}
@@ -42,6 +46,12 @@ const ContactListItem: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom: 6,
+    borderRadius: 8,
+  },
   subTitle: {
     fontSize: 14,
   },

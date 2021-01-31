@@ -32,7 +32,6 @@ DocumentGalleryScreen.navigationOptions = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     marginTop: -20, // TODO: fihure out this margin shift
     justifyContent: 'center',
   },

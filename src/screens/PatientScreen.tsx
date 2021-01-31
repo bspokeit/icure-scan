@@ -50,19 +50,14 @@ PatientScreen.navigationOptions = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     marginTop: -20, // TODO: fihure out this margin shift
   },
   actionButtonBlock: {
     position: 'absolute',
     height: 80,
-    width: 110,
+    width: 100,
     right: 0,
     bottom: 0,
-    paddingRight: 20,
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
   },
 });
 
