@@ -1,11 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -44,18 +38,21 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
     loadLogs(currentUser!!);
   }, []);
 
-  const keyExtractor = (item: Patient) => item.id;
+  const keyExtractor = useCallback((item: Patient) => item.id, []);
 
-  const renderItem = ({ item }: { item: Patient }) => (
-    <PatientListItem
-      patient={item}
-      onSelection={() => {
-        clear();
-        navigation.navigate('Detail', {
-          patient: item,
-        });
-      }}
-    ></PatientListItem>
+  const renderItem = useCallback(
+    ({ item }: { item: Patient }) => (
+      <PatientListItem
+        patient={item}
+        onSelection={() => {
+          clear();
+          navigation.navigate('Detail', {
+            patient: item,
+          });
+        }}
+      ></PatientListItem>
+    ),
+    []
   );
 
   const searchClearRequest = () => {
