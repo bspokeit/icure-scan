@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import ImageView from 'react-native-image-viewing';
+import { LIGHT_GREY } from '../constant';
 import useDocument from '../hooks/useDocument';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   documentId?: string;
 }
 
-const GalleryGridItem: React.FC<Props> = ({ patientId, documentId }) => {
+const DocumentGalleryItem: React.FC<Props> = ({ patientId, documentId }) => {
   const [fullScreen, setFullScreen] = useState(false);
 
   const { fetchDocument, documentContent } = useDocument();
@@ -21,9 +22,14 @@ const GalleryGridItem: React.FC<Props> = ({ patientId, documentId }) => {
 
   if (!documentId || !documentContent(patientId, documentId)) {
     return (
-      <View style={styles.imageContainerStyle}>
-        <View style={[styles.imageStyle, styles.imagePlaceholderStyle]} />
-      </View>
+      <View
+        style={[
+          styles.container,
+          styles.imageContainerStyle,
+          styles.imageStyle,
+          styles.imagePlaceholderStyle,
+        ]}
+      ></View>
     );
   }
 
@@ -58,19 +64,19 @@ const GalleryGridItem: React.FC<Props> = ({ patientId, documentId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 6,
   },
   imageContainerStyle: {
     flex: 1,
-    flexDirection: 'column',
-    margin: 1,
   },
   imageStyle: {
     height: 140,
     width: '100%',
+    borderRadius: 6,
   },
   imagePlaceholderStyle: {
-    backgroundColor: '#C0C0C0',
+    backgroundColor: LIGHT_GREY,
   },
 });
 
-export default GalleryGridItem;
+export default DocumentGalleryItem;

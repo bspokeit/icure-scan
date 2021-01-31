@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { Avatar } from 'react-native-elements';
+import { BLUE } from '../constant';
 import useDocument from '../hooks/useDocument';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   documentId?: string;
 }
 
-const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
+const DocumentAvatar: React.FC<Props> = ({ patientId, documentId }) => {
   const { fetchDocument, documentContent } = useDocument();
 
   useEffect(() => {
@@ -21,12 +22,13 @@ const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
     return (
       <View>
         <Avatar
+          containerStyle={styles.default}
           size="medium"
           icon={{
             name: 'hourglass-end',
             type: 'font-awesome',
             size: 24,
-            color: 'grey',
+            color: 'white',
           }}
         />
       </View>
@@ -35,14 +37,23 @@ const DocumentListItem: React.FC<Props> = ({ patientId, documentId }) => {
 
   return (
     <View>
-      <Avatar
+      <Image
+        style={styles.image}
         source={{
           uri: documentContent(patientId, documentId)!!,
         }}
-        size="medium"
       />
     </View>
   );
 };
 
-export default DocumentListItem;
+const styles = StyleSheet.create({
+  default: { backgroundColor: BLUE, borderRadius: 6 },
+  image: {
+    height: 50,
+    width: 50,
+    borderRadius: 6,
+  },
+});
+
+export default DocumentAvatar;

@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import useDocument from '../hooks/useDocument';
 import { Contact, Patient } from '../models';
-import GalleryGridItem from './GalleryGridItem';
+import DocumentGalleryItem from './DocumentGalleryItem';
 
 interface Props {
   patient: Patient;
@@ -21,10 +21,10 @@ const DocumentGallery: React.FC<Props> = ({ patient, contact }) => {
         data={fetchContactDocumentIds(contact)}
         renderItem={({ item }) => {
           return (
-            <GalleryGridItem
+            <DocumentGalleryItem
               patientId={patient.id}
               documentId={item}
-            ></GalleryGridItem>
+            ></DocumentGalleryItem>
           );
         }}
       />
@@ -35,6 +35,7 @@ const DocumentGallery: React.FC<Props> = ({ patient, contact }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 6,
   },
   flatListStyle: {
     flex: 1,

@@ -7,6 +7,7 @@ import {
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
+import { GREEN } from '../constant';
 import useContact from '../hooks/useContact';
 import { Patient } from '../models';
 
@@ -32,7 +33,7 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
             navigation.navigate('Import', { patient });
           }}
         >
-          <Icon reverse raised name="add" type="ionicon" color="green" />
+          <Icon reverse raised name="add" type="ionicon" color={GREEN} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

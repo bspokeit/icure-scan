@@ -6,7 +6,7 @@ import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import useDocument from '../hooks/useDocument';
 import { Contact, Patient } from '../models';
-import DocumentListItem from './DocumentListItem';
+import DocumentAvatar from './DocumentAvatar';
 
 interface Props {
   patient: Patient;
@@ -22,10 +22,10 @@ const ContactListItem: React.FC<Props> = ({
   const { fetchContactDocumentIds } = useDocument();
   return (
     <ListItem onPress={onSelection} bottomDivider>
-      <DocumentListItem
+      <DocumentAvatar
         patientId={patient.id}
         documentId={first(fetchContactDocumentIds(contact))}
-      ></DocumentListItem>
+      ></DocumentAvatar>
       <ListItem.Content>
         <ListItem.Title>
           Contact du {moment(contact.created).format('DD/MM/YYYY')}

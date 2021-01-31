@@ -9,7 +9,7 @@ import {
 } from 'react-navigation-stack';
 import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
-import { IMPORT_OPTION } from '../constant';
+import { BLUE, GREEN, GREY, IMPORT_OPTION } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Patient } from '../models';
 import { ImagePickerConverter } from '../models/core/import-task.model';
@@ -63,10 +63,10 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
-          <Icon reverse raised name="images" type="ionicon" color="#00aced" />
+          <Icon reverse raised name="images" type="ionicon" color={BLUE} />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
-          <Icon reverse raised name="camera" type="ionicon" color="#517fa4" />
+          <Icon reverse raised name="camera" type="ionicon" color={GREY} />
         </TouchableOpacity>
         {documents.length ? (
           <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
@@ -75,7 +75,7 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
               raised
               name="cloud-upload"
               type="ionicon"
-              color="green"
+              color={GREEN}
             />
           </TouchableOpacity>
         ) : null}
