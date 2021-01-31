@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
-import { DEFAULT_IMAGE_BACKGROUND, GREY } from '../constant';
+import { DEFAULT_IMAGE_BACKGROUND, MAIN_COLOR } from '../constant';
 import { Patient } from '../models';
 import { arrayBuffer2Base64 } from '../utils/formatHelper';
 
@@ -17,7 +17,7 @@ const PatientHeader: React.FC<Props> = ({ patient, subTitle, goBack }) => {
       <View style={styles.content}>
         <View style={styles.contentGoBack}>
           <TouchableOpacity onPress={goBack}>
-            <Icon name="arrow-back" type="ionicons" color={GREY} size={20} />
+            <Icon name="arrow-back" type="ionicons" color={MAIN_COLOR} size={20} />
           </TouchableOpacity>
         </View>
         <View style={styles.contentText}>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   contextTextTitle: {
     fontSize: 16,
-    color: GREY,
+    color: MAIN_COLOR,
   },
   contentTextSubTitle: { color: 'grey', fontSize: 12 },
   subTitle: {

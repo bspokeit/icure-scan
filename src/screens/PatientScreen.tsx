@@ -8,7 +8,7 @@ import {
 } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
 import PatientHeader from '../components/PatientHeader';
-import { GREEN } from '../constant';
+import { MAIN_ACTION } from '../constant';
 import { Context as PatientContext } from '../context/PatientContext';
 import useContact from '../hooks/useContact';
 import { Patient } from '../models';
@@ -42,10 +42,9 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
           }
         ></PatientHeader>
       </View>
-      <View style={styles.list}>
+      <View>
         <ContactList patient={patient}></ContactList>
       </View>
-
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -53,7 +52,7 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
             navigation.navigate('Import', { patient });
           }}
         >
-          <Icon reverse raised name="add" type="ionicon" color={GREEN} />
+          <Icon reverse raised name="add" type="ionicon" color={MAIN_ACTION} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -78,7 +77,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
   },
-  list: {},
   actionButtonBlock: {
     position: 'absolute',
     height: 80,

@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { BLUE, GREY, LIGHT_GREY } from '../constant';
+import { BLUE, MAIN_COLOR, LIGHT_GREY } from '../constant';
 import useDocument from '../hooks/useDocument';
 import { Contact, Patient } from '../models';
 import DocumentAvatar from './DocumentAvatar';
@@ -40,7 +40,7 @@ const ContactListItem: React.FC<Props> = ({
           </Text>
         </ListItem.Subtitle>
       </ListItem.Content>
-      <ListItem.Chevron color={GREY} />
+      <ListItem.Chevron color={MAIN_COLOR} />
     </ListItem>
   );
 };
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   title: {
-    color: GREY,
+    color: MAIN_COLOR,
   },
   subTitle: {
     fontSize: 12,
