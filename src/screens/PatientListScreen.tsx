@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import { Icon, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationStackScreenComponent,
@@ -58,6 +64,18 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
     }
   };
 
+  const renderSearchIcon = () => {
+    return (
+      <View>
+        <TouchableOpacity onPress={openSettings}>
+          <Icon name="settings" type="ionicons" color={MAIN_COLOR} size={20} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const openSettings = () => {};
+
   return (
     <SafeAreaView>
       <SearchBar
@@ -75,7 +93,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         loadingProps={{ color: MAIN_COLOR, size: 'small' }}
         containerStyle={styles.searchContainer}
         inputContainerStyle={styles.searchInput}
-        searchIcon={{ color: MAIN_COLOR }}
+        searchIcon={renderSearchIcon()}
       />
       <FlatList
         keyExtractor={keyExtractor}
