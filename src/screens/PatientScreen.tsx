@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import {
 import ContactList from '../components/ContactList';
 import PatientHeader from '../components/PatientHeader';
 import { GREEN } from '../constant';
+import { Context as PatientContext } from '../context/PatientContext';
 import useContact from '../hooks/useContact';
 import { Patient } from '../models';
 
@@ -20,6 +21,10 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
   const patient: Patient = navigation.state.params?.patient;
   const { fetchContacts } = useContact();
 
+  const {
+    state: { contacts },
+  } = useContext(PatientContext);
+
   useEffect(() => {
     fetchContacts(patient);
   }, []);
@@ -30,6 +35,11 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
         <PatientHeader
           patient={patient}
           goBack={() => navigation.goBack()}
+          subTitle={
+            contacts && contacts[patient.id] && contacts[patient.id].length
+              ? `${contacts[patient.id].length} contact(s)`
+              : undefined
+          }
         ></PatientHeader>
       </View>
       <View style={styles.list}>

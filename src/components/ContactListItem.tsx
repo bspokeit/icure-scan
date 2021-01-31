@@ -31,7 +31,7 @@ const ContactListItem: React.FC<Props> = ({
         documentId={first(fetchContactDocumentIds(contact))}
       ></DocumentAvatar>
       <ListItem.Content>
-        <ListItem.Title>
+        <ListItem.Title style={styles.title}>
           Contact du {moment(contact.created).format('DD/MM/YYYY')}
         </ListItem.Title>
         <ListItem.Subtitle>
@@ -53,8 +53,12 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     borderRadius: 8,
   },
+  title: {
+    color: GREY,
+  },
   subTitle: {
-    fontSize: 14,
+    fontSize: 12,
+    color: LIGHT_GREY,
   },
 });
 

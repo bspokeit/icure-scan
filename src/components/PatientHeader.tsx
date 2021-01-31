@@ -7,10 +7,11 @@ import { arrayBuffer2Base64 } from '../utils/formatHelper';
 
 interface Props {
   patient: Patient;
+  subTitle?: string;
   goBack: () => void;
 }
 
-const PatientHeader: React.FC<Props> = ({ patient, goBack }) => {
+const PatientHeader: React.FC<Props> = ({ patient, subTitle, goBack }) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -23,7 +24,9 @@ const PatientHeader: React.FC<Props> = ({ patient, goBack }) => {
           <Text style={styles.contextTextTitle}>
             {patient?.firstName} {patient?.lastName}
           </Text>
-          <Text style={styles.contentTextSubTitle}>Hello</Text>
+          {subTitle ? (
+            <Text style={styles.contentTextSubTitle}>{subTitle}</Text>
+          ) : null}
         </View>
         <View style={styles.contentAvatar}>
           {patient.picture ? (
