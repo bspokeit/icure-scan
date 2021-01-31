@@ -8,7 +8,7 @@ import {
 
 interface Props extends NavigationStackScreenProps {}
 
-const ImportDocumentDrawScreen: NavigationStackScreenComponent<Props> = () => {
+const DocumentImportDrawScreen: NavigationStackScreenComponent<Props> = () => {
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -122,4 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImportDocumentDrawScreen;
+export default DocumentImportDrawScreen;

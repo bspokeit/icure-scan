@@ -16,7 +16,7 @@ import { ImagePickerConverter } from '../models/core/import-task.model';
 
 interface Props extends NavigationStackScreenProps {}
 
-const PatientImportDocumentScreen: NavigationStackScreenComponent<Props> = ({
+const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
   navigation,
 }) => {
   const {
@@ -90,7 +90,7 @@ const PatientImportDocumentScreen: NavigationStackScreenComponent<Props> = ({
   );
 };
 
-PatientImportDocumentScreen.navigationOptions = ({ navigation }) => {
+DocumentImportScreen.navigationOptions = ({ navigation }) => {
   const patient: Patient = navigation.state.params?.patient;
   return {
     headerTitle: `${patient?.firstName} ${patient?.lastName}`,
@@ -123,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PatientImportDocumentScreen;
+export default DocumentImportScreen;

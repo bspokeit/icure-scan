@@ -12,7 +12,7 @@ import { Patient } from '../models';
 
 interface Props extends NavigationStackScreenProps {}
 
-const PatientDetailScreen: NavigationStackScreenComponent<Props> = ({
+const PatientScreen: NavigationStackScreenComponent<Props> = ({
   navigation,
 }) => {
   const patient: Patient = navigation.state.params?.patient;
@@ -39,7 +39,7 @@ const PatientDetailScreen: NavigationStackScreenComponent<Props> = ({
   );
 };
 
-PatientDetailScreen.navigationOptions = ({ navigation }) => {
+PatientScreen.navigationOptions = ({ navigation }) => {
   const patient: Patient = navigation.state.params?.patient;
   return {
     headerTitle: `${patient?.firstName} ${patient?.lastName}`,
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PatientDetailScreen;
+export default PatientScreen;

@@ -13,7 +13,7 @@ import useSystem from '../hooks/useSystem';
 
 interface Props extends NavigationSwitchScreenProps {}
 
-const InitApplicationScreen: NavigationSwitchScreenComponent<Props> = () => {
+const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
   const {
     state: { systemReady, cryptoReady, storeReady, checkCompleted },
   } = useContext(SystemContext);
@@ -102,7 +102,7 @@ const InitApplicationScreen: NavigationSwitchScreenComponent<Props> = () => {
   );
 };
 
-InitApplicationScreen.navigationOptions = () => {
+ApplicationInitScreen.navigationOptions = () => {
   return {
     headerShown: false,
   };
@@ -128,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InitApplicationScreen;
+export default ApplicationInitScreen;

@@ -13,7 +13,7 @@ import useCrypto from '../hooks/useCrypto';
 
 interface Props extends NavigationSwitchScreenProps {}
 
-const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
+const KeyImportScreen: NavigationSwitchScreenComponent<Props> = ({
   navigation,
 }) => {
   const {
@@ -70,7 +70,7 @@ const ImportKeyScreen: NavigationSwitchScreenComponent<Props> = ({
   );
 };
 
-ImportKeyScreen.navigationOptions = () => {
+KeyImportScreen.navigationOptions = () => {
   return {
     headerShown: false,
   };
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImportKeyScreen;
+export default KeyImportScreen;

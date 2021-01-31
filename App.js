@@ -11,26 +11,26 @@ import { Provider as ImportProvider } from './src/context/ImportContext';
 import { Provider as PatientProvider } from './src/context/PatientContext';
 import { Provider as SystemProvider } from './src/context/SystemContext';
 import DocumentGalleryScreen from './src/screens/DocumentGalleryScreen';
-import ImportDocumentDrawScreen from './src/screens/ImportDocumentDrawScreen';
-import ImportKeyScreen from './src/screens/ImportKeyScreen';
-import InitApplicationScreen from './src/screens/InitApplicationScreen';
+import DocumentImportDrawScreen from './src/screens/DocumentImportDrawScreen';
+import KeyImportScreen from './src/screens/KeyImportScreen';
+import ApplicationInitScreen from './src/screens/ApplicationInitScreen';
 import LoginScreen from './src/screens/LoginScreen';
-import PatientDetailScreen from './src/screens/PatientDetailScreen';
-import PatientImportDocumentScreen from './src/screens/PatientImportDocumentScreen';
+import PatientScreen from './src/screens/PatientScreen';
+import DocumentImportScreen from './src/screens/DocumentImportScreen';
 import PatientListScreen from './src/screens/PatientListScreen';
 import { setNavigator } from './src/utils/navigationHelper';
 
 const switchNavigator = createSwitchNavigator({
-  Init: InitApplicationScreen,
+  Init: ApplicationInitScreen,
   Login: LoginScreen,
-  ImportKey: ImportKeyScreen,
+  ImportKey: KeyImportScreen,
 
   mainFlow: createStackNavigator({
     List: PatientListScreen,
-    Detail: PatientDetailScreen,
+    Detail: PatientScreen,
     Gallery: DocumentGalleryScreen,
-    Import: PatientImportDocumentScreen,
-    Draw: ImportDocumentDrawScreen,
+    Import: DocumentImportScreen,
+    Draw: DocumentImportDrawScreen,
   }),
 });
 
