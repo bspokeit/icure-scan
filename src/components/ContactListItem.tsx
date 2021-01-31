@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
   container: {
     marginLeft: 8,
     marginRight: 8,
-    marginBottom: 6,
+    marginTop: 3,
+    marginBottom: 3,
     borderRadius: 8,
   },
   subTitle: {
