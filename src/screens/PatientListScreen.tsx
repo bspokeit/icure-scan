@@ -7,7 +7,7 @@ import {
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import PatientListItem from '../components/PatientListItem';
-import { BLUE } from '../constant';
+import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -72,10 +72,10 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         showLoading={searching}
         disabled={searching}
         clearIcon={{ size: searching ? 0 : 22 }}
-        loadingProps={{ color: BLUE, size: 'small' }}
+        loadingProps={{ color: MAIN_COLOR, size: 'small' }}
         containerStyle={styles.searchContainer}
         inputContainerStyle={styles.searchInput}
-        searchIcon={{ color: BLUE }}
+        searchIcon={{ color: MAIN_COLOR }}
       />
       <FlatList
         keyExtractor={keyExtractor}
@@ -96,8 +96,9 @@ const styles = StyleSheet.create({
   searchContainer: {
     backgroundColor: 'transparent',
     borderBottomColor: 'transparent',
+    borderTopColor: 'transparent',
   },
-  searchInput: { backgroundColor: 'white', borderRadius: 8 },
+  searchInput: { backgroundColor: 'white', borderRadius: DEFAULT_BORDER },
 });
 
 export default PatientListScreen;

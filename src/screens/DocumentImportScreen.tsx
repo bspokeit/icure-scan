@@ -9,7 +9,14 @@ import {
 } from 'react-navigation-stack';
 import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
-import { BLUE, GREEN, GREY, IMPORT_OPTION } from '../constant';
+import PatientHeader from '../components/PatientHeader';
+import {
+  DEFAULT_BORDER,
+  IMPORT_OPTION,
+  LAST_ACTION,
+  MAIN_ACTION,
+  SECONDARY_ACTION,
+} from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Patient } from '../models';
 import { ImagePickerConverter } from '../models/core/import-task.model';
@@ -58,15 +65,34 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.upperContainer}>
+      <View style={styles.header}>
+        <PatientHeader
+          patient={patient}
+          goBack={() => navigation.goBack()}
+          subTitle={`New document import`}
+        ></PatientHeader>
+      </View>
+      <View>
         <ImportDocumentGallery></ImportDocumentGallery>
       </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
-          <Icon reverse raised name="images" type="ionicon" color={BLUE} />
+          <Icon
+            reverse
+            raised
+            name="images"
+            type="ionicon"
+            color={LAST_ACTION}
+          />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
-          <Icon reverse raised name="camera" type="ionicon" color={GREY} />
+          <Icon
+            reverse
+            raised
+            name="camera"
+            type="ionicon"
+            color={SECONDARY_ACTION}
+          />
         </TouchableOpacity>
         {documents.length ? (
           <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
@@ -75,7 +101,7 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
               raised
               name="cloud-upload"
               type="ionicon"
-              color={GREEN}
+              color={MAIN_ACTION}
             />
           </TouchableOpacity>
         ) : null}
@@ -90,22 +116,22 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
   );
 };
 
-DocumentImportScreen.navigationOptions = ({ navigation }) => {
-  const patient: Patient = navigation.state.params?.patient;
+DocumentImportScreen.navigationOptions = () => {
   return {
-    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
+    headerShown: false,
   };
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    marginTop: -20, // TODO: fihure out this margin shift
   },
-  upperContainer: {
-    height: '100%',
-    marginBottom: 80,
+  header: {
+    height: 50,
+    margin: 8,
+    marginTop: 8,
+    backgroundColor: 'white',
+    borderRadius: DEFAULT_BORDER,
   },
   actionButtonBlock: {
     position: 'absolute',
@@ -120,6 +146,7 @@ const styles = StyleSheet.create({
   overlayStyle: {
     width: '90%',
     height: '60%',
+    borderRadius: DEFAULT_BORDER,
   },
 });
 

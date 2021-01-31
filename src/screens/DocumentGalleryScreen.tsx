@@ -1,11 +1,14 @@
+import moment from 'moment';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationStackScreenComponent,
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import DocumentGallery from '../components/DocumentGallery';
+import PatientHeader from '../components/PatientHeader';
+import { DEFAULT_BORDER } from '../constant';
 
 interface Props extends NavigationStackScreenProps {}
 
@@ -17,23 +20,39 @@ const DocumentGalleryScreen: NavigationStackScreenComponent<Props> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <DocumentGallery patient={patient} contact={contact}></DocumentGallery>
+      <View style={styles.header}>
+        <PatientHeader
+          patient={patient}
+          goBack={() => navigation.goBack()}
+          subTitle={`Contact du ${moment(contact.created).format(
+            'DD/MM/YYYY'
+          )}`}
+        ></PatientHeader>
+      </View>
+      <View>
+        <DocumentGallery patient={patient} contact={contact}></DocumentGallery>
+      </View>
     </SafeAreaView>
   );
 };
 
-DocumentGalleryScreen.navigationOptions = ({ navigation }) => {
-  const patient = navigation.state.params?.patient;
+DocumentGalleryScreen.navigationOptions = () => {
   return {
-    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
+    headerShown: false,
   };
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -20, // TODO: fihure out this margin shift
-    justifyContent: 'center',
+    paddingBottom: 8,
+  },
+  header: {
+    height: 50,
+    margin: 8,
+    marginTop: 8,
+    backgroundColor: 'white',
+    borderRadius: DEFAULT_BORDER,
   },
   actionButtonBlock: {
     position: 'absolute',

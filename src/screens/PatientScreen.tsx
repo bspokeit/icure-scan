@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,9 @@ import {
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
-import { GREEN } from '../constant';
+import PatientHeader from '../components/PatientHeader';
+import { DEFAULT_BORDER, MAIN_ACTION } from '../constant';
+import { Context as PatientContext } from '../context/PatientContext';
 import useContact from '../hooks/useContact';
 import { Patient } from '../models';
 
@@ -19,13 +21,30 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
   const patient: Patient = navigation.state.params?.patient;
   const { fetchContacts } = useContact();
 
+  const {
+    state: { contacts },
+  } = useContext(PatientContext);
+
   useEffect(() => {
     fetchContacts(patient);
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <ContactList patient={patient}></ContactList>
+      <View style={styles.header}>
+        <PatientHeader
+          patient={patient}
+          goBack={() => navigation.goBack()}
+          subTitle={
+            contacts && contacts[patient.id] && contacts[patient.id].length
+              ? `${contacts[patient.id].length} contact(s)`
+              : undefined
+          }
+        ></PatientHeader>
+      </View>
+      <View>
+        <ContactList patient={patient}></ContactList>
+      </View>
       <View style={styles.actionButtonBlock}>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -33,24 +52,30 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({
             navigation.navigate('Import', { patient });
           }}
         >
-          <Icon reverse raised name="add" type="ionicon" color={GREEN} />
+          <Icon reverse raised name="add" type="ionicon" color={MAIN_ACTION} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-PatientScreen.navigationOptions = ({ navigation }) => {
-  const patient: Patient = navigation.state.params?.patient;
+PatientScreen.navigationOptions = () => {
   return {
-    headerTitle: `${patient?.firstName} ${patient?.lastName}`,
+    headerShown: false,
   };
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -20, // TODO: fihure out this margin shift
+    paddingBottom: 8,
+  },
+  header: {
+    height: 50,
+    margin: 8,
+    marginTop: 8,
+    backgroundColor: 'white',
+    borderRadius: DEFAULT_BORDER,
   },
   actionButtonBlock: {
     position: 'absolute',
