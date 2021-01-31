@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
-import { DEFAULT_IMAGE_BACKGROUND, LIGHT_GREY } from '../constant';
+import { BLUE, DEFAULT_IMAGE_BACKGROUND, LIGHT_GREY } from '../constant';
 import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
@@ -62,7 +62,7 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
           </ListItem.Subtitle>
         ) : null}
       </ListItem.Content>
-      <ListItem.Chevron />
+      <ListItem.Chevron color={BLUE} />
     </ListItem>
   );
 };

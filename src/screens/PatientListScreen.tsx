@@ -7,6 +7,7 @@ import {
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import PatientListItem from '../components/PatientListItem';
+import { BLUE } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -60,7 +61,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
   return (
     <SafeAreaView>
       <SearchBar
-        placeholder="Search here..."
+        placeholder="Search patient..."
         lightTheme
         value={query}
         onChangeText={setQuery}
@@ -71,7 +72,9 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         showLoading={searching}
         disabled={searching}
         clearIcon={{ size: searching ? 0 : 22 }}
-        loadingProps={{ color: '#2089dc', size: 'small' }}
+        loadingProps={{ color: BLUE, size: 'small' }}
+        containerStyle={styles.searchContainer}
+        inputContainerStyle={styles.searchInput}
       />
       <FlatList
         keyExtractor={keyExtractor}
@@ -89,9 +92,11 @@ PatientListScreen.navigationOptions = () => {
 };
 
 const styles = StyleSheet.create({
-  subTitle: {
-    fontSize: 12,
+  searchContainer: {
+    backgroundColor: 'transparent',
+    borderBottomColor: 'transparent',
   },
+  searchInput: { backgroundColor: 'white', borderRadius: 8 },
 });
 
 export default PatientListScreen;
