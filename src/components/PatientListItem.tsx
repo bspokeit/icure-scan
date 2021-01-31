@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
-import { DEFAULT_IMAGE_BACKGROUND, LIGHT_GREY, MAIN_COLOR } from '../constant';
+import {
+  DEFAULT_BORDER,
+  DEFAULT_IMAGE_BACKGROUND,
+  LIGHT_GREY,
+  MAIN_COLOR,
+} from '../constant';
 import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginTop: 3,
     marginBottom: 3,
-    borderRadius: 8,
+    borderRadius: DEFAULT_BORDER,
   },
   title: {
     color: MAIN_COLOR,

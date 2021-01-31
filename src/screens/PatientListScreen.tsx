@@ -7,7 +7,7 @@ import {
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import PatientListItem from '../components/PatientListItem';
-import { MAIN_COLOR } from '../constant';
+import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
   },
-  searchInput: { backgroundColor: 'white', borderRadius: 8 },
+  searchInput: { backgroundColor: 'white', borderRadius: DEFAULT_BORDER },
 });
 
 export default PatientListScreen;

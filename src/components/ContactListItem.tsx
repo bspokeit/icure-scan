@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { BLUE, MAIN_COLOR, LIGHT_GREY } from '../constant';
+import { DEFAULT_BORDER, LIGHT_GREY, MAIN_COLOR } from '../constant';
 import useDocument from '../hooks/useDocument';
 import { Contact, Patient } from '../models';
 import DocumentAvatar from './DocumentAvatar';
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginTop: 3,
     marginBottom: 3,
-    borderRadius: 8,
+    borderRadius: DEFAULT_BORDER,
   },
   title: {
     color: MAIN_COLOR,

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import { DEFAULT_IMAGE_BACKGROUND } from '../constant';
+import { DEFAULT_BORDER, DEFAULT_IMAGE_BACKGROUND } from '../constant';
 import useDocument from '../hooks/useDocument';
 
 interface Props {
@@ -48,11 +48,14 @@ const DocumentAvatar: React.FC<Props> = ({ patientId, documentId }) => {
 };
 
 const styles = StyleSheet.create({
-  default: { backgroundColor: DEFAULT_IMAGE_BACKGROUND, borderRadius: 6 },
+  default: {
+    backgroundColor: DEFAULT_IMAGE_BACKGROUND,
+    borderRadius: DEFAULT_BORDER,
+  },
   image: {
     height: 50,
     width: 50,
-    borderRadius: 6,
+    borderRadius: 8,
   },
 });
 

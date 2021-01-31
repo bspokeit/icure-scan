@@ -8,6 +8,7 @@ import {
 } from 'react-navigation-stack';
 import DocumentGallery from '../components/DocumentGallery';
 import PatientHeader from '../components/PatientHeader';
+import { DEFAULT_BORDER } from '../constant';
 
 interface Props extends NavigationStackScreenProps {}
 
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
     margin: 8,
     marginTop: 8,
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: DEFAULT_BORDER,
   },
   actionButtonBlock: {
     position: 'absolute',

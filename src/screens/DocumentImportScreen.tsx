@@ -11,6 +11,7 @@ import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import PatientHeader from '../components/PatientHeader';
 import {
+  DEFAULT_BORDER,
   IMPORT_OPTION,
   LAST_ACTION,
   MAIN_ACTION,
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     margin: 8,
     marginTop: 8,
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: DEFAULT_BORDER,
   },
   actionButtonBlock: {
     position: 'absolute',
@@ -145,6 +146,7 @@ const styles = StyleSheet.create({
   overlayStyle: {
     width: '90%',
     height: '60%',
+    borderRadius: DEFAULT_BORDER,
   },
 });
 

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { MAIN_COLOR } from '../constant';
+import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { navigate } from '../utils/navigationHelper';
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: 140,
     width: '100%',
-    borderRadius: 6,
+    borderRadius: DEFAULT_BORDER,
   },
 });
 

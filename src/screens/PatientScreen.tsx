@@ -8,7 +8,7 @@ import {
 } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
 import PatientHeader from '../components/PatientHeader';
-import { MAIN_ACTION } from '../constant';
+import { DEFAULT_BORDER, MAIN_ACTION } from '../constant';
 import { Context as PatientContext } from '../context/PatientContext';
 import useContact from '../hooks/useContact';
 import { Patient } from '../models';
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     margin: 8,
     marginTop: 8,
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: DEFAULT_BORDER,
   },
   actionButtonBlock: {
     position: 'absolute',
