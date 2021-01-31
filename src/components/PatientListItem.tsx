@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
-import { DEFAULT_IMAGE_BACKGROUND } from '../constant';
+import { DEFAULT_IMAGE_BACKGROUND, LIGHT_GREY } from '../constant';
 import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
@@ -22,7 +22,11 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
   }, []);
 
   return (
-    <ListItem onPress={onSelection} bottomDivider>
+    <ListItem
+      onPress={onSelection}
+      containerStyle={styles.container}
+      underlayColor={LIGHT_GREY}
+    >
       {patient.picture ? (
         <Avatar
           rounded
@@ -64,6 +68,12 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom: 6,
+    borderRadius: 8,
+  },
   subTitle: {
     fontSize: 12,
   },
