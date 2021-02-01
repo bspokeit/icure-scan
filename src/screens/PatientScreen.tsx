@@ -1,13 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-  Text,
-} from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
