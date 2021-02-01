@@ -16,8 +16,6 @@ const ContactList: React.FC<Props> = ({ patient }) => {
 
   const keyExtractor = useCallback((item) => item.id, []);
 
-  // const onMomentumScrollBegin = () => { this.onEndReachedCalledDuringMomentum = false; }
-
   const renderItem = useCallback(
     ({ item }) => (
       <ContactListItem

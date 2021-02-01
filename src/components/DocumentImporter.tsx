@@ -56,7 +56,7 @@ const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
             buttonStyle={[styles.control, styles.controlDone]}
             onPress={done}
             title="Ok"
-          ></Button>
+          />
         </View>
       </View>
     );
@@ -95,14 +95,14 @@ const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
           title="Cancel"
           titleStyle={styles.controlCancel}
           disabled={status === ImportStatus.Ongoing}
-        ></Button>
+        />
         <Button
           buttonStyle={[styles.control, styles.controlStart]}
           onPress={start}
           title="Start"
           disabled={status === ImportStatus.Ongoing}
           loading={status === ImportStatus.Ongoing}
-        ></Button>
+        />
       </View>
     </View>
   );
