@@ -11,9 +11,11 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { AuthorizationHeader } from '../context/reducer-action/AuthReducerActions';
 import { User } from '../models';
 import { navigate } from '../utils/navigationHelper';
+import useCrypto from './useCrypto';
 
 export default () => {
   const {
+    state: { currentHcp, currentParentHcp },
     setLoginOngoing,
     setLogin,
     setLogout,
@@ -22,6 +24,8 @@ export default () => {
     setParent,
     setError,
   } = useContext(AuthContext);
+
+  const { clearPrivateKeyData } = useCrypto();
 
   const login = async ({
     username,
@@ -110,5 +114,10 @@ export default () => {
     await setLogout();
   };
 
-  return { login, autoLogin };
+  const logoutHard = async (): Promise<void> => {
+    await clearPrivateKeyData(currentHcp);
+    await clearPrivateKeyData(currentParentHcp);
+  };
+
+  return { login, autoLogin, logout, logoutHard };
 };

@@ -1,18 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { BottomSheet, Icon, ListItem, SearchBar } from 'react-native-elements';
+import { BottomSheet, Icon, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationStackScreenComponent,
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import PatientListItem from '../components/PatientListItem';
-import {
-  DEFAULT_BORDER,
-  LIGHT_GREY,
-  MAIN_COLOR,
-  SECONDARY_ACTION,
-} from '../constant';
+import Settings from '../components/Settings';
+import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -44,10 +40,6 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
   }, []);
 
   const [settingVisible, setSettingVisible] = useState(false);
-
-  const logout = () => {};
-
-  const logoutHard = () => {};
 
   const keyExtractor = useCallback((item: Patient) => item.id, []);
 
@@ -110,48 +102,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         containerStyle={styles.bottomSheetContainer}
         modalProps={{}}
       >
-        <ListItem
-          key={1}
-          underlayColor={LIGHT_GREY}
-          containerStyle={styles.settingItem}
-          onPress={logout}
-        >
-          <ListItem.Content style={styles.settingItemContent}>
-            <ListItem.Title
-              style={[styles.settingItemTitle, { color: MAIN_COLOR }]}
-            >
-              Logout
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem
-          key={2}
-          underlayColor={LIGHT_GREY}
-          containerStyle={styles.settingItem}
-          onPress={logoutHard}
-        >
-          <ListItem.Content style={styles.settingItemContent}>
-            <ListItem.Title
-              style={[styles.settingItemTitle, { color: SECONDARY_ACTION }]}
-            >
-              Logout and clear key(s)
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem
-          key={3}
-          underlayColor={LIGHT_GREY}
-          containerStyle={styles.settingItem}
-          onPress={() => setSettingVisible(false)}
-        >
-          <ListItem.Content style={styles.settingItemContent}>
-            <ListItem.Title
-              style={[styles.settingItemTitle, { color: LIGHT_GREY }]}
-            >
-              Cancel
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
+        <Settings onCancel={() => setSettingVisible(false)} />
       </BottomSheet>
     </SafeAreaView>
   );
@@ -182,22 +133,6 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     backgroundColor: 'transparent',
-  },
-  settingItem: {
-    height: 50,
-    alignContent: 'center',
-    backgroundColor: 'transparent',
-    overlayColor: 'green',
-  },
-  settingItemContent: {
-    height: 44,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    borderRadius: DEFAULT_BORDER,
-  },
-  settingItemTitle: {
-    width: '100%',
-    textAlign: 'center',
   },
 });
 

@@ -15,7 +15,6 @@ import LoginScreen from './src/screens/LoginScreen';
 import PatientListScreen from './src/screens/PatientListScreen';
 import PatientScreen from './src/screens/PatientScreen';
 import { setNavigator } from './src/utils/navigationHelper';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const switchNavigator = createSwitchNavigator({
   Init: ApplicationInitScreen,
