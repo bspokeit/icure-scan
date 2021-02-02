@@ -1,65 +1,18 @@
-import * as SecureStore from 'expo-secure-store';
 import * as _ from 'lodash';
 import { useContext } from 'react';
 import { getApi as api } from '../api/icure';
-import { PRIVATE_KEY_POSTFIX_1, PRIVATE_KEY_POSTFIX_2 } from '../constant';
 import { Context as CryptoContext } from '../context/CryptoContext';
 import { HealthcareParty } from '../models';
+import useStorage from './useStorage';
 
 export default () => {
   const { setKeyImport, setKey, deleteKey } = useContext(CryptoContext);
 
-  const addPrivateKeyToStorage = async (
-    hcp: HealthcareParty,
-    content: string
-  ): Promise<void> => {
-    if (!hcp || !hcp.id || !content) {
-      return;
-    }
-
-    const splitPosition = Math.floor(content.length / 2);
-    const part1 = content.substr(0, splitPosition);
-    const part2 = content.substr(splitPosition);
-
-    await SecureStore.setItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_1}`, part1);
-    await SecureStore.setItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`, part2);
-  };
-
-  const getPrivateKeyFromStorage = async (
-    hcp: HealthcareParty
-  ): Promise<string | undefined> => {
-    if (!hcp || !hcp.id) {
-      return;
-    }
-
-    try {
-      const part1 = await SecureStore.getItemAsync(
-        `${hcp.id}${PRIVATE_KEY_POSTFIX_1}`
-      );
-      const part2 = await SecureStore.getItemAsync(
-        `${hcp.id}${PRIVATE_KEY_POSTFIX_2}`
-      );
-
-      if (!part1 || !part2) {
-        throw Error('No private key value found in storage');
-      }
-
-      return part1 + part2;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const removePrivateKeyFromStorage = async (
-    hcp: HealthcareParty
-  ): Promise<void> => {
-    if (!hcp || !hcp.id) {
-      return;
-    }
-
-    await SecureStore.deleteItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_1}`);
-    await SecureStore.deleteItemAsync(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`);
-  };
+  const {
+    addPrivateKeyToStorage,
+    getPrivateKeyFromStorage,
+    removePrivateKeyFromStorage,
+  } = useStorage();
 
   const validatePrivateKey = async (hcp: HealthcareParty): Promise<boolean> => {
     return await api().cryptoApi.checkPrivateKeyValidity(hcp);
@@ -83,7 +36,12 @@ export default () => {
       });
   };
 
-  const clearPrivateKeyData = async (hcp: HealthcareParty): Promise<void> => {
+  const clearPrivateKeyData = async (
+    hcp: HealthcareParty | undefined
+  ): Promise<void> => {
+    if (!hcp) {
+      return;
+    }
     await removePrivateKeyFromStorage(hcp);
     deleteKey(hcp.id);
   };
@@ -133,7 +91,7 @@ export default () => {
       await clearPrivateKeyData(hcp);
     }
 
-    setKeyImport(hcp.id, true);
+    setKeyImport(hcp.id, false);
   };
 
   const importPrivateKeysFromStorage = async (hcps: Array<HealthcareParty>) => {
@@ -153,5 +111,9 @@ export default () => {
     );
   };
 
-  return { importPrivateKey, importPrivateKeysFromStorage };
+  return {
+    importPrivateKey,
+    importPrivateKeysFromStorage,
+    clearPrivateKeyData,
+  };
 };

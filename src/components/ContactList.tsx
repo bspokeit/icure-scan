@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { FlatList } from 'react-native';
 import { Context as PatientContext } from '../context/PatientContext';
 import { Patient } from '../models';
@@ -14,26 +14,37 @@ const ContactList: React.FC<Props> = ({ patient }) => {
     state: { contacts },
   } = useContext(PatientContext);
 
+  const keyExtractor = useCallback((item) => item.id, []);
+
+  const renderItem = useCallback(
+    ({ item }) => (
+      <ContactListItem
+        patient={patient}
+        contact={item}
+        onSelection={() => {
+          navigate('Gallery', {
+            patient: patient,
+            contact: item,
+          });
+        }}
+      ></ContactListItem>
+    ),
+    []
+  );
+
   return (
     <FlatList
-      keyExtractor={(item) => item.id}
+      keyExtractor={keyExtractor}
       data={
         contacts && contacts[patient.id] && contacts[patient.id].length
           ? contacts[patient.id]
           : []
       }
-      renderItem={({ item }) => (
-        <ContactListItem
-          patient={patient}
-          contact={item}
-          onSelection={() => {
-            navigate('Gallery', {
-              patient: patient,
-              contact: item,
-            });
-          }}
-        ></ContactListItem>
-      )}
+      renderItem={renderItem}
+      initialNumToRender={4}
+      maxToRenderPerBatch={2}
+      onEndReachedThreshold={0.1}
+      windowSize={6}
     />
   );
 };

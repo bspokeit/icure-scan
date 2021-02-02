@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { BottomSheet, Icon, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationStackScreenComponent,
   NavigationStackScreenProps,
 } from 'react-navigation-stack';
 import PatientListItem from '../components/PatientListItem';
-import { BLUE } from '../constant';
+import Settings from '../components/Settings';
+import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -19,6 +20,8 @@ interface Props extends NavigationStackScreenProps {}
 const PatientListScreen: NavigationStackScreenComponent<Props> = ({
   navigation,
 }) => {
+  const [query, setQuery] = useState('');
+
   const {
     state: { currentUser },
   } = useContext(AuthContext);
@@ -32,24 +35,27 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
 
   const { loadLogs, searchPatients } = usePatient();
 
-  const [query, setQuery] = useState('');
-
   useEffect(() => {
     loadLogs(currentUser!!);
   }, []);
 
-  const keyExtractor = (item: Patient) => item.id;
+  const [settingVisible, setSettingVisible] = useState(false);
 
-  const renderItem = ({ item }: { item: Patient }) => (
-    <PatientListItem
-      patient={item}
-      onSelection={() => {
-        clear();
-        navigation.navigate('Detail', {
-          patient: item,
-        });
-      }}
-    ></PatientListItem>
+  const keyExtractor = useCallback((item: Patient) => item.id, []);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Patient }) => (
+      <PatientListItem
+        patient={item}
+        onSelection={() => {
+          clear();
+          navigation.navigate('Detail', {
+            patient: item,
+          });
+        }}
+      ></PatientListItem>
+    ),
+    []
   );
 
   const searchClearRequest = () => {
@@ -58,8 +64,17 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
     }
   };
 
+  const renderSearchIcon = () => {
+    return (
+      <View>
+        <TouchableOpacity onPress={() => setSettingVisible(!settingVisible)}>
+          <Icon name="settings" type="ionicons" color={MAIN_COLOR} size={20} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <SearchBar
         placeholder="Search patient..."
         lightTheme
@@ -72,16 +87,23 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         showLoading={searching}
         disabled={searching}
         clearIcon={{ size: searching ? 0 : 22 }}
-        loadingProps={{ color: BLUE, size: 'small' }}
+        loadingProps={{ color: MAIN_COLOR, size: 'small' }}
         containerStyle={styles.searchContainer}
         inputContainerStyle={styles.searchInput}
-        searchIcon={{ color: BLUE }}
+        searchIcon={renderSearchIcon()}
       />
       <FlatList
         keyExtractor={keyExtractor}
         data={list}
         renderItem={renderItem}
       />
+      <BottomSheet
+        isVisible={settingVisible}
+        containerStyle={styles.bottomSheetContainer}
+        modalProps={{}}
+      >
+        <Settings onCancel={() => setSettingVisible(false)} />
+      </BottomSheet>
     </SafeAreaView>
   );
 };
@@ -93,11 +115,25 @@ PatientListScreen.navigationOptions = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: 8,
+  },
   searchContainer: {
     backgroundColor: 'transparent',
     borderBottomColor: 'transparent',
+    borderTopColor: 'transparent',
   },
-  searchInput: { backgroundColor: 'white', borderRadius: 8 },
+  searchInput: { backgroundColor: 'white', borderRadius: DEFAULT_BORDER },
+  bottomSheetContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  settingItemContainer: {
+    height: 50,
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
 });
 
 export default PatientListScreen;

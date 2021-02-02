@@ -48,7 +48,7 @@ const KeyImportScreen: NavigationSwitchScreenComponent<Props> = ({
   }, [keys, keyImports]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.safeAreaView}>
       {currentHcp ? (
         <KeyImporter
           hcp={currentHcp}
@@ -77,10 +77,11 @@ KeyImportScreen.navigationOptions = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaView: {
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 100,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
 });
 

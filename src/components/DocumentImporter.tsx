@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Divider } from 'react-native-elements';
+import { LIGHT_GREY, MAIN_ACTION, MAIN_COLOR } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { ImportStatus } from '../context/reducer-action/ImportReducerActions';
 import useImporter from '../hooks/useImporter';
@@ -52,10 +53,10 @@ const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
         <Divider style={{ backgroundColor: 'blue' }} />
         <View style={styles.controller}>
           <Button
-            buttonStyle={styles.control}
+            buttonStyle={[styles.control, styles.controlDone]}
             onPress={done}
             title="Ok"
-          ></Button>
+          />
         </View>
       </View>
     );
@@ -64,7 +65,7 @@ const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Import to Cloud</Text>
-      <Divider style={{ backgroundColor: 'blue' }} />
+      <Divider style={{ backgroundColor: LIGHT_GREY, margin: 0 }} />
       <View style={styles.body}>
         {!tasks?.length ? (
           <Text style={styles.bodyLine}>
@@ -86,22 +87,22 @@ const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
           <Text style={styles.bodyLine}>Finalisation ongoing</Text>
         ) : null}
       </View>
-      <Divider style={{ backgroundColor: 'blue' }} />
+      <Divider style={{ backgroundColor: LIGHT_GREY, margin: 0 }} />
       <View style={styles.controller}>
         <Button
-          buttonStyle={styles.control}
-          type="outline"
+          buttonStyle={[styles.control, styles.controlCancel]}
           onPress={cancel}
           title="Cancel"
+          titleStyle={styles.controlCancel}
           disabled={status === ImportStatus.Ongoing}
-        ></Button>
+        />
         <Button
-          buttonStyle={styles.control}
+          buttonStyle={[styles.control, styles.controlStart]}
           onPress={start}
           title="Start"
           disabled={status === ImportStatus.Ongoing}
           loading={status === ImportStatus.Ongoing}
-        ></Button>
+        />
       </View>
     </View>
   );
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 16,
     padding: 5,
+    color: MAIN_COLOR,
   },
   body: {
     flex: 3,
@@ -129,6 +131,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 16,
+    color: MAIN_COLOR,
   },
   controller: {
     flex: 2,
@@ -141,6 +144,14 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     marginRight: 6,
   },
+  controlCancel: {
+    backgroundColor: 'transparent',
+    color: LIGHT_GREY,
+  },
+  controlStart: {
+    backgroundColor: MAIN_ACTION,
+  },
+  controlDone: { backgroundColor: MAIN_ACTION },
 });
 
 export default DocumentImporter;
