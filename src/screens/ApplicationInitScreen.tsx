@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: DEFAULT_BORDER,
     justifyContent: 'center',
     textAlignVertical: 'center',
-    height: 80,
     alignContent: 'center',
   },
   textIcon: {
