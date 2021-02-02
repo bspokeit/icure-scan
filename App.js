@@ -39,11 +39,13 @@ export default () => {
         <CryptoProvider>
           <PatientProvider>
             <ImportProvider>
+              {/* <SafeAreaProvider> */}
               <App
                 ref={(navigator) => {
                   setNavigator(navigator);
                 }}
               />
+              {/* </SafeAreaProvider> */}
             </ImportProvider>
           </PatientProvider>
         </CryptoProvider>

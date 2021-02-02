@@ -1,25 +1,75 @@
+import * as SecureStore from 'expo-secure-store';
+import { initCrypto as initApiCrypto } from '../../api/icure';
 import { ActionMap } from '../../models';
 
+export enum SystemCheckStatus {
+  Unknown = 'UNKNOWN',
+  Ready = 'READY',
+  Error = 'ERROR',
+}
+
+export enum SystemCheckType {
+  CryptoSupport = 'CRYPTO_SUPPORT',
+  StorageSupport = 'STORAGE_SUPPORT',
+}
+export interface SystemCheck {
+  type: SystemCheckType;
+  status: SystemCheckStatus;
+  check: () => Promise<SystemCheckStatus>;
+  errorMessage: string;
+}
 export interface SystemState {
-  cryptoReady: boolean;
-  storeReady: boolean;
-  systemReady: boolean;
+  systemChecks: SystemCheck[];
   checkCompleted: boolean;
-  error: string | undefined;
 }
 
 export enum SystemActionTypes {
-  SetCryptoReady = 'SET_CRYPTO_READY',
-  SetSecureStoreAvailable = 'SET_SECURE_STORE_AVAILABLE',
+  UpdateSystemCheck = 'UPDATE_SYSTEM_CHECK',
   SetCheckCompleted = 'SET_CHECK_COMPLETED',
-  SetError = 'SET_ERROR',
 }
 
 export type SystemActionPayloadTypes = {
-  [SystemActionTypes.SetCryptoReady]: boolean;
-  [SystemActionTypes.SetSecureStoreAvailable]: boolean;
-  [SystemActionTypes.SetCheckCompleted]: undefined;
-  [SystemActionTypes.SetError]: string;
+  [SystemActionTypes.UpdateSystemCheck]: SystemCheck;
+  [SystemActionTypes.SetCheckCompleted]: boolean;
 };
 
 export type SystemAction = ActionMap<SystemActionPayloadTypes>[keyof ActionMap<SystemActionPayloadTypes>];
+
+export const defaultSystemChecks: SystemCheck[] = [
+  {
+    type: SystemCheckType.CryptoSupport,
+    status: SystemCheckStatus.Unknown,
+    check: async (): Promise<SystemCheckStatus> => {
+      let status;
+
+      try {
+        status = (await initApiCrypto())
+          ? SystemCheckStatus.Ready
+          : SystemCheckStatus.Error;
+      } catch (err) {
+        status = SystemCheckStatus.Error;
+      }
+
+      return status;
+    },
+    errorMessage: 'No Crypto support available',
+  },
+  {
+    type: SystemCheckType.StorageSupport,
+    status: SystemCheckStatus.Unknown,
+    check: async (): Promise<SystemCheckStatus> => {
+      let status;
+
+      try {
+        status = (await SecureStore.isAvailableAsync())
+          ? SystemCheckStatus.Ready
+          : SystemCheckStatus.Error;
+      } catch (err) {
+        status = SystemCheckStatus.Error;
+      }
+
+      return status;
+    },
+    errorMessage: 'No Secure Storage support available',
+  },
+];
