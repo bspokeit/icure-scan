@@ -1,12 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Card, Icon, Text } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationSwitchScreenComponent,
   NavigationSwitchScreenProps,
 } from 'react-navigation';
+import { DEFAULT_BORDER, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
+import { SystemCheckStatus } from '../context/reducer-action/SystemReducerActions';
 import { Context as SystemContext } from '../context/SystemContext';
 import useAuth from '../hooks/useAuth';
 import useSystem from '../hooks/useSystem';
@@ -15,89 +16,65 @@ interface Props extends NavigationSwitchScreenProps {}
 
 const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
   const {
-    state: { systemReady, cryptoReady, storeReady, checkCompleted },
+    state: { checkCompleted, systemChecks },
   } = useContext(SystemContext);
+  const { checkSystem, systemIsReady } = useSystem();
 
   const { autoLogin } = useAuth();
-  const { checkSystem } = useSystem();
 
   useEffect(() => {
     checkSystem();
   }, []);
 
   useEffect(() => {
-    if (systemReady) {
+    if (systemIsReady()) {
       setTimeout(() => {
         autoLogin();
-      }, 250);
+      }, 350);
     }
-  }, [systemReady]);
+  }, [checkCompleted]);
+
+  if (!checkCompleted || systemIsReady()) {
+    return (
+      <SafeAreaView style={styles.safeAreaView}>
+        <View style={styles.container}>
+          <Card containerStyle={styles.card}>
+            <View style={styles.horizontal}>
+              <ActivityIndicator
+                style={styles.textIcon}
+                animating
+                color={MAIN_COLOR}
+                size="small"
+              />
+              <Text style={styles.text}>
+                {!checkCompleted ? 'Checking system...' : 'Automatic login...'}
+              </Text>
+            </View>
+          </Card>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {!checkCompleted ? (
-        <ActivityIndicator animating color="#2089dc" size="large" />
-      ) : null}
-
-      {cryptoReady ? (
-        <View style={styles.horizontal}>
-          <Ionicons
-            style={styles.textIcon}
-            name="md-checkmark-circle"
-            size={16}
-            color="green"
-          />
-          <Text>Crypto is ready!</Text>
-        </View>
-      ) : null}
-
-      {checkCompleted && !cryptoReady ? (
-        <View style={styles.horizontal}>
-          <Ionicons
-            style={styles.textIcon}
-            name="alert-circle"
-            size={16}
-            color="red"
-          />
-          <Text>Crypto is not properly configured!</Text>
-        </View>
-      ) : null}
-
-      {storeReady ? (
-        <View style={styles.horizontal}>
-          <Ionicons
-            style={styles.textIcon}
-            name="md-checkmark-circle"
-            size={16}
-            color="green"
-          />
-          <Text>Store is ready!</Text>
-        </View>
-      ) : null}
-
-      {checkCompleted && !storeReady ? (
-        <View style={styles.horizontal}>
-          <Ionicons
-            style={styles.textIcon}
-            name="alert-circle"
-            size={16}
-            color="red"
-          />
-          <Text>Store is not properly configured!</Text>
-        </View>
-      ) : null}
-
-      {storeReady && cryptoReady ? (
-        <View style={[styles.horizontal, styles.extraMargin]}>
-          <ActivityIndicator
-            style={styles.textIcon}
-            animating
-            color="#2089dc"
-            size="small"
-          />
-          <Text>Attempting to log you in...</Text>
-        </View>
-      ) : null}
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.container}>
+        <Card containerStyle={styles.card}>
+          {systemChecks
+            .filter((c) => c.status === SystemCheckStatus.Error || true)
+            .map((c, i) => (
+              <View key={i} style={styles.horizontal}>
+                <Icon
+                  style={styles.textIcon}
+                  name="error"
+                  type="materialicons"
+                  color={SECONDARY_ACTION}
+                />
+                <Text style={styles.text}>{c.errorMessage}</Text>
+              </View>
+            ))}
+        </Card>
+      </View>
     </SafeAreaView>
   );
 };
@@ -109,22 +86,32 @@ ApplicationInitScreen.navigationOptions = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaView: {
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 150,
     alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  container: { width: '90%' },
+  card: {
+    borderWidth: 1,
+    borderColor: MAIN_COLOR,
+    borderRadius: DEFAULT_BORDER,
+    justifyContent: 'center',
+    textAlignVertical: 'center',
+    height: 80,
+    alignContent: 'center',
   },
   textIcon: {
     marginRight: 8,
   },
+  text: {
+    color: MAIN_COLOR,
+  },
   horizontal: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginTop: 10,
-  },
-  extraMargin: {
-    margin: 15,
+    justifyContent: 'center',
   },
 });
 

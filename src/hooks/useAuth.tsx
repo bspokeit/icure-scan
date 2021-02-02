@@ -90,7 +90,7 @@ export default () => {
   const autoLogin = async (): Promise<void> => {
     try {
       const credentials: Credentials = JSON.parse(
-        (await SecureStore.getItemAsync(CREDENTIAL_KEY)) || ''
+        (await SecureStore.getItemAsync(CREDENTIAL_KEY)) ?? ''
       );
 
       if (credentials) {
