@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     color: MAIN_COLOR,
-    fontSize: 16,
   },
   submitButton: {
     borderRadius: DEFAULT_BORDER,

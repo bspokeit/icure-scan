@@ -91,7 +91,7 @@ export default () => {
       await clearPrivateKeyData(hcp);
     }
 
-    setKeyImport(hcp.id, true);
+    setKeyImport(hcp.id, false);
   };
 
   const importPrivateKeysFromStorage = async (hcps: Array<HealthcareParty>) => {

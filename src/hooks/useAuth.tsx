@@ -117,6 +117,7 @@ export default () => {
   const logoutHard = async (): Promise<void> => {
     await clearPrivateKeyData(currentHcp);
     await clearPrivateKeyData(currentParentHcp);
+    await logout();
   };
 
   return { login, autoLogin, logout, logoutHard };
