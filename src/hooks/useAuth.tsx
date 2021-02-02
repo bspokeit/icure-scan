@@ -31,7 +31,9 @@ export default () => {
   const { clearPrivateKeyData } = useCrypto();
 
   const apiErrorInterceptor: ErrorHandler = (error: XHR.XHRError) => {
-    console.log('Custom error handler');
+    console.log('=======================================');
+    console.log(JSON.stringify(error, null, 2));
+    console.log('=======================================');
     if (error.statusCode === 401) {
       handle401();
     }
@@ -159,7 +161,6 @@ export default () => {
       const current = await api().userApi.getCurrentUser();
       // console.log('current: ', current);
     } catch (error) {
-      console.log(JSON.stringify(error, null, 2));
       //  Session has expired
     }
   };
