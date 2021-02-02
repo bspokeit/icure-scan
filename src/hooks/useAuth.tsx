@@ -1,10 +1,13 @@
+import { XHR } from '@icure/api';
 import * as SecureStore from 'expo-secure-store';
 import { useContext } from 'react';
 import {
+  configure,
   Credentials,
+  ErrorHandler,
   getApi as api,
   getAuthAPI as authApi,
-  initApi,
+  init,
 } from '../api/icure';
 import { CREDENTIAL_KEY } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
@@ -27,6 +30,19 @@ export default () => {
 
   const { clearPrivateKeyData } = useCrypto();
 
+  const apiErrorInterceptor: ErrorHandler = (error: XHR.XHRError) => {
+    console.log('Custom error handler');
+    if (error.statusCode === 401) {
+      handle401();
+    }
+
+    throw error;
+  };
+
+  const initApi = () => {
+    init(undefined, apiErrorInterceptor);
+  };
+
   const login = async ({
     username,
     password,
@@ -40,6 +56,8 @@ export default () => {
         username,
         password,
       } as Credentials);
+
+      console.log('Login response: ', response);
 
       if (!response.successful) {
         await SecureStore.deleteItemAsync(CREDENTIAL_KEY);
@@ -56,7 +74,8 @@ export default () => {
 
         setLogin(authHeader);
 
-        initApi({ username, password });
+        // initApi({ username, password });
+        initApi();
 
         const currentUser = await api().userApi.getCurrentUser();
         setUser(currentUser as User);
@@ -88,24 +107,39 @@ export default () => {
   };
 
   const autoLogin = async (): Promise<void> => {
-    try {
-      const credentials: Credentials = JSON.parse(
-        (await SecureStore.getItemAsync(CREDENTIAL_KEY)) ?? ''
-      );
+    //navigate('Login');
 
-      if (credentials) {
-        await login(credentials);
-      } else {
-        logout();
-      }
-    } catch (error) {
-      console.error(error);
-      logout();
-    }
+    await initApi();
+
+    // console.log(await SecureStore.getItemAsync(CREDENTIAL_KEY));
+
+    testSession();
+
+    // try {
+    //   const credentials: Credentials = JSON.parse(
+    //     (await SecureStore.getItemAsync(CREDENTIAL_KEY)) ?? ''
+    //   );
+    //   if (credentials) {
+    //     await login(credentials);
+    //   } else {
+    //     logout();
+    //   }
+    // } catch (error) {
+    //   // console.error(error);
+    //   logout();
+    // }
   };
 
   const logout = async (): Promise<void> => {
     await clearAuthenticationData();
+    try {
+      const response = await authApi().logout();
+      console.log('Logout response: ', response);
+      configure();
+    } catch (error) {
+      // console.error(error);
+    }
+
     navigate('Login');
   };
 
@@ -120,5 +154,20 @@ export default () => {
     await logout();
   };
 
-  return { login, autoLogin, logout, logoutHard };
+  const testSession = async () => {
+    try {
+      const current = await api().userApi.getCurrentUser();
+      // console.log('current: ', current);
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2));
+      //  Session has expired
+    }
+  };
+
+  const handle401 = () => {
+    clearAuthenticationData();
+    navigate('Login');
+  };
+
+  return { login, autoLogin, logout, logoutHard, testSession };
 };
