@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { getDocumentAsync } from 'expo-document-picker';
 import * as FS from 'expo-file-system';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, Text } from 'react-native-elements';
+import { DEFAULT_BORDER, MAIN_ACTION, MAIN_COLOR } from '../constant';
 import { Context as CryptoContext } from '../context/CryptoContext';
 import useCrypto from '../hooks/useCrypto';
 import { HealthcareParty } from '../models';
@@ -44,35 +45,38 @@ const KeyImporter: React.FC<Props> = ({
       });
   };
 
+  const importIsGoing = useCallback(() => {
+    return !!Object.values(keyImports || {}).find((ongoing) => ongoing);
+  }, [keyImports]);
+
   return (
-    <View>
-      <Card>
+    <View style={styles.container}>
+      <Card containerStyle={styles.card}>
         <Card.Title>
-          <Text>{headerText}</Text>
+          <Text style={styles.text}>{headerText}</Text>
         </Card.Title>
-        <Card.Divider />
+        <Card.Divider style={{ backgroundColor: MAIN_COLOR, margin: 5 }} />
         <View style={styles.center}>
           {!hcp ? (
             <View>
-              <Text style={styles.contentText}>
-                No Hcp has been detected...
-              </Text>
+              <Text style={styles.text}>No Hcp has been detected...</Text>
             </View>
           ) : (
             <View>
-              <Text style={styles.contentText}>{hcp.id}</Text>
+              <Text style={styles.text}>{hcp.id}</Text>
             </View>
           )}
         </View>
 
-        <Card.Divider />
+        <Card.Divider style={{ backgroundColor: MAIN_COLOR, margin: 5 }} />
         <View>
           {!keys[hcp.id] ? (
             <Button
               title={buttonText}
               onPress={onImportPress}
               loading={keyImports[hcp.id]}
-              disabled={keyImports[hcp.id]}
+              disabled={importIsGoing()}
+              buttonStyle={styles.uploadButton}
             />
           ) : (
             <View style={styles.center}>
@@ -83,7 +87,7 @@ const KeyImporter: React.FC<Props> = ({
                   size={16}
                   color="green"
                 />
-                <Text>{loadedText}</Text>
+                <Text style={styles.text}>{loadedText}</Text>
               </View>
             </View>
           )}
@@ -94,11 +98,23 @@ const KeyImporter: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  container: { width: '90%' },
+  card: {
+    borderWidth: 1,
+    borderColor: MAIN_COLOR,
+    borderRadius: DEFAULT_BORDER,
+    justifyContent: 'center',
+    textAlignVertical: 'center',
+    alignContent: 'center',
+  },
   contentText: {
     marginBottom: 15,
   },
   textIcon: {
     marginRight: 8,
+  },
+  text: {
+    color: MAIN_COLOR,
   },
   center: {
     alignItems: 'center',
@@ -106,6 +122,11 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  uploadButton: {
+    borderRadius: DEFAULT_BORDER,
+    color: MAIN_ACTION,
+    backgroundColor: MAIN_ACTION,
   },
 });
 
