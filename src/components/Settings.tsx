@@ -14,14 +14,14 @@ interface Props {
 }
 
 const Settings: React.FC<Props> = ({ onCancel }) => {
-  const { logout, logoutHard } = useAuth();
+  const { logUserOut, logoutUserOutHard } = useAuth();
 
   const onLogout = async () => {
-    await logout();
+    await logUserOut();
   };
 
   const onLogoutHard = async () => {
-    await logoutHard();
+    await logoutUserOutHard();
   };
 
   return (

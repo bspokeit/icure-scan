@@ -1,9 +1,9 @@
+import { XHR } from '@icure/api';
 import React, { createContext, useReducer } from 'react';
 import { HealthcareParty, User } from '../models';
 import {
   AuthAction,
   AuthActionTypes,
-  AuthorizationHeader,
   AuthState,
 } from './reducer-action/AuthReducerActions';
 
@@ -11,8 +11,10 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case AuthActionTypes.SetOngoing:
       return { ...state, ongoing: action.payload };
-    case AuthActionTypes.Login:
+    case AuthActionTypes.SetAuthHeader:
       return { authHeader: action.payload, error: undefined };
+    case AuthActionTypes.SetSession:
+      return { ...state, session: action.payload };
     case AuthActionTypes.Logout:
       return {};
     case AuthActionTypes.SetUser:
@@ -34,10 +36,16 @@ const setLoginOngoing = (dispatch: React.Dispatch<AuthAction>) => async (
   dispatch({ type: AuthActionTypes.SetOngoing, payload: status });
 };
 
-const setLogin = (dispatch: React.Dispatch<AuthAction>) => async (
-  header: AuthorizationHeader
+const setAuthHeader = (dispatch: React.Dispatch<AuthAction>) => async (
+  header?: XHR.Header
 ): Promise<void> => {
-  dispatch({ type: AuthActionTypes.Login, payload: header });
+  dispatch({ type: AuthActionTypes.SetAuthHeader, payload: header });
+};
+
+const setSession = (dispatch: React.Dispatch<AuthAction>) => async (
+  session: string
+): Promise<void> => {
+  dispatch({ type: AuthActionTypes.SetSession, payload: session });
 };
 
 const setLogout = (
@@ -74,7 +82,8 @@ const defaultAuthState: AuthState = {};
 
 const defaultAuthDispatcher = {
   setLoginOngoing: (_a: boolean) => Promise.resolve(),
-  setLogin: (_a: AuthorizationHeader) => Promise.resolve(),
+  setAuthHeader: (_a?: XHR.Header) => Promise.resolve(),
+  setSession: (_a: string) => Promise.resolve(),
   setLogout: () => Promise.resolve(),
   setUser: (_a: User) => Promise.resolve(),
   setHcp: (_a: HealthcareParty) => Promise.resolve(),
@@ -85,7 +94,8 @@ const defaultAuthDispatcher = {
 export const Context = createContext<{
   state: AuthState;
   setLoginOngoing: (status: boolean) => Promise<void>;
-  setLogin: (header: AuthorizationHeader) => Promise<void>;
+  setAuthHeader: (header?: XHR.Header) => Promise<void>;
+  setSession: (session: string) => Promise<void>;
   setLogout: () => Promise<void>;
   setUser: (user: User) => Promise<void>;
   setHcp: (hcp: HealthcareParty) => Promise<void>;
@@ -101,7 +111,8 @@ export const Provider: React.FC = ({ children }) => {
 
   const dispatcher = {
     setLoginOngoing: setLoginOngoing(dispatch),
-    setLogin: setLogin(dispatch),
+    setAuthHeader: setAuthHeader(dispatch),
+    setSession: setSession(dispatch),
     setLogout: setLogout(dispatch),
     setUser: setUser(dispatch),
     setHcp: setHcp(dispatch),
