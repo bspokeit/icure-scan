@@ -8,7 +8,6 @@ import {
   MAIN_COLOR,
   SECONDARY_ACTION,
 } from '../constant';
-import useAuth from '../hooks/useAuth';
 
 interface Props {
   errorMessage?: string;
@@ -32,12 +31,6 @@ const LoginForm: React.FC<Props> = ({
     if (username && password) {
       onSubmit({ username, password });
     }
-  };
-
-  const { testSession } = useAuth();
-
-  const onTest = async () => {
-    await testSession();
   };
 
   return (
@@ -73,7 +66,6 @@ const LoginForm: React.FC<Props> = ({
         loading={loginOngoing}
         buttonStyle={styles.submitButton}
       />
-      <Button title="Test" onPress={() => onTest()} />
     </>
   );
 };

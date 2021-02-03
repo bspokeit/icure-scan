@@ -1,17 +1,17 @@
-import { XHR } from '@icure/api';
+import { IccUserXApi, XHR } from '@icure/api';
 import * as SecureStore from 'expo-secure-store';
 import { useContext } from 'react';
 import {
-  configure,
   Credentials,
   ErrorHandler,
-  getApi as api,
+  getAPI as api,
   getAuthAPI as authApi,
+  getUserAPI as userApi,
+  IccApiHeaders,
   init,
 } from '../api/icure';
-import { CREDENTIAL_KEY } from '../constant';
+import { AUTHENTICATION_HEADER } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
-import { AuthorizationHeader } from '../context/reducer-action/AuthReducerActions';
 import { User } from '../models';
 import { navigate } from '../utils/navigationHelper';
 import useCrypto from './useCrypto';
@@ -20,7 +20,8 @@ export default () => {
   const {
     state: { currentHcp, currentParentHcp },
     setLoginOngoing,
-    setLogin,
+    setAuthHeader,
+    setSession,
     setLogout,
     setUser,
     setHcp,
@@ -31,9 +32,6 @@ export default () => {
   const { clearPrivateKeyData } = useCrypto();
 
   const apiErrorInterceptor: ErrorHandler = (error: XHR.XHRError) => {
-    console.log('=======================================');
-    console.log(JSON.stringify(error, null, 2));
-    console.log('=======================================');
     if (error.statusCode === 401) {
       handle401();
     }
@@ -41,8 +39,8 @@ export default () => {
     throw error;
   };
 
-  const initApi = () => {
-    init(undefined, apiErrorInterceptor);
+  const initApi = (headers?: IccApiHeaders) => {
+    init(headers, apiErrorInterceptor);
   };
 
   const login = async ({
@@ -59,116 +57,177 @@ export default () => {
         password,
       } as Credentials);
 
-      console.log('Login response: ', response);
-
       if (!response.successful) {
-        await SecureStore.deleteItemAsync(CREDENTIAL_KEY);
+        await SecureStore.deleteItemAsync(AUTHENTICATION_HEADER);
         setError('Invalid credentials');
       } else {
-        const authHeader: AuthorizationHeader = {
-          Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+        const authHeader: XHR.Header = {
+          header: 'Authorization',
+          data: `Basic ${btoa(`${username}:${password}`)}`,
         };
 
         await SecureStore.setItemAsync(
-          CREDENTIAL_KEY,
-          JSON.stringify({ username, password })
+          AUTHENTICATION_HEADER,
+          JSON.stringify(authHeader)
         );
 
-        setLogin(authHeader);
+        setAuthHeader(authHeader);
 
-        // initApi({ username, password });
-        initApi();
-
-        const currentUser = await api().userApi.getCurrentUser();
-        setUser(currentUser as User);
-
-        const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
-        setHcp(currentHcp);
-
-        let parentHcp;
-        if (currentHcp.parentId) {
-          try {
-            parentHcp = await api().healthcarePartyApi.getHealthcareParty(
-              currentHcp.parentId,
-              true
-            );
-          } catch (err) {
-            throw err;
-          }
-        }
-
-        setParent(parentHcp);
-        navigate('ImportKey');
+        handleActiveSession();
       }
     } catch (error) {
-      console.error(error);
       setError('Something went wrong while login');
     }
 
     setLoginOngoing(false);
   };
 
-  const autoLogin = async (): Promise<void> => {
-    //navigate('Login');
-
-    await initApi();
-
-    // console.log(await SecureStore.getItemAsync(CREDENTIAL_KEY));
-
-    testSession();
-
-    // try {
-    //   const credentials: Credentials = JSON.parse(
-    //     (await SecureStore.getItemAsync(CREDENTIAL_KEY)) ?? ''
-    //   );
-    //   if (credentials) {
-    //     await login(credentials);
-    //   } else {
-    //     logout();
-    //   }
-    // } catch (error) {
-    //   // console.error(error);
-    //   logout();
-    // }
+  const getSession = async () => {
+    try {
+      const session = await userApi().getCurrentSession();
+      setSession(session);
+    } catch (error) {
+      //  Impossible to fecth the session. That's ok.
+    }
   };
 
-  const logout = async (): Promise<void> => {
-    await clearAuthenticationData();
-    try {
-      const response = await authApi().logout();
-      console.log('Logout response: ', response);
-      configure();
-    } catch (error) {
-      // console.error(error);
+  const loadUser = async () => {
+    const currentUser = await api().userApi.getCurrentUser();
+    setUser(currentUser as User);
+
+    const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
+    setHcp(currentHcp);
+
+    let parentHcp;
+    if (currentHcp.parentId) {
+      try {
+        parentHcp = await api().healthcarePartyApi.getHealthcareParty(
+          currentHcp.parentId,
+          true
+        );
+      } catch (err) {
+        throw err;
+      }
     }
 
+    setParent(parentHcp);
+  };
+
+  const getAuthHeader = async (): Promise<XHR.Header | undefined> => {
+    const storedHeaderAsString = await SecureStore.getItemAsync(
+      AUTHENTICATION_HEADER
+    );
+
+    if (!!storedHeaderAsString) {
+      try {
+        const authHeader = JSON.parse(storedHeaderAsString);
+        setAuthHeader(authHeader);
+        return authHeader;
+      } catch (error) {
+        //  AuthHeader parsinf failed. It is therefore useless => let's clean
+        await SecureStore.deleteItemAsync(AUTHENTICATION_HEADER);
+        setAuthHeader(undefined);
+      }
+    }
+  };
+
+  const getAuthenticatedUserApi = (authHeader: XHR.Header): IccUserXApi => {
+    const bareUserApi = userApi();
+    bareUserApi.setHeaders([...bareUserApi.headers, authHeader]);
+
+    return bareUserApi;
+  };
+
+  const handleActiveSession = async () => {
+    //  If the session is valid, we can setup the iccApi (still without headers as a session exists) and
+    //  load user details
+    try {
+      await getSession();
+      initApi();
+      await loadUser();
+      navigate('ImportKey');
+    } catch (error) {
+      //  Something went wrong. Just log the user out an redirect to login screen
+      await cleanAndRedirectToLogin();
+    }
+  };
+
+  const autoLogin = async (): Promise<void> => {
+    //  First we test if a valid session exists using a bare user api instance free of
+    //  any Authentication headers
+    const sessionIsActive = await sessionActive();
+
+    if (sessionIsActive) {
+      handleActiveSession();
+    } else {
+      //  If the session is invalid or does not exists we can check for an AuthHeader to reactivate the
+      //  user session before redirecting him to the login.
+      const authHeaderCandidate = await getAuthHeader();
+
+      //  If there is no auth header, there is nothing else we can do
+      if (!authHeaderCandidate) {
+        return await cleanAndRedirectToLogin();
+      }
+
+      //  To revive the session we need to exchange something with the serveur with a AuthHeader.
+      const bareAutheticatedUserApi = getAuthenticatedUserApi(
+        authHeaderCandidate
+      );
+
+      const sessionRevived = await sessionActive(bareAutheticatedUserApi);
+      if (sessionRevived) {
+        handleActiveSession();
+      } else {
+        //  There is no session to re activate => redirect to login properly
+        await cleanAndRedirectToLogin();
+      }
+    }
+  };
+
+  const cleanAndRedirectToLogin = async () => {
+    await clearAuthenticationData();
+    navigate('Login');
+  };
+
+  const logUserOut = async (): Promise<void> => {
+    try {
+      await authApi().logout();
+    } catch (error) {
+      //  Nothing else to do at this point.
+    }
+    await clearAuthenticationData();
     navigate('Login');
   };
 
   const clearAuthenticationData = async (): Promise<void> => {
-    await SecureStore.deleteItemAsync(CREDENTIAL_KEY);
+    await SecureStore.deleteItemAsync(AUTHENTICATION_HEADER);
     await setLogout();
   };
 
-  const logoutHard = async (): Promise<void> => {
+  const logoutUserOutHard = async (): Promise<void> => {
     await clearPrivateKeyData(currentHcp);
     await clearPrivateKeyData(currentParentHcp);
-    await logout();
+    await logUserOut();
   };
 
-  const testSession = async () => {
+  const sessionActive = async (
+    customUserApi?: IccUserXApi
+  ): Promise<boolean> => {
     try {
-      const current = await api().userApi.getCurrentUser();
-      // console.log('current: ', current);
+      const uApi = customUserApi ?? userApi();
+      const current = await uApi.getCurrentUser();
+      return !!current;
     } catch (error) {
-      //  Session has expired
+      //  Session has expired if error.statusCode = 401. But here we take any error
+      //  as a signal of a missing session (for now). Any subsequent calls errors will
+      //  be properly handled by a dedicated ErrorInterceptor.
+      return false;
     }
   };
 
   const handle401 = () => {
-    clearAuthenticationData();
-    navigate('Login');
+    autoLogin();
   };
 
-  return { login, autoLogin, logout, logoutHard, testSession };
+  return { login, autoLogin, logUserOut,  logoutUserOutHard, sessionActive };
 };

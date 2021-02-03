@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { useContext } from 'react';
-import { getApi as api } from '../api/icure';
+import { getAPI as api } from '../api/icure';
 import { Context as PatientContext } from '../context/PatientContext';
 import { Contact, Patient } from '../models';
 import {
