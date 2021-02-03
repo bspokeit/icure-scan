@@ -45,6 +45,7 @@ const ContactList: React.FC<Props> = ({ patient }) => {
       maxToRenderPerBatch={2}
       onEndReachedThreshold={0.1}
       windowSize={6}
+      style={{ marginBottom: 56 }}
     />
   );
 };
