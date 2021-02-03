@@ -5,7 +5,7 @@ import {
 } from '@icure/api';
 import * as _ from 'lodash';
 import { useContext } from 'react';
-import { getApi as api } from '../api/icure';
+import { getAPI as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';

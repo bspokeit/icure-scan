@@ -1,1 +1,1 @@
-export const CREDENTIAL_KEY = 'credentials';
+export const AUTHENTICATION_HEADER = 'icure_scan_auth_header';

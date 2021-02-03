@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { useContext } from 'react';
-import { getApi as api } from '../api/icure';
+import { getAPI as api } from '../api/icure';
 import { Context as CryptoContext } from '../context/CryptoContext';
 import { HealthcareParty } from '../models';
 import useStorage from './useStorage';

@@ -1,21 +1,20 @@
+import { XHR } from '@icure/api';
 import { ActionMap, HealthcareParty, User } from '../../models';
-
-export interface AuthorizationHeader {
-  Authorization: string;
-}
 
 export interface AuthState {
   ongoing?: boolean;
   currentUser?: User;
   currentHcp?: HealthcareParty;
   currentParentHcp?: HealthcareParty;
-  authHeader?: AuthorizationHeader;
+  authHeader?: XHR.Header;
+  session?: string;
   error?: string;
 }
 
 export enum AuthActionTypes {
   SetOngoing = 'SET_ONGOING',
-  Login = 'LOGIN',
+  SetAuthHeader = 'SET_AUTH_HEADER',
+  SetSession = 'SET_SESSION',
   Logout = 'LOGOUT',
   SetUser = 'SET_USER',
   SetHcp = 'SET_HCP',
@@ -25,7 +24,8 @@ export enum AuthActionTypes {
 
 export type AuthActionPayloadTypes = {
   [AuthActionTypes.SetOngoing]: boolean;
-  [AuthActionTypes.Login]: AuthorizationHeader;
+  [AuthActionTypes.SetAuthHeader]: XHR.Header | undefined;
+  [AuthActionTypes.SetSession]: string;
   [AuthActionTypes.Logout]: undefined;
   [AuthActionTypes.SetUser]: User;
   [AuthActionTypes.SetHcp]: HealthcareParty;

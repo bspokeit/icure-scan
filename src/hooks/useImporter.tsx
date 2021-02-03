@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { useContext } from 'react';
-import { getApi as api } from '../api/icure';
+import { getAPI as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as ImportContext } from '../context/ImportContext';
@@ -15,8 +15,6 @@ import {
   ProcessTaskNewContent,
 } from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
-
-// TODO: better handle error in the flow and cleanup if something goes wrong
 
 export default () => {
   const {
@@ -62,7 +60,7 @@ export default () => {
     try {
       const document = await api().documentApi.newInstance(
         currentUser!!,
-        await api().messageApi.newInstance(currentUser!!, {}),
+        undefined,
         {
           name: `${api().cryptoApi.randomUuid()}-from-icure-scan`,
           mainUti: api().documentApi.uti(
