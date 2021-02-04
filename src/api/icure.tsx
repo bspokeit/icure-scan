@@ -1,4 +1,9 @@
-const isoCrypto = {}; // require('isomorphic-webcrypto');
+const isoCrypto = require('./support/msrCrypto');
+const b64 = require('b64-lite');
+
+global.atob = typeof atob === 'undefined' ? b64.atob : atob;
+global.btoa = typeof btoa === 'undefined' ? b64.btoa : btoa;
+
 import {
   IccAuthApi,
   IccCalendarItemXApi,

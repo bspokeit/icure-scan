@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="013b505e-7b83-49d7-9b8d-34c8081d7325" name="Default Changelist" comment="" />
+    <list default="true" id="013b505e-7b83-49d7-9b8d-34c8081d7325" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/api/icure.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/api/icure.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/context/reducer-action/SystemReducerActions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/context/reducer-action/SystemReducerActions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/hooks/useAuth.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/hooks/useAuth.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/hooks/useCrypto.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/hooks/useCrypto.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/screens/ApplicationInitScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/screens/ApplicationInitScreen.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +26,9 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -34,9 +44,13 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2020" y="127" width="1720" height="811" key="AVDManager" timestamp="1612383570171">
+    <state x="2020" y="127" width="1720" height="811" key="AVDManager" timestamp="1612443798408">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2020" y="127" width="1720" height="811" key="AVDManager/1920.0.1920.1080/0.27.1920.1011@1920.0.1920.1080" timestamp="1612383570171" />
+    <state x="2020" y="127" width="1720" height="811" key="AVDManager/1920.0.1920.1080/0.27.1920.1011@1920.0.1920.1080" timestamp="1612443798408" />
+    <state x="2363" y="110" width="1024" height="852" key="SettingsEditor" timestamp="1612443672898">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2363" y="110" width="1024" height="852" key="SettingsEditor/1920.0.1920.1080/0.27.1920.1011@1920.0.1920.1080" timestamp="1612443672898" />
   </component>
 </project>

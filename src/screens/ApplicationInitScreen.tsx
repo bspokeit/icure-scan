@@ -7,34 +7,34 @@ import {
   NavigationSwitchScreenProps,
 } from 'react-navigation';
 import { DEFAULT_BORDER, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
-//import { SystemCheckStatus } from '../context/reducer-action/SystemReducerActions';
-//import { Context as SystemContext } from '../context/SystemContext';
-//import useAuth from '../hooks/useAuth';
-//import useSystem from '../hooks/useSystem';
+import { SystemCheckStatus } from '../context/reducer-action/SystemReducerActions';
+import { Context as SystemContext } from '../context/SystemContext';
+import useSystem from '../hooks/useSystem';
+import useAuth from '../hooks/useAuth';
 
 interface Props extends NavigationSwitchScreenProps {}
 
 const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
-  // const {
-  //   state: { checkCompleted, systemChecks },
-  // } = useContext(SystemContext);
-  // const { checkSystem, systemIsReady } = useSystem();
+  const {
+    state: { checkCompleted, systemChecks },
+  } = useContext(SystemContext);
+  const { checkSystem, systemIsReady } = useSystem();
 
-  // const { autoLogin } = useAuth();
+  const { autoLogin } = useAuth();
 
   useEffect(() => {
-    //checkSystem();
+    checkSystem();
   }, []);
 
-  // useEffect(() => {
-  //   if (systemIsReady()) {
-  //     setTimeout(() => {
-  //    //   autoLogin();
-  //     }, 350);
-  //   }
-  // }, [checkCompleted]);
+  useEffect(() => {
+    if (systemIsReady()) {
+      setTimeout(() => {
+        autoLogin();
+      }, 350);
+    }
+  }, [checkCompleted]);
 
-  if (true /*|| !checkCompleted || systemIsReady()*/) {
+  if (!checkCompleted || systemIsReady()) {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
@@ -47,11 +47,7 @@ const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
                 size="small"
               />
               <Text style={styles.text}>
-                {
-                  /*!checkCompleted*/ 1
-                    ? 'Checking system...'
-                    : 'Automatic login...'
-                }
+                {!checkCompleted ? 'Checking system...' : 'Automatic login...'}
               </Text>
             </View>
           </Card>
@@ -60,27 +56,27 @@ const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
     );
   }
 
-  // return (
-  //   <SafeAreaView style={styles.safeAreaView}>
-  //     <View style={styles.container}>
-  //       <Card containerStyle={styles.card}>
-  //         {systemChecks
-  //           .filter((c) => c.status === SystemCheckStatus.Error || true)
-  //           .map((c, i) => (
-  //             <View key={i} style={styles.horizontal}>
-  //               <Icon
-  //                 style={styles.textIcon}
-  //                 name="error"
-  //                 type="materialicons"
-  //                 color={SECONDARY_ACTION}
-  //               />
-  //               <Text style={styles.text}>{c.errorMessage}</Text>
-  //             </View>
-  //           ))}
-  //       </Card>
-  //     </View>
-  //   </SafeAreaView>
-  // );
+  return (
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.container}>
+        <Card containerStyle={styles.card}>
+          {systemChecks
+            .filter((c) => c.status === SystemCheckStatus.Error || true)
+            .map((c, i) => (
+              <View key={i} style={styles.horizontal}>
+                <Icon
+                  style={styles.textIcon}
+                  name="error"
+                  type="materialicons"
+                  color={SECONDARY_ACTION}
+                />
+                <Text style={styles.text}>{c.errorMessage}</Text>
+              </View>
+            ))}
+        </Card>
+      </View>
+    </SafeAreaView>
+  );
 };
 
 ApplicationInitScreen.navigationOptions = () => {

@@ -14,7 +14,6 @@ import KeyImportScreen from './src/screens/KeyImportScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import PatientListScreen from './src/screens/PatientListScreen';
 import PatientScreen from './src/screens/PatientScreen';
-import IccApiWBShell from './src/api/IccApiWBShell';
 import { setNavigator } from './src/utils/navigationHelper';
 
 const switchNavigator = createSwitchNavigator({
@@ -35,23 +34,20 @@ const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
-    <>
-      <IccApiWBShell />
-      <SystemProvider>
-        <AuthProvider>
-          <CryptoProvider>
-            <PatientProvider>
-              <ImportProvider>
-                <App
-                  ref={(navigator) => {
-                    setNavigator(navigator);
-                  }}
-                />
-              </ImportProvider>
-            </PatientProvider>
-          </CryptoProvider>
-        </AuthProvider>
-      </SystemProvider>
-    </>
+    <SystemProvider>
+      <AuthProvider>
+        <CryptoProvider>
+          <PatientProvider>
+            <ImportProvider>
+              <App
+                ref={(navigator) => {
+                  setNavigator(navigator);
+                }}
+              />
+            </ImportProvider>
+          </PatientProvider>
+        </CryptoProvider>
+      </AuthProvider>
+    </SystemProvider>
   );
 };

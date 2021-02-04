@@ -1,5 +1,4 @@
 import * as SecureStore from 'expo-secure-store';
-import { initCrypto as initApiCrypto } from '../../api/icure';
 import { ActionMap } from '../../models';
 
 export enum SystemCheckStatus {
@@ -36,24 +35,24 @@ export type SystemActionPayloadTypes = {
 export type SystemAction = ActionMap<SystemActionPayloadTypes>[keyof ActionMap<SystemActionPayloadTypes>];
 
 export const defaultSystemChecks: SystemCheck[] = [
-  {
-    type: SystemCheckType.CryptoSupport,
-    status: SystemCheckStatus.Unknown,
-    check: async (): Promise<SystemCheckStatus> => {
-      let status;
+  // {
+  //   type: SystemCheckType.CryptoSupport,
+  //   status: SystemCheckStatus.Unknown,
+  //   check: async (): Promise<SystemCheckStatus> => {
+  //     let status;
 
-      try {
-        status = (await initApiCrypto())
-          ? SystemCheckStatus.Ready
-          : SystemCheckStatus.Error;
-      } catch (err) {
-        status = SystemCheckStatus.Error;
-      }
+  //     try {
+  //       status = (await initApiCrypto())
+  //         ? SystemCheckStatus.Ready
+  //         : SystemCheckStatus.Error;
+  //     } catch (err) {
+  //       status = SystemCheckStatus.Error;
+  //     }
 
-      return status;
-    },
-    errorMessage: 'No Crypto support available',
-  },
+  //     return status;
+  //   },
+  //   errorMessage: 'No Crypto support available',
+  // },
   {
     type: SystemCheckType.StorageSupport,
     status: SystemCheckStatus.Unknown,
