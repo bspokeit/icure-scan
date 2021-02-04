@@ -1,4 +1,7 @@
-const isoCrypto = {}; // require('isomorphic-webcrypto');
+//const isoCrypto = require('isomorphic-webcrypto');
+
+const crypto = require('./msrCrypto');
+
 import {
   IccAuthApi,
   IccCalendarItemXApi,
@@ -49,7 +52,7 @@ const API_URL: string = `${BASE_URL}/rest/v1`;
 
 export const initCrypto = async (): Promise<boolean> => {
   try {
-    //await isoCrypto.ensureSecure();
+    // await isoCrypto.ensureSecure();
     return true;
   } catch (error) {
     console.error(error);
@@ -114,7 +117,7 @@ const buildApi = (
     parsedHeaders,
     hcpPartyXApi,
     setErrorHandler(new IccPatientApi(API_URL, parsedHeaders), handler),
-    isoCrypto as Crypto
+    crypto
   );
 
   const accessLogApi = setErrorHandler(

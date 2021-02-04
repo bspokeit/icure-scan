@@ -8,6 +8,8 @@ import useStorage from './useStorage';
 export default () => {
   const { setKeyImport, setKey, deleteKey } = useContext(CryptoContext);
 
+  console.log('cdsacdsa');
+
   const {
     addPrivateKeyToStorage,
     getPrivateKeyFromStorage,
