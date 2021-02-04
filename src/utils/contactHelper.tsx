@@ -1,5 +1,4 @@
-import * as _ from 'lodash';
-import { findIndex } from 'lodash';
+import _, { findIndex } from 'lodash';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
 import { Contact, Service } from '../models';
 

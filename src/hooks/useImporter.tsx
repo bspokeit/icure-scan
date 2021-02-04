@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { useContext } from 'react';
 import { getAPI as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';
@@ -12,7 +12,7 @@ import {
   ImportTaskDocument,
   ImportTaskStatus,
   ImportTaskType,
-  ProcessTaskNewContent,
+  ProcessTaskNewContent
 } from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
 

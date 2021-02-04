@@ -1,11 +1,11 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { useContext } from 'react';
 import { getAPI as api } from '../api/icure';
 import { Context as PatientContext } from '../context/PatientContext';
 import { Contact, Patient } from '../models';
 import {
   extractContactServices,
-  extractDocumentIdFromService,
+  extractDocumentIdFromService
 } from '../utils/contactHelper';
 
 export default () => {
