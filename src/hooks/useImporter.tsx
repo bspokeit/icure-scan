@@ -12,7 +12,7 @@ import {
   ImportTaskDocument,
   ImportTaskStatus,
   ImportTaskType,
-  ProcessTaskNewContent
+  ProcessTaskNewContent,
 } from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
 
@@ -91,10 +91,24 @@ export default () => {
 
       newContent.documents.push(document);
 
-      await api().documentApi.setDocumentAttachment(
+      const clearAttachment = await URI2Blob(task.document!!.uri!!);
+
+      const ekeys = await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
+        currentUser!!.healthcarePartyId!!,
         document.id,
-        '',
-        (await URI2Blob(task.document!!.uri)) as any
+        document.encryptionKeys!!
+      );
+
+      await api().documentApi.setSafeDocumentAttachment(
+        document.id,
+        _.chain(ekeys.extractedKeys)
+          .map((ek) => {
+            return ek;
+          })
+          .uniq()
+          .join(',')
+          .value(),
+        clearAttachment as any
       );
 
       const service = api()

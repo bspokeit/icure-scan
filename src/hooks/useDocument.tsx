@@ -1,11 +1,12 @@
 import _ from 'lodash';
 import { useContext } from 'react';
 import { getAPI as api } from '../api/icure';
+import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import { Contact, Patient } from '../models';
 import {
   extractContactServices,
-  extractDocumentIdFromService
+  extractDocumentIdFromService,
 } from '../utils/contactHelper';
 
 export default () => {
@@ -13,6 +14,10 @@ export default () => {
     state: { documents },
     collectDocuments,
   } = useContext(PatientContext);
+
+  const {
+    state: { currentUser },
+  } = useContext(AuthContext);
 
   const fetchDocument = async (
     patientId: string,
@@ -23,7 +28,10 @@ export default () => {
     }
 
     try {
-      const { attachmentId } = await api().documentApi.getDocument(documentId);
+      const {
+        attachmentId,
+        encryptionKeys,
+      } = await api().documentApi.getDocument(documentId);
 
       if (!attachmentId) {
         return;
@@ -34,10 +42,16 @@ export default () => {
         documents: [{ documentId, attachmentId, url: undefined }],
       });
 
+      const keys = await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
+        currentUser!!.healthcarePartyId!!,
+        documentId,
+        encryptionKeys!!
+      );
+
       const attachmentURL = await api().documentApi.getAttachmentUrl(
         documentId,
         attachmentId,
-        []
+        [keys.extractedKeys[0]] as any
       );
 
       collectDocuments({
