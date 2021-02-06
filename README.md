@@ -88,3 +88,4 @@ The second solution is currently in used. The latest 1.6 `msrcrypto` library is 
 <img src="./screenshots/patient_listing.png" width="200" />
 <img src="./screenshots/contact_content.png" width="200" />
 <img src="./screenshots/file_content.png" width="200" />
+<img src="./screenshots/import.png" width="200" />
