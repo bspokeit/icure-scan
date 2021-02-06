@@ -22,6 +22,8 @@ See project issues.
 
 ## How to develop ?
 
+Currently, the application run in the Expo managed flow.
+
 The application expects three essential external entities from the iCure stack : the database, the backend and the icc-api.
 
 ### The database
