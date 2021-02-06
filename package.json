@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@icure/api": "github:bspokeit/icc-api#msrcrypto-compatibility",
+    "@icure/api": "github:bspokeit/icc-api#in_memory_localstorage_support",
     "@react-native-community/masked-view": "^0.1.10",
     "@terrylinla/react-native-sketch-canvas": "^0.8.0",
     "b64-lite": "^1.4.0",
