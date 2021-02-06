@@ -4,6 +4,16 @@ const b64 = require('b64-lite');
 global.atob = typeof atob === 'undefined' ? b64.atob : atob;
 global.btoa = typeof btoa === 'undefined' ? b64.btoa : btoa;
 
+const initSecuredCrypto = (): Promise<boolean> => {
+  return require('expo-random')
+    .getRandomBytesAsync(48)
+    .then((byteArray: any[]) => {
+      isoCrypto.initPrng(Array.from(byteArray));
+      return true;
+    })
+    .catch(() => false);
+};
+
 import {
   IccAuthApi,
   IccCalendarItemXApi,
@@ -54,7 +64,7 @@ const API_URL: string = `${BASE_URL}/rest/v1`;
 
 export const initCrypto = async (): Promise<boolean> => {
   try {
-    //await isoCrypto.ensureSecure();
+    await initSecuredCrypto();
     return true;
   } catch (error) {
     console.error(error);
