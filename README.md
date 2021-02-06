@@ -24,6 +24,14 @@ See project issues.
 
 Currently, the application run in the Expo managed flow.
 
+You can either run the application in a virtual device (we used Android Virtual Device) or your own device. 
+
+1. Currently the ```BASE_URL``` is hardcoded in ```src/api/icure.tsx``` with the IP 10.0.2.2 which allows you to address your machine localhost from an Android Virtual Device  
+
+2. Or you can make use of ngrok with your mobile phone. Yet, free ngrok plan are too limitating in term of allowed call by minutes for the application to work properly
+
+Note on Android Virtual Device: make sure to use a PlayStore support free device and make sure to choose the "Software - GLES 2.0" emulated graphic performance option. If not, starting your virtual device might freeze your system (at least on Ubuntu 20.04).
+
 The application expects three essential external entities from the iCure stack : the database, the backend and the icc-api.
 
 ### The database
