@@ -72,5 +72,12 @@ There are two solutions (to our knowledge):
 
 2. The second solution, is simply the use of the latest ```mrscrypto``` version available at https://github.com/microsoft/MSR-JavaScript-Crypto. This version support consurrencies since the 1.5 version. 
 
-The second solution is currently in used.
+The second solution is currently in used. The latest 1.6 ```msrcrypto``` library is present in the code (no npm package are yet available), it is secured at launch time as a SystemCheck and eventually injected in the icc-api.
+
+## Screen preview
+![alt text](./screenshots/login.png)
+![alt text](./screenshots/key_import.png)
+![alt text](./screenshots/patient_listing.png)
+![alt text](./screenshots/contact_content.png)
+![alt text](./screenshots/file_content.png)
 
