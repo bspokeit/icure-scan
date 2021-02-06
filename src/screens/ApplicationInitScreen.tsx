@@ -9,8 +9,8 @@ import {
 import { DEFAULT_BORDER, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
 import { SystemCheckStatus } from '../context/reducer-action/SystemReducerActions';
 import { Context as SystemContext } from '../context/SystemContext';
-import useAuth from '../hooks/useAuth';
 import useSystem from '../hooks/useSystem';
+import useAuth from '../hooks/useAuth';
 
 interface Props extends NavigationSwitchScreenProps {}
 

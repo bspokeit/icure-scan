@@ -3,7 +3,7 @@ import {
   FilterChainService,
   ListOfIds,
 } from '@icure/api';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { useContext } from 'react';
 import { getAPI as api } from '../api/icure';
 import { DOCUMENT_SERVICE_TAGS } from '../constant';

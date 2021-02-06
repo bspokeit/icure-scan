@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { initCrypto as initApiCrypto } from '../../api/icure';
+import { initCrypto } from '../../api/icure';
 import { ActionMap } from '../../models';
 
 export enum SystemCheckStatus {
@@ -43,7 +43,7 @@ export const defaultSystemChecks: SystemCheck[] = [
       let status;
 
       try {
-        status = (await initApiCrypto())
+        status = (await initCrypto())
           ? SystemCheckStatus.Ready
           : SystemCheckStatus.Error;
       } catch (err) {

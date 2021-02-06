@@ -229,5 +229,5 @@ export default () => {
     autoLogin();
   };
 
-  return { login, autoLogin, logUserOut,  logoutUserOutHard, sessionActive };
+  return { login, autoLogin, logUserOut, logoutUserOutHard, sessionActive };
 };
