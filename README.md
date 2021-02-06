@@ -1,4 +1,4 @@
-# iCure Scan Mobile Companion
+# icure-scan : A first step towards Mobile Companionship to iCure Stack
 
 React Native Mobile application able to consult or import image/scan from or into iCure patient file. Currently, the application supports:
 
