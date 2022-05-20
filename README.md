@@ -8,13 +8,16 @@ React Native Mobile application able to consult or import image/scan from or int
 4. Patient textual search based on the iCure `PatientByHcPartyNameContainsFuzzyFilter` filter
 5. Patient file exploration. Only Contacts related to Service having (at least) the following
 
-```
-DOCUMENT_SERVICE_TAGS: CodeStub[] = [
-{ code: 'document', id: 'CD-ITEM|document|1', type: 'CD-ITEM', version: '1' },
-{ code: 'Plan', id: 'SOAP|Plan|1', type: 'SOAP', version: '1' }]
-```
+   ```
+   DOCUMENT_SERVICE_TAGS: CodeStub[] = [
+   { code: 'document', id: 'CD-ITEM|document|1', type: 'CD-ITEM', version: '1' },
+   { code: 'Plan', id: 'SOAP|Plan|1', type: 'SOAP', version: '1' }]
+   ```
 
-tags are taken into account. 6. Multi image (from the mobile Gallery or from its Camera) contact import 7. Image visualisation
+   tags are taken into account.
+
+6. Multi image (from the mobile Gallery or from its Camera) contact import
+7. Image visualisation
 
 ## Next steps
 
@@ -26,27 +29,31 @@ Currently, the application runs in the Expo managed flow.
 
 You can either run the application in a virtual device (we used Android Virtual Device) or your own device.
 
-1. Currently the `BASE_URL` is hardcoded in `src/api/icure.tsx` with the IP 10.0.2.2 which allows you to address your machine localhost from an Android Virtual Device
+1. Currently the `BASE_URL` is hardcoded in `src/api/icure.tsx` with the IP=10.0.2.2 which allows you to address your machine localhost from an Android Virtual Device
 
-2. Or you can make use of ngrok with your mobile phone. Yet, free ngrok plan are too limitating in term of allowed call by minutes for the application to work properly
+2. Or you can make use of ngrok with your mobile phone. However, free ngrok plan are too restriting in terms of allowed call by minute for the application to work properly
 
-Note on Android Virtual Device: make sure to use a PlayStore support free device and make sure to choose the "Software - GLES 2.0" emulated graphic performance option. If not, starting your virtual device might freeze your system (at least on Ubuntu 20.04).
+A note on Android Virtual Device:
+
+    make sure to use a PlayStore support free device and make sure to choose the "Software - GLES 2.0" emulated graphic performance option. If not, starting your virtual device might freeze your system (at least on Ubuntu 20.04).
 
 The application expects three essential external entities from the iCure stack : the database, the backend and the icc-api.
 
 ### The database
 
-The iCure stack database is a CouchDB instance wich is now interfaced with the latest backend version through the (fully!) reactive Krouch CouchDB driver (https://github.com/taktik/krouch).
+The iCure stack database is a CouchDB instance wich is now interfaced with the latest backend version through the fully reactive Krouch CouchDB driver (https://github.com/taktik/krouch).
 
 In order to facilitate the development flow we can follow the following steps to get ready:
 
 1. In your project directory, run
 
-```
-make run
-```
+   ```
+   make run
+   ```
 
-Under the hood, this command will start a Docker container from a CouchDB 3 Docker image. Don't forget to create the \_user database. 2. To populate the database with the minimal required content, you can run the icc-api tests (with the icc-api/test/setup/setup.utils.ts) fully uncommented. There you will find the user, hcp and related keys required to get setup. The code is available from https://github.com/bspokeit/icc-api/tree/in_memory_localstorage_support (see below from more details about the icc-api).
+   Under the hood, this command will start a Docker container from a CouchDB 3 Docker image. Don't forget to create the \_user database.
+
+2. To populate the database with the minimal required content, you can run the icc-api tests (with the icc-api/test/setup/setup.utils.ts) fully uncommented. There you will find the user, hcp and related keys required to get setup. The code is available from https://github.com/bspokeit/icc-api/tree/in_memory_localstorage_support (see below from more details about the icc-api).
 
 ### The backend
 
