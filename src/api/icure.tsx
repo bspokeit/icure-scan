@@ -39,6 +39,7 @@ import {
   IccClassificationXApi,
   IccContactXApi,
   IccCryptoXApi,
+  IccDeviceApi,
   IccDocumentXApi,
   IccEntityrefApi,
   IccFormXApi,
@@ -48,7 +49,7 @@ import {
   IccPatientApi,
   IccPatientXApi,
   IccUserXApi,
-  WebSession,
+ // WebSession,
   XHR,
 } from '@icure/api';
 import { IccAccesslogXApi } from '@icure/api/dist/icc-x-api/icc-accesslog-x-api';
@@ -72,12 +73,13 @@ const setErrorHandler = <T extends IccApiErrorHandler>(
   return instance;
 };
 
-export interface Credentials extends WebSession {
+export interface Credentials { //extends WebSession {
   username: string;
   password: string;
 }
 
-const BASE_URL: string = 'http://10.0.2.2:16043';
+//const BASE_URL: string = 'http://10.0.2.2:16043';
+const BASE_URL: string = 'http://localhost:16043';
 
 const API_URL: string = `${BASE_URL}/rest/v1`;
 
@@ -126,8 +128,8 @@ const buildApi = (
   headers?: IccApiHeaders,
   handler?: ErrorHandler
 ): IcureAPI => {
-  const parsedHeaders = headers || {};
-
+//const parsedHeaders = headers || {};
+const parsedHeaders = {'authorization' :'Basic ZGVtby10ZXN0LTE2MDgyMTA4ODg6dGVzdA=='};
   const authApi = setErrorHandler(
     new IccAuthApi(API_URL, parsedHeaders),
     handler
@@ -143,49 +145,55 @@ const buildApi = (
     handler
   );
 
+  const deviceApi = setErrorHandler(
+    new IccDeviceApi(API_URL, parsedHeaders),
+    handler
+  );
+
   const cryptoApi = new IccCryptoXApi(
     API_URL,
     parsedHeaders,
     hcpPartyXApi,
     setErrorHandler(new IccPatientApi(API_URL, parsedHeaders), handler),
+    deviceApi,
     isoCrypto as Crypto
   );
 
   const accessLogApi = setErrorHandler(
-    new IccAccesslogXApi(API_URL, parsedHeaders, cryptoApi),
+    new IccAccesslogXApi(API_URL, parsedHeaders, cryptoApi, userApi),
     handler
   );
 
   const contactApi = setErrorHandler(
-    new IccContactXApi(API_URL, parsedHeaders, cryptoApi),
+    new IccContactXApi(API_URL, parsedHeaders, cryptoApi, userApi),
     handler
   );
 
   const documentApi = setErrorHandler(
-    new IccDocumentXApi(API_URL, parsedHeaders, cryptoApi, authApi),
+    new IccDocumentXApi(API_URL, parsedHeaders, cryptoApi, authApi, userApi),
     handler
   );
 
-  const formApi = new IccFormXApi(API_URL, parsedHeaders, cryptoApi);
+  const formApi = new IccFormXApi(API_URL, parsedHeaders, cryptoApi, userApi);
 
-  const helementApi = new IccHelementXApi(API_URL, parsedHeaders, cryptoApi);
+  const helementApi = new IccHelementXApi(API_URL, parsedHeaders, cryptoApi, userApi);
 
   const entityRefApi = setErrorHandler(
     new IccEntityrefApi(API_URL, parsedHeaders)
   );
 
   const invoiceApi = setErrorHandler(
-    new IccInvoiceXApi(API_URL, parsedHeaders, cryptoApi, entityRefApi),
+    new IccInvoiceXApi(API_URL, parsedHeaders, cryptoApi, entityRefApi, userApi),
     handler
   );
 
   const classificationApi = setErrorHandler(
-    new IccClassificationXApi(API_URL, parsedHeaders, cryptoApi),
+    new IccClassificationXApi(API_URL, parsedHeaders, cryptoApi, userApi),
     handler
   );
 
   const calendarApi = setErrorHandler(
-    new IccCalendarItemXApi(API_URL, parsedHeaders, cryptoApi),
+    new IccCalendarItemXApi(API_URL, parsedHeaders, cryptoApi, userApi),
     handler
   );
 
@@ -201,10 +209,13 @@ const buildApi = (
       documentApi,
       hcpPartyXApi,
       classificationApi,
+      userApi,
       calendarApi,
       ['note']
     )
   );
+
+  console.log('hkjhkhkjhkjhk')
 
   return {
     authApi: authApi,

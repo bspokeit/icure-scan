@@ -51,9 +51,9 @@ In order to facilitate the development flow we can follow the following steps to
    make run
    ```
 
-   Under the hood, this command will start a Docker container from a CouchDB 3 Docker image. Don't forget to create the \_user database.
+   Under the hood, this command will start a Docker container from a CouchDB 3 Docker image. The first time, setup the DB a a single node.
 
-2. To populate the database with the minimal required content, you can run the icc-api tests (with the icc-api/test/setup/setup.utils.ts) fully uncommented. There you will find the user, hcp and related keys required to get setup. The code is available from https://github.com/bspokeit/icc-api/tree/in_memory_localstorage_support (see below from more details about the icc-api).
+2. To populate the database with the minimal required content, you can run the icc-api tests (with the icc-api/test/setup/setup.utils.ts) t There you will find the user, hcp and related keys required to get setup. The code is available from https://github.com/bspokeit/icc-api/tree/in_memory_localstorage_support (see below from more details about the icc-api).
 
 ### The backend
 

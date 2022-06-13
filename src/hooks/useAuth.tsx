@@ -103,15 +103,17 @@ export default () => {
 
   const getSession = async () => {
     try {
-      const session = await userApi().getCurrentSession();
-      setSession(session);
+      //const session = await userApi().getCurrentSession();
+      //setSession(session);
     } catch (error) {
       //  Impossible to fecth the session. That's ok.
+      console.log(error);
     }
   };
 
   const loadUser = async () => {
     const currentUser = await api().userApi.getCurrentUser();
+    console.log(currentUser);
     setUser(currentUser as User);
 
     const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
@@ -132,7 +134,7 @@ export default () => {
     setParent(parentHcp);
   };
 
-  const getAuthHeader = async (): Promise<XHR.Header | undefined> => {
+  const getAuthHeader = async (): Promise<any /*XHR.Header*/ | undefined> => {
     const storedHeaderAsString = await SecureStore.getItemAsync(
       AUTHENTICATION_HEADER
     );
@@ -161,12 +163,13 @@ export default () => {
     //  If the session is valid, we can setup the iccApi (still without headers as a session exists) and
     //  load user details
     try {
-      await getSession();
+      //await getSession();
       initApi();
       await loadUser();
       navigate('ImportKey');
     } catch (error) {
       //  Something went wrong. Just log the user out an redirect to login screen
+      console.log(error);
       await cleanAndRedirectToLogin();
     }
   };
