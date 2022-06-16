@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
+import * as Font from 'expo-font';
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -33,6 +34,10 @@ import PatientListScreen from './src/screens/PatientListScreen';
 import PatientScreen from './src/screens/PatientScreen';
 import { setNavigator } from './src/utils/navigationHelper';
 
+const loadFonts = (fonts) => {
+  return fonts.map(f => Font.loadAsync(f))
+}
+
 const switchNavigator = createSwitchNavigator({
   Init: ApplicationInitScreen,
   Login: LoginScreen,
@@ -46,24 +51,43 @@ const switchNavigator = createSwitchNavigator({
   }),
 });
 
-const App = createAppContainer(switchNavigator);
+const AppContainer = createAppContainer(switchNavigator);
 
-export default () => {
-  return (
-    <SystemProvider>
-      <AuthProvider>
-        <CryptoProvider>
-          <PatientProvider>
-            <ImportProvider>
-              <App
-                ref={(navigator) => {
-                  setNavigator(navigator);
-                }}
-              />
-            </ImportProvider>
-          </PatientProvider>
-        </CryptoProvider>
-      </AuthProvider>
-    </SystemProvider>
-  );
-};
+class App extends React.Component {
+
+  async componentDidMount() {
+    try {
+      const fonts = [
+        {'Material Icons': require('./assets/MaterialIcons.ttf')},
+        {'Ionicons': require('./assets/Ionicons.ttf')},
+        {'FontAwesome': require('./assets/FontAwesome.ttf')},
+      ];
+
+      await Promise.all([...loadFonts(fonts)]);
+    } catch (error) {
+      console.log('error loading fonts', error);
+    }
+ }
+
+  render() {
+    return (
+      <SystemProvider>
+        <AuthProvider>
+          <CryptoProvider>
+            <PatientProvider>
+              <ImportProvider>
+                <AppContainer
+                  ref={(navigator) => {
+                    setNavigator(navigator);
+                  }}
+                />
+              </ImportProvider>
+            </PatientProvider>
+          </CryptoProvider>
+        </AuthProvider>
+      </SystemProvider>
+    );
+  }
+}
+
+export default App;
