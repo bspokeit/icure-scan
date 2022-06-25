@@ -49,8 +49,7 @@ const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
     <ListItem
       onPress={onSelection}
       containerStyle={styles.container}
-      underlayColor={LIGHT_GREY}
-    >
+      underlayColor={LIGHT_GREY} hasTVPreferredFocus={undefined} tvParallaxProperties={undefined}    >
       {patient.picture ? (
         <Avatar
           rounded

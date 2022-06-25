@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { BottomSheet, Icon, SearchBar } from 'react-native-elements';
+import { BottomSheet, SearchBar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationStackScreenComponent,
@@ -33,12 +33,16 @@ import { Context as ImportContext } from '../context/ImportContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import usePatient from '../hooks/usePatient';
 import { Patient } from '../models';
+import {MaterialIcons} from '@expo/vector-icons'
+import * as Font from 'expo-font';
 
 interface Props extends NavigationStackScreenProps {}
 
 const PatientListScreen: NavigationStackScreenComponent<Props> = ({
   navigation,
 }) => {
+
+  
   const [query, setQuery] = useState('');
 
   const {
@@ -55,6 +59,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
   const { loadLogs, searchPatients } = usePatient();
 
   useEffect(() => {
+    Font.loadAsync(MaterialIcons.font);
     loadLogs(currentUser!!);
   }, []);
 
@@ -87,11 +92,12 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
     return (
       <View>
         <TouchableOpacity onPress={() => setSettingVisible(!settingVisible)}>
-          <Icon name="settings" type="ionicons" color={MAIN_COLOR} size={20} />
+          <Ionicons name="settings" color={MAIN_COLOR} size={20} />
         </TouchableOpacity>
       </View>
     );
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <SearchBar
@@ -105,7 +111,7 @@ const PatientListScreen: NavigationStackScreenComponent<Props> = ({
         onClear={searchClearRequest}
         showLoading={searching}
         disabled={searching}
-        clearIcon={{ size: searching ? 0 : 22 }}
+        clearIcon={{ color: MAIN_COLOR, size: searching ? 0 : 20 }}
         loadingProps={{ color: MAIN_COLOR, size: 'small' }}
         containerStyle={styles.searchContainer}
         inputContainerStyle={styles.searchInput}

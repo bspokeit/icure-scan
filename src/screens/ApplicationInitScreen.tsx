@@ -16,24 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+import { Ionicons } from '@expo/vector-icons';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { Card, Icon, Text } from 'react-native-elements';
+import { Card, Text } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   NavigationSwitchScreenComponent,
-  NavigationSwitchScreenProps,
+  NavigationSwitchScreenProps
 } from 'react-navigation';
 import { DEFAULT_BORDER, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
 import { SystemCheckStatus } from '../context/reducer-action/SystemReducerActions';
 import { Context as SystemContext } from '../context/SystemContext';
-import useSystem from '../hooks/useSystem';
 import useAuth from '../hooks/useAuth';
+import useSystem from '../hooks/useSystem';
 
 interface Props extends NavigationSwitchScreenProps {}
 
 const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
+  
   const {
     state: { checkCompleted, systemChecks },
   } = useContext(SystemContext);
@@ -83,12 +84,11 @@ const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
             .filter((c) => c.status === SystemCheckStatus.Error || true)
             .map((c, i) => (
               <View key={i} style={styles.horizontal}>
-                <Icon
+                <Ionicons
                   style={styles.textIcon}
-                  name="error"
-                  type="materialicons"
-                  color={SECONDARY_ACTION}
-                />
+                  name="alert-circle"
+                  type="ionicon"
+                  color={SECONDARY_ACTION} />
                 <Text style={styles.text}>{c.errorMessage}</Text>
               </View>
             ))}
