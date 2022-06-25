@@ -17,6 +17,7 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { hex2ua } from '@icure/api/dist/icc-x-api/utils/binary-utils';
 import _ from 'lodash';
 import { useContext } from 'react';
 import { getAPI as api } from '../api/icure';
@@ -44,7 +45,7 @@ export default () => {
     return api()
       .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(
         hcp.id,
-        api().cryptoApi.utils.hex2ua(privateKey)
+        hex2ua(privateKey)
       )
       .then(() => {
         return validatePrivateKey(hcp);

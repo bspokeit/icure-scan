@@ -17,21 +17,18 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const isoCrypto = require('./support/msrCrypto');
+import {isEmpty } from 'lodash';
 const b64 = require('b64-lite');
 
 global.atob = typeof atob === 'undefined' ? b64.atob : atob;
 global.btoa = typeof btoa === 'undefined' ? b64.btoa : btoa;
 
-const initSecuredCrypto = (): Promise<boolean> => {
-  return require('expo-random')
-    .getRandomBytesAsync(48)
-    .then((byteArray: any[]) => {
-      isoCrypto.initPrng(Array.from(byteArray));
-      return true;
-    })
-    .catch(() => false);
-};
+const initSecuredCrypto = async (): Promise<boolean> => {
+  // Only needed for crypto.getRandomValues
+  // but only wait once, future calls are secure
+  // return await isoCrypto.ensureSecure();
+  return true;
+}
 
 import {
   IccAuthApi,
@@ -78,17 +75,17 @@ export interface Credentials { //extends WebSession {
   password: string;
 }
 
-//const BASE_URL: string = 'http://10.0.2.2:16043';
-const BASE_URL: string = 'http://localhost:16043';
+//  const BASE_URL: string = 'http://10.0.2.2:16043';
+//  const BASE_URL: string = 'http://localhost:16043';
+const BASE_URL: string = 'http://192.168.249.62:16043';
 
 const API_URL: string = `${BASE_URL}/rest/v1`;
 
 export const initCrypto = async (): Promise<boolean> => {
   try {
     await initSecuredCrypto();
-    return true;
+    return !!window.crypto && !isEmpty(window.crypto)
   } catch (error) {
-    console.error(error);
     return false;
   }
 };
@@ -155,8 +152,7 @@ const parsedHeaders = {'authorization' :'Basic ZGVtby10ZXN0LTE2MDgyMTA4ODg6dGVzd
     parsedHeaders,
     hcpPartyXApi,
     setErrorHandler(new IccPatientApi(API_URL, parsedHeaders), handler),
-    deviceApi,
-    isoCrypto as Crypto
+    deviceApi
   );
 
   const accessLogApi = setErrorHandler(
@@ -214,8 +210,6 @@ const parsedHeaders = {'authorization' :'Basic ZGVtby10ZXN0LTE2MDgyMTA4ODg6dGVzd
       ['note']
     )
   );
-
-  console.log('hkjhkhkjhkjhk')
 
   return {
     authApi: authApi,

@@ -34,6 +34,8 @@ import PatientListScreen from './src/screens/PatientListScreen';
 import PatientScreen from './src/screens/PatientScreen';
 import { setNavigator } from './src/utils/navigationHelper';
 
+import PolyfillCrypto from 'react-native-webview-crypto';
+
 const loadFonts = (fonts) => {
   return fonts.map(f => Font.loadAsync(f))
 }
@@ -71,21 +73,25 @@ class App extends React.Component {
 
   render() {
     return (
-      <SystemProvider>
-        <AuthProvider>
-          <CryptoProvider>
-            <PatientProvider>
-              <ImportProvider>
-                <AppContainer
-                  ref={(navigator) => {
-                    setNavigator(navigator);
-                  }}
-                />
-              </ImportProvider>
-            </PatientProvider>
-          </CryptoProvider>
-        </AuthProvider>
-      </SystemProvider>
+      <>
+        <PolyfillCrypto />
+        <SystemProvider>
+            <AuthProvider>
+              <CryptoProvider>
+                <PatientProvider>
+                  <ImportProvider>
+                    <AppContainer
+                      ref={(navigator) => {
+                        setNavigator(navigator);
+                      }}
+                    />
+                  </ImportProvider>
+                </PatientProvider>
+              </CryptoProvider>
+            </AuthProvider>
+          </SystemProvider>
+      </>
+        
     );
   }
 }
