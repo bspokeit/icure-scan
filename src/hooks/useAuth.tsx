@@ -113,7 +113,6 @@ export default () => {
 
   const loadUser = async () => {
     const currentUser = await api().userApi.getCurrentUser();
-    console.log(currentUser);
     setUser(currentUser as User);
 
     const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
