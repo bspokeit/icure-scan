@@ -20,20 +20,15 @@
 import { ListItem } from '@rneui/base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import {
-  DEFAULT_BORDER,
-  LIGHT_GREY,
-  MAIN_COLOR,
-  SECONDARY_ACTION
-} from '../constant';
+import { DEFAULT_BORDER, LIGHT_GREY, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
 import useAuth from '../hooks/useAuth';
 
 interface Props {
   onCancel: () => void;
 }
 
-const Settings: React.FC<Props> = ({onCancel}) => {
-  const {logUserOut, logoutUserOutHard} = useAuth();
+const Settings: React.FC<Props> = ({ onCancel }) => {
+  const { logUserOut, logoutUserOutHard, test } = useAuth();
 
   const onLogout = async () => {
     await logUserOut();
@@ -43,42 +38,32 @@ const Settings: React.FC<Props> = ({onCancel}) => {
     await logoutUserOutHard();
   };
 
+  const onTest = async () => {
+    await test();
+  };
+
   return (
     <>
-      <ListItem
-        key={1}
-        underlayColor={LIGHT_GREY}
-        containerStyle={styles.settingItem}
-        onPress={onLogout}>
+      <ListItem key={1} underlayColor={LIGHT_GREY} containerStyle={styles.settingItem} onPress={onLogout}>
         <ListItem.Content style={styles.settingItemContent}>
-          <ListItem.Title
-            style={[styles.settingItemTitle, {color: MAIN_COLOR}]}>
-            Logout
-          </ListItem.Title>
+          <ListItem.Title style={[styles.settingItemTitle, { color: MAIN_COLOR }]}>Logout</ListItem.Title>
         </ListItem.Content>
       </ListItem>
-      <ListItem
-        key={2}
-        underlayColor={LIGHT_GREY}
-        containerStyle={styles.settingItem}
-        onPress={onLogoutHard}>
+      <ListItem key={2} underlayColor={LIGHT_GREY} containerStyle={styles.settingItem} onPress={onLogoutHard}>
         <ListItem.Content style={styles.settingItemContent}>
-          <ListItem.Title
-            style={[styles.settingItemTitle, {color: SECONDARY_ACTION}]}>
+          <ListItem.Title style={[styles.settingItemTitle, { color: SECONDARY_ACTION }]}>
             Logout and clear key(s)
           </ListItem.Title>
         </ListItem.Content>
       </ListItem>
-      <ListItem
-        key={3}
-        underlayColor={LIGHT_GREY}
-        containerStyle={styles.settingItem}
-        onPress={() => onCancel()}>
+      <ListItem key={3} underlayColor={LIGHT_GREY} containerStyle={styles.settingItem} onPress={() => onCancel()}>
         <ListItem.Content style={styles.settingItemContent}>
-          <ListItem.Title
-            style={[styles.settingItemTitle, {color: LIGHT_GREY}]}>
-            Cancel
-          </ListItem.Title>
+          <ListItem.Title style={[styles.settingItemTitle, { color: LIGHT_GREY }]}>Cancel</ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
+      <ListItem key={4} underlayColor={LIGHT_GREY} containerStyle={styles.settingItem} onPress={() => onTest()}>
+        <ListItem.Content style={styles.settingItemContent}>
+          <ListItem.Title style={[styles.settingItemTitle, { color: LIGHT_GREY }]}>Test</ListItem.Title>
         </ListItem.Content>
       </ListItem>
     </>

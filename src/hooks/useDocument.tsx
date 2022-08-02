@@ -23,32 +23,25 @@ import { getAPI as api } from '../api/icure';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PatientContext } from '../context/PatientContext';
 import { Contact, Patient } from '../models';
-import {
-  extractContactServices,
-  extractDocumentIdFromService
-} from '../utils/contactHelper';
+import { extractContactServices, extractDocumentIdFromService } from '../utils/contactHelper';
 
 export default () => {
   const {
-    state: {documents},
+    state: { documents },
     collectDocuments,
   } = useContext(PatientContext);
 
   const {
-    state: {currentUser},
+    state: { currentUser },
   } = useContext(AuthContext);
 
-  const fetchDocument = async (
-    patientId: string,
-    documentId: string,
-  ): Promise<void> => {
+  const fetchDocument = async (patientId: string, documentId: string): Promise<void> => {
     if (documents[patientId] && documents[patientId][documentId]) {
       return;
     }
 
     try {
-      const {attachmentId, encryptionKeys} =
-        await api().documentApi.getDocument(documentId);
+      const { attachmentId, encryptionKeys } = await api().documentApi.getDocument(documentId);
 
       if (!attachmentId) {
         return;
@@ -56,21 +49,18 @@ export default () => {
 
       collectDocuments({
         patientId,
-        documents: [{documentId, attachmentId, url: undefined}],
+        documents: [{ documentId, attachmentId, url: undefined }],
       });
 
-      const keys =
-        await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
-          currentUser!!.healthcarePartyId!!,
-          documentId,
-          encryptionKeys!!,
-        );
-
-      const attachmentURL = await api().documentApi.getAttachmentUrl(
+      const keys = await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
+        currentUser!!.healthcarePartyId!!,
         documentId,
-        attachmentId,
-        [keys.extractedKeys[0]] as any,
+        encryptionKeys!!,
       );
+
+      const attachmentURL = await api().documentApi.getAttachmentUrl(documentId, attachmentId, [
+        keys.extractedKeys[0],
+      ] as any);
 
       collectDocuments({
         patientId,
@@ -88,17 +78,10 @@ export default () => {
   };
 
   const fetchContactDocumentIds = (contact: Contact) => {
-    return _.chain(extractContactServices(contact))
-      .map(extractDocumentIdFromService)
-      .compact()
-      .uniq()
-      .value();
+    return _.chain(extractContactServices(contact)).map(extractDocumentIdFromService).compact().uniq().value();
   };
 
-  const fetchContactAttachmentURLs = (
-    patient: Patient,
-    contact: Contact,
-  ): Array<{url: string}> => {
+  const fetchContactAttachmentURLs = (patient: Patient, contact: Contact): Array<{ url: string }> => {
     const documentIds = fetchContactDocumentIds(contact);
 
     if (!patient.id) {
@@ -121,20 +104,16 @@ export default () => {
       .uniq()
       .value();
 
-    return formattedUrls.map((v: string) => ({url: v}));
+    return formattedUrls.map((v: string) => ({ url: v }));
   };
 
   //  Currently we take the first content for a given documentId. In the future, we might support
   //  multi content (multi attachment) document.
   const documentContent = (patientId: string, documentId: string) => {
     const docContent =
-      documents && documents[patientId] && documents[patientId][documentId]
-        ? documents[patientId][documentId]
-        : {};
+      documents && documents[patientId] && documents[patientId][documentId] ? documents[patientId][documentId] : {};
 
-    return !_.isEmpty(docContent)
-      ? docContent[Object.keys(docContent)[0]]
-      : null;
+    return !_.isEmpty(docContent) ? docContent[Object.keys(docContent)[0]] : null;
   };
 
   return {

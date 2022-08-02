@@ -7000,6 +7000,8 @@ var msrCryptoVersion = "1.6.5";
                         hashFunc = msrcryptoHashFunctions[hashName.toUpperCase()]();
                         rsaObj = msrcryptoRsa(p.keyData, p.algorithm.name, hashFunc);
                         result = rsaObj.decrypt(p.buffer);
+                        console.log('resultresultresultresult', result);
+                        console.log(String.fromCharCode.apply(null, result));
                         break;
 
                     default:

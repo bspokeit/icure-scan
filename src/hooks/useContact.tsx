@@ -22,7 +22,7 @@ import {
   FilterChainService,
   ListOfIds,
   ServiceByHcPartyTagCodeDateFilter,
-  UnionFilter
+  UnionFilter,
 } from '@icure/api';
 import _ from 'lodash';
 import { useContext } from 'react';
@@ -35,23 +35,20 @@ import { FilterType } from '../utils/filterHelper';
 
 export default () => {
   const {
-    state: {currentUser},
+    state: { currentUser },
   } = useContext(AuthContext);
-  const {collectContacts} = useContext(PatientContext);
+  const { collectContacts } = useContext(PatientContext);
 
   const fetchContacts = async (patient: Patient): Promise<void> => {
     try {
-      const sfks = await api().cryptoApi.extractSFKsHierarchyFromDelegations(
-        patient,
-        currentUser?.healthcarePartyId,
-      );
+      const sfks = await api().cryptoApi.extractSFKsHierarchyFromDelegations(patient, currentUser?.healthcarePartyId);
 
-      const ekeys =
-        await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
-          currentUser!!.healthcarePartyId!!,
-          patient!.id,
-          patient!.encryptionKeys!!,
-        );
+      // const ekeys =
+      //   await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
+      //     currentUser!!.healthcarePartyId!!,
+      //     patient!.id,
+      //     patient!.encryptionKeys!!,
+      //   );
 
       const secretForeignKey = _.find(sfks, {
         hcpartyId: currentUser?.healthcarePartyId,
@@ -76,7 +73,7 @@ export default () => {
       };
 
       const filterChain: FilterChainService = {
-        filter: new AbstractFilterService({...unionFilter2}),
+        filter: new AbstractFilterService({ ...unionFilter2 }),
         $type: FilterType.UnionFilter,
       };
 
@@ -107,22 +104,19 @@ export default () => {
 
       console.log('servicesByTags: ', servicesByTags);
 
-      const contacts = await api().contactApi.getContactsWithUser(
-        currentUser!!,
-        {
-          ids: _.chain(servicesByTags.rows)
-            .map(s => s.contactId)
-            .uniq()
-            .value(),
-        } as ListOfIds,
-      );
+      const contacts = await api().contactApi.getContactsWithUser(currentUser!!, {
+        ids: _.chain(servicesByTags.rows)
+          .map(s => s.contactId)
+          .uniq()
+          .value(),
+      } as ListOfIds);
 
       console.log('contacts: ', contacts);
 
-      collectContacts({patientId: patient.id, contacts});
+      collectContacts({ patientId: patient.id, contacts });
     } catch (error) {
       console.error(error);
     }
   };
-  return {fetchContacts};
+  return { fetchContacts };
 };

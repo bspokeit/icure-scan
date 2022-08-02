@@ -5,6 +5,9 @@
  * @format
  */
 
+// Absolute path to your package
+const packagePath = '/Users/philippemertens/sources/react-native-modules/IcureCrypto';
+
 module.exports = {
   transformer: {
     getTransformOptions: async () => ({
@@ -14,4 +17,8 @@ module.exports = {
       },
     }),
   },
+  resolver: {
+    nodeModulesPaths: [packagePath],
+  },
+  watchFolders: [packagePath],
 };

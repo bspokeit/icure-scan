@@ -22,36 +22,32 @@ import { PRIVATE_KEY_POSTFIX_1, PRIVATE_KEY_POSTFIX_2 } from '../constant';
 import { HealthcareParty } from '../models';
 
 export default () => {
-
-  const setItem = async (key:string, value:string = ''):Promise<void> => {
+  const setItem = async (key: string, value: string = ''): Promise<void> => {
     try {
       await EncryptedStorage.setItem(key, value);
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
-  const getItem = async (key:string): Promise<string | null> => {
+  const getItem = async (key: string): Promise<string | null> => {
     try {
       return await EncryptedStorage.getItem(key);
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
       return null;
     }
-  }
+  };
 
-  const removeItem = async (key:string): Promise<void> => {
+  const removeItem = async (key: string): Promise<void> => {
     try {
       return await EncryptedStorage.removeItem(key);
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
-  const addPrivateKeyToStorage = async (
-    hcp: HealthcareParty,
-    content: string,
-  ): Promise<void> => {
+  const addPrivateKeyToStorage = async (hcp: HealthcareParty, content: string): Promise<void> => {
     if (!hcp || !hcp.id || !content) {
       return;
     }
@@ -64,20 +60,14 @@ export default () => {
     await setItem(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`, part2);
   };
 
-  const getPrivateKeyFromStorage = async (
-    hcp: HealthcareParty,
-  ): Promise<string | undefined> => {
+  const getPrivateKeyFromStorage = async (hcp: HealthcareParty): Promise<string | undefined> => {
     if (!hcp || !hcp.id) {
       return;
     }
 
     try {
-      const part1 = await getItem(
-        `${hcp.id}${PRIVATE_KEY_POSTFIX_1}`,
-      );
-      const part2 = await getItem(
-        `${hcp.id}${PRIVATE_KEY_POSTFIX_2}`,
-      );
+      const part1 = await getItem(`${hcp.id}${PRIVATE_KEY_POSTFIX_1}`);
+      const part2 = await getItem(`${hcp.id}${PRIVATE_KEY_POSTFIX_2}`);
 
       if (!part1 || !part2) {
         throw Error('No private key value found in storage');
@@ -89,9 +79,7 @@ export default () => {
     }
   };
 
-  const removePrivateKeyFromStorage = async (
-    hcp: HealthcareParty,
-  ): Promise<void> => {
+  const removePrivateKeyFromStorage = async (hcp: HealthcareParty): Promise<void> => {
     if (!hcp || !hcp.id) {
       return;
     }
@@ -106,6 +94,6 @@ export default () => {
     removePrivateKeyFromStorage,
     setItem,
     getItem,
-    removeItem
+    removeItem,
   };
 };

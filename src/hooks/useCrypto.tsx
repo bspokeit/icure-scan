@@ -26,29 +26,19 @@ import { HealthcareParty } from '../models';
 import useStorage from './useStorage';
 
 export default () => {
-  const {setKeyImport, setKey, deleteKey} = useContext(CryptoContext);
+  const { setKeyImport, setKey, deleteKey } = useContext(CryptoContext);
 
-  const {
-    addPrivateKeyToStorage,
-    getPrivateKeyFromStorage,
-    removePrivateKeyFromStorage,
-  } = useStorage();
+  const { addPrivateKeyToStorage, getPrivateKeyFromStorage, removePrivateKeyFromStorage } = useStorage();
 
   const validatePrivateKey = async (hcp: HealthcareParty): Promise<boolean> => {
     return await api().cryptoApi.checkPrivateKeyValidity(hcp);
   };
 
-  const importAndValidatePrivateKey = async (
-    hcp: HealthcareParty,
-    privateKey: string,
-  ): Promise<boolean> => {
+  const importAndValidatePrivateKey = async (hcp: HealthcareParty, privateKey: string): Promise<boolean> => {
     return api()
-      .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(
-        hcp.id,
-        hex2ua(privateKey),
-      )
+      .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(hcp.id, hex2ua(privateKey))
       .then(() => {
-        console.log('Hello !');
+        console.log('cdcdcdcd', api().cryptoApi.randomUuid());
         return validatePrivateKey(hcp);
       })
       .catch(error => {
@@ -57,9 +47,7 @@ export default () => {
       });
   };
 
-  const clearPrivateKeyData = async (
-    hcp: HealthcareParty | undefined,
-  ): Promise<void> => {
+  const clearPrivateKeyData = async (hcp: HealthcareParty | undefined): Promise<void> => {
     if (!hcp) {
       return;
     }
@@ -67,9 +55,7 @@ export default () => {
     deleteKey(hcp.id);
   };
 
-  const importPrivateKeyFromStorage = async (
-    hcp: HealthcareParty,
-  ): Promise<void> => {
+  const importPrivateKeyFromStorage = async (hcp: HealthcareParty): Promise<void> => {
     setKeyImport(hcp.id, true);
 
     try {
@@ -82,6 +68,7 @@ export default () => {
       const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
 
       if (keyImported) {
+        console.log('privateKeyprivateKey: ');
         setKey(hcp.id, privateKey);
       } else {
         await clearPrivateKeyData(hcp);
@@ -92,10 +79,7 @@ export default () => {
     setKeyImport(hcp.id, false);
   };
 
-  const importPrivateKey = async (
-    hcp: HealthcareParty,
-    privateKey: string,
-  ): Promise<void> => {
+  const importPrivateKey = async (hcp: HealthcareParty, privateKey: string): Promise<void> => {
     setKeyImport(hcp.id, true);
 
     try {

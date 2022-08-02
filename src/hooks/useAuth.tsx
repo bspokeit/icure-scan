@@ -17,8 +17,9 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { IccUserXApi, XHR } from '@icure/api';
+import { HealthcareParty, hex2ua, IccUserXApi, Patient, ua2b64, XHR } from '@icure/api';
 import { useContext } from 'react';
+import { tDecrypt, tEncrypt } from '../api/crypto';
 import {
   Credentials,
   ErrorHandler,
@@ -26,7 +27,7 @@ import {
   getAuthAPI as authApi,
   getUserAPI as userApi,
   IccApiHeaders,
-  init
+  init,
 } from '../api/icure';
 import { AUTHENTICATION_HEADER } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
@@ -49,7 +50,7 @@ export default () => {
   } = useContext(AuthContext);
 
   const { clearPrivateKeyData } = useCrypto();
-  const { setItem, getItem, removeItem} = useStorage();
+  const { setItem, getItem, removeItem, getPrivateKeyFromStorage } = useStorage();
 
   const apiErrorInterceptor: ErrorHandler = (error: XHR.XHRError) => {
     if (error.statusCode === 401) {
@@ -63,13 +64,7 @@ export default () => {
     init(headers, apiErrorInterceptor);
   };
 
-  const login = async ({
-    username,
-    password,
-  }: {
-    username: string;
-    password: string;
-  }): Promise<void> => {
+  const login = async ({ username, password }: { username: string; password: string }): Promise<void> => {
     setLoginOngoing(true);
     try {
       const response = await authApi().login({
@@ -86,10 +81,7 @@ export default () => {
           data: `Basic ${btoa(`${username}:${password}`)}`,
         };
 
-        await setItem(
-          AUTHENTICATION_HEADER,
-          JSON.stringify(authHeader),
-        );
+        await setItem(AUTHENTICATION_HEADER, JSON.stringify(authHeader));
 
         setAuthHeader(authHeader);
 
@@ -116,17 +108,13 @@ export default () => {
     const currentUser = await api().userApi.getCurrentUser();
     setUser(currentUser as User);
 
-    const currentHcp =
-      await api().healthcarePartyApi.getCurrentHealthcareParty();
+    const currentHcp = await api().healthcarePartyApi.getCurrentHealthcareParty();
     setHcp(currentHcp);
 
     let parentHcp;
     if (currentHcp.parentId) {
       try {
-        parentHcp = await api().healthcarePartyApi.getHealthcareParty(
-          currentHcp.parentId,
-          true,
-        );
+        parentHcp = await api().healthcarePartyApi.getHealthcareParty(currentHcp.parentId, true);
       } catch (err) {
         throw err;
       }
@@ -136,9 +124,7 @@ export default () => {
   };
 
   const getAuthHeader = async (): Promise<any /*XHR.Header*/ | undefined> => {
-    const storedHeaderAsString = await getItem(
-      AUTHENTICATION_HEADER,
-    );
+    const storedHeaderAsString = await getItem(AUTHENTICATION_HEADER);
 
     if (!!storedHeaderAsString) {
       try {
@@ -193,8 +179,7 @@ export default () => {
       }
 
       //  To revive the session we need to exchange something with the serveur with a AuthHeader.
-      const bareAutheticatedUserApi =
-        getAuthenticatedUserApi(authHeaderCandidate);
+      const bareAutheticatedUserApi = getAuthenticatedUserApi(authHeaderCandidate);
 
       const sessionRevived = await sessionActive(bareAutheticatedUserApi);
       if (sessionRevived) {
@@ -232,9 +217,7 @@ export default () => {
     await logUserOut();
   };
 
-  const sessionActive = async (
-    customUserApi?: IccUserXApi,
-  ): Promise<boolean> => {
+  const sessionActive = async (customUserApi?: IccUserXApi): Promise<boolean> => {
     try {
       const uApi = customUserApi ?? userApi();
       const current = await uApi.getCurrentUser();
@@ -251,5 +234,87 @@ export default () => {
     autoLogin();
   };
 
-  return { login, autoLogin, logUserOut, logoutUserOutHard, sessionActive };
+  const hcp_id = '4a1e806e5f702e9320c745e554006855-test-1608210888';
+  const parent_id = '4a1e806e5f702e9320c745e554004c75-test-1608210888';
+
+  const hcp_private_key = async () => {
+    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(hcp_id);
+    return key.privateKey;
+  };
+  const parent_private_key = async () => {
+    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(parent_id);
+    return key.privateKey;
+  };
+
+  const hcp_public_key = async () => {
+    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(hcp_id);
+    return key.publicKey;
+  };
+  const parent_public_key = async () => {
+    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(parent_id);
+    return key.publicKey;
+  };
+
+  const test = async () => {
+    try {
+      //addPatient();
+      //return;
+      const uApi = userApi();
+      const current = await uApi.getCurrentUser();
+      console.log(current);
+      const hcp_key = await hcp_private_key();
+      const parent_key = await parent_private_key();
+
+      const e1 = await tEncrypt('bimbim', await hcp_public_key());
+      const d1 = await tDecrypt(e1, hcp_key);
+
+      console.log('d1: ', d1);
+
+      const e2 = await tEncrypt('bambam', await parent_public_key());
+      const d2 = await tDecrypt(e2, parent_key);
+
+      console.log('d2: ', d2);
+
+      const hcp: HealthcareParty = await api().healthcarePartyApi.getCurrentHealthcareParty();
+
+      const hcpAA0 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![hcp_id][0]) as ArrayBuffer), hcp_key);
+      const hcpAA1 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![hcp_id][1]) as ArrayBuffer), hcp_key);
+
+      console.log('hcpAA0: ', hcpAA0);
+      console.log('hcpAA1: ', hcpAA1);
+
+      const hcpAB0 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![parent_id][0]) as ArrayBuffer), hcp_key);
+      const hcpAB1 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![parent_id][1]) as ArrayBuffer), parent_key);
+
+      console.log('hcpAB0: ', hcpAB0);
+      console.log('hcpAB1: ', hcpAB1);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addPatient = async () => {
+    try {
+      const patientToCreate = await api().patientApi.newInstance(
+        await api().userApi.getCurrentUser(),
+        new Patient({
+          id: 'aaa' + api().cryptoApi.randomUuid(),
+          firstName: 'C',
+          lastName: 'DW',
+          note: 'Winter is coming',
+        }),
+      );
+
+      console.log('patientToCreate: ', patientToCreate);
+      // When
+      const createdPatient = await api().patientApi.createPatientWithUser(
+        await api().userApi.getCurrentUser(),
+        patientToCreate,
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return { login, autoLogin, logUserOut, logoutUserOutHard, sessionActive, test };
 };

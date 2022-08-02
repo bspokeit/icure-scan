@@ -17,182 +17,191 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'react-native-get-random-values';
+
+import { b64_2ab, string2ab, ua2b64, ua2string } from '@icure/api/dist/icc-x-api/utils/binary-utils';
+import { RNIcureRSA } from 'react-native-icure-crypto';
+import { stringifyPrivateJWK, stringifyPublicJWK } from './key-helper';
+
+import { v4 as uuidv4 } from 'uuid';
+
 const msrCrypto = require('./support/msr-crypto.js');
 
-const jwkToPem = require('jwk-to-pem');
+type BufferSource = ArrayBuffer | ArrayBufferView;
 
-const importKey = (
-  format: KeyFormat,
-  keyData: JsonWebKey,
-  algorithm:
-    | AlgorithmIdentifier
-    | RsaHashedImportParams
-    | EcKeyImportParams
-    | HmacImportParams
-    | AesKeyAlgorithm,
+export const tDecrypt = async (data: string, key: any) => {
+  const b64Key = stringifyPrivateJWK(key);
+  const decrypted = await RNIcureRSA.decrypt(data, b64Key);
+  return decrypted;
+};
+
+export const tEncrypt = async (data: string, key: any) => {
+  const b64Key = stringifyPublicJWK(key);
+  const encrypted = await RNIcureRSA.encrypt(data, b64Key);
+  return encrypted;
+};
+
+const decrypt = async (
+  algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams,
+  key: CryptoKey,
+  data: BufferSource,
+) => {
+  console.log('TSX::decrypt algorithm: ', algorithm.name);
+  try {
+    if (algorithm.name === 'RSA-OAEP') {
+      const privateKey = stringifyPrivateJWK(await exportKey('jwk', key));
+      const toDecrypt = ua2b64(data as ArrayBuffer);
+      const decrypted = await RNIcureRSA.decrypt(toDecrypt, privateKey);
+      if (!!decrypted) {
+        return string2ab(decrypted);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return msrCrypto.subtle.decrypt(algorithm, key, data);
+};
+
+const deriveBits = async (
+  algorithm: AlgorithmIdentifier | EcdhKeyDeriveParams | HkdfParams | Pbkdf2Params,
+  baseKey: CryptoKey,
+  length: number,
+) => {
+  return msrCrypto.subtle.deriveBits(algorithm, baseKey, length);
+};
+
+const deriveKey = async (
+  algorithm: AlgorithmIdentifier | EcdhKeyDeriveParams | HkdfParams | Pbkdf2Params,
+  baseKey: CryptoKey,
+  derivedKeyType: AlgorithmIdentifier | AesDerivedKeyParams | HmacImportParams | HkdfParams | Pbkdf2Params,
   extractable: boolean,
-  keyUsages: ReadonlyArray<KeyUsage>,
-): Promise<CryptoKey> => {
-  return msrCrypto.subtle.importKey(
-    format,
-    keyData,
-    algorithm,
-    extractable,
-    keyUsages,
-  );
+  keyUsages: KeyUsage[],
+) => {
+  return msrCrypto.subtle.deriveKey(algorithm, baseKey, derivedKeyType, extractable, keyUsages);
+};
+
+const digest = async (algorithm: AlgorithmIdentifier, data: BufferSource) => {
+  return msrCrypto.subtle.deriveKey(algorithm, data);
+};
+
+const encrypt = async (
+  algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams,
+  key: CryptoKey,
+  data: BufferSource,
+) => {
+  console.log('TSX::encrypt algorithm: ', algorithm.name);
+
+  try {
+    if (algorithm.name === 'RSA-OAEP') {
+      const publicKey = stringifyPublicJWK(await exportKey('jwk', key));
+      const toEncrypt = ua2string(data as ArrayBuffer);
+      const encrypted = await RNIcureRSA.encrypt(toEncrypt, publicKey);
+
+      if (!!encrypted) {
+        return b64_2ab(encrypted);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return msrCrypto.subtle.encrypt(algorithm, key, data);
 };
 
 const exportKey = (format: 'jwk', key: CryptoKey): Promise<JsonWebKey> => {
   return msrCrypto.subtle.exportKey(format, key);
 };
 
-const encrypt = (
-  algorithm:
-    | AlgorithmIdentifier
-    | RsaOaepParams
-    | AesCtrParams
-    | AesCbcParams
-    | AesGcmParams,
-  key: CryptoKey,
-  data: BufferSource,
+const generateKey = async (
+  algorithm: RsaHashedKeyGenParams | EcKeyGenParams,
+  extractable: boolean,
+  keyUsages: ReadonlyArray<KeyUsage>,
 ) => {
-  console.log('TSX::encrypt algorithm: ', algorithm.name);
-
-  return msrCrypto.subtle.encrypt(algorithm, key, data);
+  return msrCrypto.subtle.generateKey(algorithm, extractable, keyUsages);
 };
 
-const decrypt = async (
-  algorithm:
-    | AlgorithmIdentifier
-    | RsaOaepParams
-    | AesCtrParams
-    | AesCbcParams
-    | AesGcmParams,
+const importKey = (
+  format: KeyFormat,
+  keyData: JsonWebKey,
+  algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm,
+  extractable: boolean,
+  keyUsages: ReadonlyArray<KeyUsage>,
+): Promise<CryptoKey> => {
+  return msrCrypto.subtle.importKey(format, keyData, algorithm, extractable, keyUsages);
+};
+
+const sign = async (
+  algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams,
   key: CryptoKey,
   data: BufferSource,
 ) => {
-  console.log('TSX::decrypt algorithm: ', algorithm.name);
+  return msrCrypto.subtle.sign(algorithm, key, data);
+};
 
-  try {
-    if (algorithm.name === 'RSA-OAEP') {
-      console.log('key: ', key);
-      const jwk = await exportKey('jwk', key);
-      console.log('exportedKey: ', jwk);
-      //  const privateKey = await RSA.convertJWKToPrivateKey(jwk, 'decrypt');
-      //  console.log('privateKey: ', privateKey);
+const unwrapKey = async (
+  format: KeyFormat,
+  wrappedKey: BufferSource,
+  unwrappingKey: CryptoKey,
+  unwrapAlgorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams,
+  unwrappedKeyAlgorithm:
+    | AlgorithmIdentifier
+    | RsaHashedImportParams
+    | EcKeyImportParams
+    | HmacImportParams
+    | AesKeyAlgorithm,
+  extractable: boolean,
+  keyUsages: KeyUsage[],
+) => {
+  return msrCrypto.subtle.sign(
+    format,
+    wrappedKey,
+    unwrappingKey,
+    unwrapAlgorithm,
+    unwrappedKeyAlgorithm,
+    extractable,
+    keyUsages,
+  );
+};
 
-      const privateKey = jwkToPem(jwk, { private: true });
+const verify = async (
+  algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams,
+  key: CryptoKey,
+  signature: BufferSource,
+  data: BufferSource,
+) => {
+  return msrCrypto.subtle.verify(algorithm, key, signature, data);
+};
 
-      var enc = new TextDecoder('utf-8');
-    }
-  } catch (error) {
-    console.error(error);
-  }
+const wrapKey = async (
+  format: KeyFormat,
+  key: CryptoKey,
+  wrappingKey: CryptoKey,
+  wrapAlgorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams,
+) => {
+  return msrCrypto.subtle.wrapKey(format, key, wrappingKey, wrapAlgorithm);
+};
 
-  //return RSA.decryptOAEP();
-
-  return msrCrypto.subtle.decrypt(algorithm, key, data);
+const randomUUID = () => {
+  return uuidv4();
 };
 
 const crypto: Crypto = {
   getRandomValues: global.crypto.getRandomValues,
   subtle: {
     decrypt: decrypt,
-    deriveBits: async (
-      algorithm:
-        | AlgorithmIdentifier
-        | EcdhKeyDeriveParams
-        | HkdfParams
-        | Pbkdf2Params,
-      baseKey: CryptoKey,
-      length: number,
-    ) => {
-      return new ArrayBuffer(1);
-    }, //: Promise<ArrayBuffer>;
-    deriveKey: async (
-      algorithm:
-        | AlgorithmIdentifier
-        | EcdhKeyDeriveParams
-        | HkdfParams
-        | Pbkdf2Params,
-      baseKey: CryptoKey,
-      derivedKeyType:
-        | AlgorithmIdentifier
-        | AesDerivedKeyParams
-        | HmacImportParams
-        | HkdfParams
-        | Pbkdf2Params,
-      extractable: boolean,
-      keyUsages: KeyUsage[],
-    ) => {
-      return new CryptoKey();
-    }, //: Promise<CryptoKey>;
-    digest: async (algorithm: AlgorithmIdentifier, data: BufferSource) => {
-      return new ArrayBuffer(1);
-    }, //: Promise<ArrayBuffer>;
+    deriveBits: deriveBits,
+    deriveKey: deriveKey,
+    digest: digest,
     encrypt: encrypt,
     exportKey: exportKey,
-    generateKey: async (
-      algorithm: RsaHashedKeyGenParams | EcKeyGenParams,
-      extractable: boolean,
-      keyUsages: ReadonlyArray<KeyUsage>,
-    ) => {
-      return {} as CryptoKeyPair;
-    }, //: Promise<CryptoKeyPair>;
+    generateKey: generateKey,
     importKey: importKey,
-    sign: async (
-      algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams,
-      key: CryptoKey,
-      data: BufferSource,
-    ) => {
-      return new ArrayBuffer(1);
-    }, //: Promise<ArrayBuffer>;
-    unwrapKey: async (
-      format: KeyFormat,
-      wrappedKey: BufferSource,
-      unwrappingKey: CryptoKey,
-      unwrapAlgorithm:
-        | AlgorithmIdentifier
-        | RsaOaepParams
-        | AesCtrParams
-        | AesCbcParams
-        | AesGcmParams,
-      unwrappedKeyAlgorithm:
-        | AlgorithmIdentifier
-        | RsaHashedImportParams
-        | EcKeyImportParams
-        | HmacImportParams
-        | AesKeyAlgorithm,
-      extractable: boolean,
-      keyUsages: KeyUsage[],
-    ) => {
-      return new CryptoKey();
-    }, //: Promise<CryptoKey>;
-    verify: async (
-      algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams,
-      key: CryptoKey,
-      signature: BufferSource,
-      data: BufferSource,
-    ) => {
-      return false;
-    }, //: Promise<boolean>;
-    wrapKey: async (
-      format: KeyFormat,
-      key: CryptoKey,
-      wrappingKey: CryptoKey,
-      wrapAlgorithm:
-        | AlgorithmIdentifier
-        | RsaOaepParams
-        | AesCtrParams
-        | AesCbcParams
-        | AesGcmParams,
-    ) => {
-      return new ArrayBuffer(1);
-    }, //: Promise<ArrayBuffer>;
+    sign: sign,
+    unwrapKey: unwrapKey,
+    verify: verify,
+    wrapKey: wrapKey,
   } as SubtleCrypto,
-  randomUUID: () => {
-    return '';
-  },
+  randomUUID: randomUUID,
 };
 
 export default {

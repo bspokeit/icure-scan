@@ -31,19 +31,19 @@ import {
   ImportTaskDocument,
   ImportTaskStatus,
   ImportTaskType,
-  ProcessTaskNewContent
+  ProcessTaskNewContent,
 } from '../models/core/import-task.model';
 import { URI2Blob } from '../utils/formatHelper';
 
 export default () => {
   const {
-    state: {currentUser},
+    state: { currentUser },
   } = useContext(AuthContext);
 
-  const {collectContacts} = useContext(PatientContext);
+  const { collectContacts } = useContext(PatientContext);
 
   const {
-    state: {documents},
+    state: { documents },
     setStatus,
     setTasks,
     updateTask,
@@ -53,16 +53,12 @@ export default () => {
 
   const buildNewContact = async (patient: Patient) => {
     try {
-      const newContact = await api().contactApi.newInstance(
-        currentUser!!,
-        patient,
-        {
-          author: currentUser!!.id,
-          responsible: currentUser!!.healthcarePartyId,
-          subContacts: [],
-          services: [],
-        },
-      );
+      const newContact = await api().contactApi.newInstance(currentUser!!, patient, {
+        author: currentUser!!.id,
+        responsible: currentUser!!.healthcarePartyId,
+        subContacts: [],
+        services: [],
+      });
 
       return newContact;
     } catch (e) {
@@ -74,20 +70,12 @@ export default () => {
   const buildNewDocument = async (image: ImportTaskDocument) => {
     const ext = _.last(image.uri!!.split('.')) || 'jpg';
     let mimeType = _.toLower(ext);
-    mimeType =
-      mimeType === 'jpg' ? 'jpeg' : mimeType === 'tif' ? 'tiff' : mimeType;
+    mimeType = mimeType === 'jpg' ? 'jpeg' : mimeType === 'tif' ? 'tiff' : mimeType;
     try {
-      const document = await api().documentApi.newInstance(
-        currentUser!!,
-        undefined,
-        {
-          name: `${api().cryptoApi.randomUuid()}-from-icure-scan`,
-          mainUti: api().documentApi.uti(
-            mimeType === 'pdf' ? 'application/pdf' : 'image/' + mimeType,
-            ext,
-          ),
-        },
-      );
+      const document = await api().documentApi.newInstance(currentUser!!, undefined, {
+        name: `${api().cryptoApi.randomUuid()}-from-icure-scan`,
+        mainUti: api().documentApi.uti(mimeType === 'pdf' ? 'application/pdf' : 'image/' + mimeType, ext),
+      });
 
       return await api().documentApi.createDocument(document);
     } catch (e) {
@@ -95,14 +83,9 @@ export default () => {
     }
   };
 
-  const processTask = async (
-    task: ImportTask,
-    newContent: ProcessTaskNewContent,
-  ): Promise<void> => {
+  const processTask = async (task: ImportTask, newContent: ProcessTaskNewContent): Promise<void> => {
     try {
-      const document: Document = new Document(
-        await buildNewDocument(task.document!!),
-      );
+      const document: Document = new Document(await buildNewDocument(task.document!!));
 
       console.log('bim: ');
 
@@ -119,12 +102,11 @@ export default () => {
 
       console.log('boum: ', clearAttachment);
 
-      const ekeys =
-        await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
-          currentUser!!.healthcarePartyId!!,
-          document.id,
-          document.encryptionKeys!!,
-        );
+      const ekeys = await api().cryptoApi.extractKeysFromDelegationsForHcpHierarchy(
+        currentUser!!.healthcarePartyId!!,
+        document.id,
+        document.encryptionKeys!!,
+      );
 
       console.log('bagadad: ');
 
@@ -163,9 +145,7 @@ export default () => {
       console.log('step 11 ');
 
       if (!service) {
-        throw new Error(
-          `Impossible to create Service for document: ${document}`,
-        );
+        throw new Error(`Impossible to create Service for document: ${document}`);
       }
 
       console.log('step 12 ');
@@ -184,7 +164,7 @@ export default () => {
     setStatus(ImportStatus.Ongoing);
 
     const tasks: Array<ImportTask> = documents.map(doc => {
-      return new ImportTask({document: doc});
+      return new ImportTask({ document: doc });
     });
 
     setTasks(tasks);
@@ -205,7 +185,7 @@ export default () => {
       return cleanAfterError(newContent);
     }
 
-    const closingTasks = new ImportTask({type: ImportTaskType.Final});
+    const closingTasks = new ImportTask({ type: ImportTaskType.Final });
     setFinal(closingTasks);
 
     try {
@@ -216,27 +196,24 @@ export default () => {
         {
           status: 64,
           services: contact.services.map(s => {
-            return {serviceId: s.id};
+            return { serviceId: s.id };
           }),
         },
       ];
 
-      const newContact: Contact = await api().contactApi.createContactWithUser(
-        currentUser!!,
-        contact,
-      );
+      const newContact: Contact = await api().contactApi.createContactWithUser(currentUser!!, contact);
 
       console.log('contact with user ok ');
 
       newContent.contact = newContact;
 
-      setFinal({...closingTasks, status: ImportTaskStatus.Done});
+      setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
 
-      collectContacts({patientId: patient.id, contacts: [newContact]});
+      collectContacts({ patientId: patient.id, contacts: [newContact] });
     } catch (error) {
       //  Something wrong happened. The import flow should be stopped and created object cleaned up.
       console.error(error);
-      setFinal({...closingTasks, status: ImportTaskStatus.Done});
+      setFinal({ ...closingTasks, status: ImportTaskStatus.Done });
       return cleanAfterError(newContent);
     }
 
@@ -248,14 +225,8 @@ export default () => {
    * The triggers a exception from the XHRError construtor of the icc-api
    * (error.message is not defined and conflict with defined typings...)
    */
-  const cleanAfterError = async (
-    contentToClean: ProcessTaskNewContent,
-  ): Promise<void> => {
-    const documentIdsToClean = _.chain(contentToClean.documents)
-      .compact()
-      .map('id')
-      .compact()
-      .value();
+  const cleanAfterError = async (contentToClean: ProcessTaskNewContent): Promise<void> => {
+    const documentIdsToClean = _.chain(contentToClean.documents).compact().map('id').compact().value();
 
     const contactToClean = contentToClean.contact;
 
@@ -283,5 +254,5 @@ export default () => {
     setStatus(ImportStatus.Error);
   };
 
-  return {startImport};
+  return { startImport };
 };
