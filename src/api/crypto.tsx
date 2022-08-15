@@ -18,9 +18,17 @@
  */
 import 'react-native-get-random-values';
 
-import { b64_2ab, string2ab, ua2b64, ua2string } from '@icure/api/dist/icc-x-api/utils/binary-utils';
-import { RNIcureRSA } from 'react-native-icure-crypto';
-import { stringifyPrivateJWK, stringifyPublicJWK } from './key-helper';
+import {
+  b64_2ab,
+  b64_2ua,
+  string2ab,
+  string2ua,
+  ua2b64,
+  ua2string,
+  ua2utf8,
+} from '@icure/api/dist/icc-x-api/utils/binary-utils';
+import { RNIcureRSA, RNIcureAES } from 'react-native-icure-crypto';
+import { stringifyAESJWK, stringifyPrivateJWK, stringifyPublicJWK } from './key-helper';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -45,7 +53,6 @@ const decrypt = async (
   key: CryptoKey,
   data: BufferSource,
 ) => {
-  console.log('TSX::decrypt algorithm: ', algorithm.name);
   try {
     if (algorithm.name === 'RSA-OAEP') {
       const privateKey = stringifyPrivateJWK(await exportKey('jwk', key));
@@ -55,8 +62,33 @@ const decrypt = async (
         return string2ab(decrypted);
       }
     }
+
+    if (algorithm.name === 'AES-CBC') {
+      console.log('TSX::decrypt algorithm: ', algorithm.name);
+      console.log('key: ', key);
+      console.log('jwk: ', await exportKey('jwk', key));
+      const aesKey = ua2b64((await exportKey('raw', key)) as ArrayBuffer);
+      console.log('aesKey: ', aesKey);
+      const toDecrypt = ua2b64(data as ArrayBuffer);
+      console.log('toDecrypt: ', toDecrypt);
+      const iv = ua2b64(algorithm.iv as ArrayBuffer);
+      //console.log('iv: ', iv);
+      const decrypted = await RNIcureAES.decrypt(toDecrypt, aesKey, iv);
+      console.log('DECRYPTED_DECRYPTED_DECRYPTED: ', decrypted, b64_2ab(decrypted));
+      if (!!decrypted) {
+        console.log('b64_2ua: ', b64_2ab(decrypted));
+        console.log('ua2utf8.b64_2ua: ', ua2utf8(b64_2ab(decrypted)));
+        //return string2ab(decrypted);
+      }
+    }
   } catch (error) {
     console.error(error);
+  }
+
+  if (algorithm.name === 'AES-CBC') {
+    const result = await msrCrypto.subtle.decrypt(algorithm, key, data);
+
+    console.log('result: ', result);
   }
 
   return msrCrypto.subtle.decrypt(algorithm, key, data);
@@ -108,7 +140,7 @@ const encrypt = async (
   return msrCrypto.subtle.encrypt(algorithm, key, data);
 };
 
-const exportKey = (format: 'jwk', key: CryptoKey): Promise<JsonWebKey> => {
+const exportKey = (format: 'jwk' | 'raw', key: CryptoKey): Promise<JsonWebKey> => {
   return msrCrypto.subtle.exportKey(format, key);
 };
 

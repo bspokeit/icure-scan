@@ -44,3 +44,7 @@ export const stringifyPublicJWK = (jwk: JsonWebKey): string => {
 export const stringifyPrivateJWK = (jwk: JsonWebKey): string => {
   return ua2b64(hex2ua(cryptoUtils.jwk2pkcs1(jwk)));
 };
+
+export const stringifyAESJWK = (jwk: JsonWebKey): string => {
+  return ua2b64(hex2ua(cryptoUtils.jwk2spki(jwk)));
+};
