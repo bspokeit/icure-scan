@@ -18,23 +18,13 @@
  */
 import 'react-native-get-random-values';
 
-import {
-  b64_2ab,
-  b64_2ua,
-  string2ab,
-  string2ua,
-  ua2b64,
-  ua2string,
-  ua2utf8,
-} from '@icure/api/dist/icc-x-api/utils/binary-utils';
-import { RNIcureRSA, RNIcureAES } from 'react-native-icure-crypto';
-import { stringifyAESJWK, stringifyPrivateJWK, stringifyPublicJWK } from './key-helper';
+import { b64_2ab, b64_2ua, string2ab, ua2b64, ua2string } from '@icure/api/dist/icc-x-api/utils/binary-utils';
+import { RNIcureAES, RNIcureRSA } from 'react-native-icure-crypto';
+import { stringifyPrivateJWK, stringifyPublicJWK } from './key-helper';
 
 import { v4 as uuidv4 } from 'uuid';
 
 const msrCrypto = require('./support/msr-crypto.js');
-
-type BufferSource = ArrayBuffer | ArrayBufferView;
 
 export const tDecrypt = async (data: string, key: any) => {
   const b64Key = stringifyPrivateJWK(key);
@@ -48,14 +38,10 @@ export const tEncrypt = async (data: string, key: any) => {
   return encrypted;
 };
 
-const decrypt = async (
-  algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams,
-  key: CryptoKey,
-  data: BufferSource,
-) => {
+const decrypt = async (algorithm: RsaOaepParams | AesCbcParams, key: CryptoKey, data: BufferSource) => {
   try {
     if (algorithm.name === 'RSA-OAEP') {
-      const privateKey = stringifyPrivateJWK(await exportKey('jwk', key));
+      const privateKey = stringifyPrivateJWK((await exportKey('jwk', key)) as JsonWebKey);
       const toDecrypt = ua2b64(data as ArrayBuffer);
       const decrypted = await RNIcureRSA.decrypt(toDecrypt, privateKey);
       if (!!decrypted) {
@@ -64,31 +50,16 @@ const decrypt = async (
     }
 
     if (algorithm.name === 'AES-CBC') {
-      console.log('TSX::decrypt algorithm: ', algorithm.name);
-      console.log('key: ', key);
-      console.log('jwk: ', await exportKey('jwk', key));
       const aesKey = ua2b64((await exportKey('raw', key)) as ArrayBuffer);
-      console.log('aesKey: ', aesKey);
       const toDecrypt = ua2b64(data as ArrayBuffer);
-      console.log('toDecrypt: ', toDecrypt);
-      const iv = ua2b64(algorithm.iv as ArrayBuffer);
-      //console.log('iv: ', iv);
+      const iv = ua2b64((algorithm as AesCbcParams).iv as ArrayBuffer);
       const decrypted = await RNIcureAES.decrypt(toDecrypt, aesKey, iv);
-      console.log('DECRYPTED_DECRYPTED_DECRYPTED: ', decrypted, b64_2ab(decrypted));
       if (!!decrypted) {
-        console.log('b64_2ua: ', b64_2ab(decrypted));
-        console.log('ua2utf8.b64_2ua: ', ua2utf8(b64_2ab(decrypted)));
-        //return string2ab(decrypted);
+        return b64_2ua(decrypted);
       }
     }
   } catch (error) {
     console.error(error);
-  }
-
-  if (algorithm.name === 'AES-CBC') {
-    const result = await msrCrypto.subtle.decrypt(algorithm, key, data);
-
-    console.log('result: ', result);
   }
 
   return msrCrypto.subtle.decrypt(algorithm, key, data);
@@ -116,21 +87,25 @@ const digest = async (algorithm: AlgorithmIdentifier, data: BufferSource) => {
   return msrCrypto.subtle.deriveKey(algorithm, data);
 };
 
-const encrypt = async (
-  algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams,
-  key: CryptoKey,
-  data: BufferSource,
-) => {
-  console.log('TSX::encrypt algorithm: ', algorithm.name);
-
+const encrypt = async (algorithm: RsaOaepParams | AesCtrParams | AesCbcParams, key: CryptoKey, data: BufferSource) => {
   try {
     if (algorithm.name === 'RSA-OAEP') {
-      const publicKey = stringifyPublicJWK(await exportKey('jwk', key));
+      const publicKey = stringifyPublicJWK((await exportKey('jwk', key)) as JsonWebKey);
       const toEncrypt = ua2string(data as ArrayBuffer);
       const encrypted = await RNIcureRSA.encrypt(toEncrypt, publicKey);
 
       if (!!encrypted) {
         return b64_2ab(encrypted);
+      }
+    }
+
+    if (algorithm.name === 'AES-CBC') {
+      const aesKey = ua2b64((await exportKey('raw', key)) as ArrayBuffer);
+      const toEncrypt = ua2b64(data as ArrayBuffer);
+      const iv = ua2b64((algorithm as AesCbcParams).iv as ArrayBuffer);
+      const encrypted = await RNIcureAES.encrypt(toEncrypt, aesKey, iv);
+      if (!!encrypted) {
+        return b64_2ua(encrypted);
       }
     }
   } catch (error) {
@@ -140,15 +115,21 @@ const encrypt = async (
   return msrCrypto.subtle.encrypt(algorithm, key, data);
 };
 
-const exportKey = (format: 'jwk' | 'raw', key: CryptoKey): Promise<JsonWebKey> => {
+const exportKey = (format: 'jwk' | 'raw', key: CryptoKey): Promise<JsonWebKey | ArrayBuffer> => {
   return msrCrypto.subtle.exportKey(format, key);
 };
 
 const generateKey = async (
-  algorithm: RsaHashedKeyGenParams | EcKeyGenParams,
+  algorithm: RsaOaepParams | AesCbcParams,
   extractable: boolean,
   keyUsages: ReadonlyArray<KeyUsage>,
-) => {
+): Promise<CryptoKeyPair | CryptoKey> => {
+  if (algorithm.name === 'RSA-OAEP') {
+  }
+
+  if (algorithm.name === 'AES-CBC') {
+  }
+
   return msrCrypto.subtle.generateKey(algorithm, extractable, keyUsages);
 };
 
