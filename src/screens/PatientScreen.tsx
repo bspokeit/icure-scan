@@ -64,7 +64,7 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({ navigation }) =>
           onPress={() => {
             navigation.navigate('Import', { patient });
           }}>
-          <Icon reverse raised name="add" type="ionicon" color={MAIN_ACTION} />
+          <Icon name="add-circle" size={46} color={MAIN_ACTION} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
