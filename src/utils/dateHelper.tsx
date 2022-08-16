@@ -61,8 +61,7 @@ export const monthString2Int = (monthStr: string): number | undefined => {
 };
 
 const DAY_VALUES: number[] = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 30, 31,
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 ];
 
 export const dayString2Int = (dayStr: string): number | undefined => {
@@ -104,43 +103,29 @@ export const iCureDateParser = (iCureDate?: number): DateStructure => {
 };
 
 export const parsedDate2String = (parsedDate: DateStructure) => {
-  const {year, month, day} = parsedDate;
+  const { year, month, day } = parsedDate;
 
   if (year) {
     if (month) {
       if (day) {
         return moment(
-          `${year.toString().padStart(4, '0')}${month
-            .toString()
-            .padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+          `${year.toString().padStart(4, '0')}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
           'YYYYMMDD',
         ).format('D MMM YYYY');
       } else {
-        return moment(
-          `${year.toString().padStart(4, '0')}${month
-            .toString()
-            .padStart(2, '0')}`,
-          'YYYYMM',
-        ).format('MMM YYYY');
+        return moment(`${year.toString().padStart(4, '0')}${month.toString().padStart(2, '0')}`, 'YYYYMM').format(
+          'MMM YYYY',
+        );
       }
     } else {
-      return moment(`${year.toString().padStart(4, '0')}`, 'YYYY').format(
-        'YYYY',
-      );
+      return moment(`${year.toString().padStart(4, '0')}`, 'YYYY').format('YYYY');
     }
   } else {
     if (month) {
       if (day) {
-        return moment(
-          `${month.toString().padStart(2, '0')}${day
-            .toString()
-            .padStart(2, '0')}`,
-          'MMDD',
-        ).format('D MMM');
+        return moment(`${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`, 'MMDD').format('D MMM');
       } else {
-        return moment(`${month.toString().padStart(2, '0')}`, 'MM').format(
-          'MMM',
-        );
+        return moment(`${month.toString().padStart(2, '0')}`, 'MM').format('MMM');
       }
     } else {
       null;
@@ -149,54 +134,36 @@ export const parsedDate2String = (parsedDate: DateStructure) => {
 };
 
 export const parsedDate2Age = (parsedDate: DateStructure) => {
-  const {year, month, day} = parsedDate;
+  const { year, month, day } = parsedDate;
 
   if (year) {
     if (month) {
       if (day) {
         return moment().diff(
           moment(
-            `${year.toString().padStart(4, '0')}${month
-              .toString()
-              .padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+            `${year.toString().padStart(4, '0')}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
             'YYYYMMDD',
           ),
           'years',
         );
       } else {
         return moment().diff(
-          moment(
-            `${year.toString().padStart(4, '0')}${month
-              .toString()
-              .padStart(2, '0')}`,
-            'YYYYMM',
-          ),
+          moment(`${year.toString().padStart(4, '0')}${month.toString().padStart(2, '0')}`, 'YYYYMM'),
           'years',
         );
       }
     } else {
-      return moment().diff(
-        moment(`${year.toString().padStart(4, '0')}`, 'YYYY'),
-        'years',
-      );
+      return moment().diff(moment(`${year.toString().padStart(4, '0')}`, 'YYYY'), 'years');
     }
   } else {
     if (month) {
       if (day) {
         return moment().diff(
-          moment(
-            `${month.toString().padStart(2, '0')}${day
-              .toString()
-              .padStart(2, '0')}`,
-            'MMDD',
-          ),
+          moment(`${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`, 'MMDD'),
           'years',
         );
       } else {
-        return moment().diff(
-          moment(`${month.toString().padStart(2, '0')}`, 'MM'),
-          'years',
-        );
+        return moment().diff(moment(`${month.toString().padStart(2, '0')}`, 'MM'), 'years');
       }
     } else {
       null;

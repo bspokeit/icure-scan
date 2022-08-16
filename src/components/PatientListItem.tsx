@@ -20,12 +20,7 @@
 import { Avatar, ListItem } from '@rneui/base';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
-import {
-  DEFAULT_BORDER,
-  DEFAULT_IMAGE_BACKGROUND,
-  LIGHT_GREY,
-  MAIN_COLOR
-} from '../constant';
+import { DEFAULT_BORDER, DEFAULT_IMAGE_BACKGROUND, LIGHT_GREY, MAIN_COLOR } from '../constant';
 import { Patient } from '../models';
 import { addressAsString } from '../utils/addressHelper';
 import { dateOfBirthInfo } from '../utils/dateHelper';
@@ -36,7 +31,7 @@ interface Props {
   onSelection: () => void;
 }
 
-const PatientListItem: React.FC<Props> = ({patient, onSelection}) => {
+const PatientListItem: React.FC<Props> = ({ patient, onSelection }) => {
   const [dob, setDob] = useState('');
   const [add, setAdd] = useState('');
 
@@ -73,10 +68,7 @@ const PatientListItem: React.FC<Props> = ({patient, onSelection}) => {
         />
       )}
       <ListItem.Content>
-        <ListItem.Title
-          style={
-            styles.title
-          }>{`${patient.firstName} ${patient.lastName}`}</ListItem.Title>
+        <ListItem.Title style={styles.title}>{`${patient.firstName} ${patient.lastName}`}</ListItem.Title>
         {dob ? (
           <ListItem.Subtitle>
             <Text style={styles.subTitle}>{dob}</Text>
@@ -84,9 +76,7 @@ const PatientListItem: React.FC<Props> = ({patient, onSelection}) => {
         ) : null}
         {add ? (
           <ListItem.Subtitle>
-            <Text style={styles.subTitle}>
-              {addressAsString(patient.addresses)}
-            </Text>
+            <Text style={styles.subTitle}>{addressAsString(patient.addresses)}</Text>
           </ListItem.Subtitle>
         ) : null}
       </ListItem.Content>

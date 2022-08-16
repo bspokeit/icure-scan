@@ -18,11 +18,7 @@
  */
 
 import { ActionMap } from '../../models';
-import {
-  ImportTask,
-  ImportTaskDocument,
-  ImportTaskStatus
-} from '../../models/core/import-task.model';
+import { ImportTask, ImportTaskDocument, ImportTaskStatus } from '../../models/core/import-task.model';
 
 export enum ImportStatus {
   Pending = 'PENDING',
@@ -57,9 +53,8 @@ export type ImportActionPayloadTypes = {
   [ImportActionTypes.Activate]: boolean;
   [ImportActionTypes.SetStatus]: ImportStatus;
   [ImportActionTypes.SetTasks]: Array<ImportTask>;
-  [ImportActionTypes.UpdateTask]: {id: string; status: ImportTaskStatus};
+  [ImportActionTypes.UpdateTask]: { id: string; status: ImportTaskStatus };
   [ImportActionTypes.SetFinal]: ImportTask | undefined;
 };
 
-export type ImportAction =
-  ActionMap<ImportActionPayloadTypes>[keyof ActionMap<ImportActionPayloadTypes>];
+export type ImportAction = ActionMap<ImportActionPayloadTypes>[keyof ActionMap<ImportActionPayloadTypes>];

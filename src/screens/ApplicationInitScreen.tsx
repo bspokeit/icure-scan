@@ -21,10 +21,7 @@ import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  NavigationSwitchScreenComponent,
-  NavigationSwitchScreenProps
-} from 'react-navigation';
+import { NavigationSwitchScreenComponent, NavigationSwitchScreenProps } from 'react-navigation';
 import { DEFAULT_BORDER, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
 import { SystemCheckStatus } from '../context/reducer-action/SystemReducerActions';
 import { Context as SystemContext } from '../context/SystemContext';
@@ -35,11 +32,11 @@ interface Props extends NavigationSwitchScreenProps {}
 
 const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
   const {
-    state: {checkCompleted, systemChecks},
+    state: { checkCompleted, systemChecks },
   } = useContext(SystemContext);
-  const {checkSystem, systemIsReady} = useSystem();
+  const { checkSystem, systemIsReady } = useSystem();
 
-  const {autoLogin} = useAuth();
+  const { autoLogin } = useAuth();
 
   useEffect(() => {
     checkSystem();
@@ -59,15 +56,8 @@ const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
         <View style={styles.container}>
           <Card containerStyle={styles.card}>
             <View style={styles.horizontal}>
-              <ActivityIndicator
-                style={styles.textIcon}
-                animating
-                color={MAIN_COLOR}
-                size="small"
-              />
-              <Text style={styles.text}>
-                {!checkCompleted ? 'Checking system...' : 'Automatic login...'}
-              </Text>
+              <ActivityIndicator style={styles.textIcon} animating color={MAIN_COLOR} size="small" />
+              <Text style={styles.text}>{!checkCompleted ? 'Checking system...' : 'Automatic login...'}</Text>
             </View>
           </Card>
         </View>
@@ -83,11 +73,7 @@ const ApplicationInitScreen: NavigationSwitchScreenComponent<Props> = () => {
             .filter(c => c.status === SystemCheckStatus.Error || true)
             .map((c, i) => (
               <View key={i} style={styles.horizontal}>
-                <Icon
-                  style={styles.textIcon}
-                  name="alert-circle"
-                  color={SECONDARY_ACTION}
-                />
+                <Icon style={styles.textIcon} name="alert-circle" color={SECONDARY_ACTION} />
                 <Text style={styles.text}>{c.errorMessage}</Text>
               </View>
             ))}
@@ -110,7 +96,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  container: {width: '90%'},
+  container: { width: '90%' },
   card: {
     borderWidth: 1,
     borderColor: MAIN_COLOR,

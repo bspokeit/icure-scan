@@ -33,24 +33,15 @@ interface Props {
   onSelection: () => void;
 }
 
-const ContactListItem: React.FC<Props> = ({patient, contact, onSelection}) => {
-  const {fetchContactDocumentIds} = useDocument();
+const ContactListItem: React.FC<Props> = ({ patient, contact, onSelection }) => {
+  const { fetchContactDocumentIds } = useDocument();
   return (
-    <ListItem
-      onPress={onSelection}
-      containerStyle={styles.container}
-      underlayColor={LIGHT_GREY}>
-      <DocumentAvatar
-        patientId={patient.id}
-        documentId={first(fetchContactDocumentIds(contact))}></DocumentAvatar>
+    <ListItem onPress={onSelection} containerStyle={styles.container} underlayColor={LIGHT_GREY}>
+      <DocumentAvatar patientId={patient.id} documentId={first(fetchContactDocumentIds(contact))}></DocumentAvatar>
       <ListItem.Content>
-        <ListItem.Title style={styles.title}>
-          Contact du {moment(contact.created).format('DD/MM/YYYY')}
-        </ListItem.Title>
+        <ListItem.Title style={styles.title}>Contact du {moment(contact.created).format('DD/MM/YYYY')}</ListItem.Title>
         <ListItem.Subtitle>
-          <Text style={styles.subTitle}>
-            {fetchContactDocumentIds(contact).length} document(s)
-          </Text>
+          <Text style={styles.subTitle}>{fetchContactDocumentIds(contact).length} document(s)</Text>
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron color={MAIN_COLOR} />

@@ -24,13 +24,10 @@ import {
   SystemAction,
   SystemActionTypes,
   SystemCheck,
-  SystemState
+  SystemState,
 } from './reducer-action/SystemReducerActions';
 
-const systemReducer = (
-  state: SystemState,
-  action: SystemAction,
-): SystemState => {
+const systemReducer = (state: SystemState, action: SystemAction): SystemState => {
   switch (action.type) {
     case SystemActionTypes.UpdateSystemCheck:
       const updatedCheck = action.payload;
@@ -41,9 +38,9 @@ const systemReducer = (
         checks[index] = updatedCheck;
       }
 
-      return {...state, systemChecks: [...checks]};
+      return { ...state, systemChecks: [...checks] };
     case SystemActionTypes.SetCheckCompleted:
-      return {...state, checkCompleted: true};
+      return { ...state, checkCompleted: true };
     default:
       return state;
   }
@@ -61,7 +58,7 @@ const updateSystemCheck =
 const setSystemChecked =
   (dispatch: React.Dispatch<SystemAction>) =>
   async (status: boolean): Promise<void> => {
-    dispatch({type: SystemActionTypes.SetCheckCompleted, payload: status});
+    dispatch({ type: SystemActionTypes.SetCheckCompleted, payload: status });
   };
 
 const defaultSystemState: SystemState = {
@@ -83,18 +80,14 @@ export const Context = createContext<{
   ...defaultSystemDispatcher,
 });
 
-export const Provider: React.FC = ({children}) => {
+export const Provider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(systemReducer, defaultSystemState);
 
   const dispatcher = {
     updateSystemCheck: updateSystemCheck(dispatch),
     setSystemChecked: setSystemChecked(dispatch),
   };
-  return (
-    <Context.Provider value={{state, ...dispatcher}}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ state, ...dispatcher }}>{children}</Context.Provider>;
 };
 
-export default {Context, Provider};
+export default { Context, Provider };

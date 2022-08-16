@@ -21,10 +21,7 @@ import { compact } from 'lodash';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  NavigationSwitchScreenComponent,
-  NavigationSwitchScreenProps
-} from 'react-navigation';
+import { NavigationSwitchScreenComponent, NavigationSwitchScreenProps } from 'react-navigation';
 import KeyImporter from '../components/KeyImporter';
 import { Context as AuthContext } from '../context/AuthContext';
 import { Context as CryptoContext } from '../context/CryptoContext';
@@ -32,22 +29,20 @@ import useCrypto from '../hooks/useCrypto';
 
 interface Props extends NavigationSwitchScreenProps {}
 
-const KeyImportScreen: NavigationSwitchScreenComponent<Props> = ({
-  navigation,
-}) => {
+const KeyImportScreen: NavigationSwitchScreenComponent<Props> = ({ navigation }) => {
   const {
-    state: {currentHcp, currentParentHcp},
+    state: { currentHcp, currentParentHcp },
   } = useContext(AuthContext);
   const {
-    state: {keys, keyImports},
+    state: { keys, keyImports },
   } = useContext(CryptoContext);
 
-  const {importPrivateKeysFromStorage} = useCrypto();
+  const { importPrivateKeysFromStorage } = useCrypto();
 
   const hcps = compact([currentHcp, currentParentHcp]);
 
   const autoImports = hcps.map(hcp => {
-    return {id: hcp.id, imported: false};
+    return { id: hcp.id, imported: false };
   });
 
   useEffect(() => {

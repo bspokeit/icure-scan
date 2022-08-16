@@ -24,8 +24,7 @@ import { Context as PatientContext } from '../context/PatientContext';
 import { Patient, User } from '../models';
 
 export default () => {
-  const {setSearching, setLogs, setList, resetSearch} =
-    useContext(PatientContext);
+  const { setSearching, setLogs, setList, resetSearch } = useContext(PatientContext);
 
   const loadLogs = async (user: User): Promise<void> => {
     try {
@@ -43,19 +42,12 @@ export default () => {
         undefined,
       );
 
-      const patientIds = _.chain(logPage.rows)
-        .map('patientId')
-        .compact()
-        .uniq()
-        .value();
+      const patientIds = _.chain(logPage.rows).map('patientId').compact().uniq().value();
 
       if (patientIds && patientIds.length) {
-        const patientfromLogs = await api().patientApi.getPatientsWithUser(
-          user,
-          {
-            ids: patientIds,
-          },
-        );
+        const patientfromLogs = await api().patientApi.getPatientsWithUser(user, {
+          ids: patientIds,
+        });
 
         setLogs(patientfromLogs);
         setList(patientfromLogs);
@@ -97,5 +89,5 @@ export default () => {
     setSearching(false);
   };
 
-  return {loadLogs, searchPatients};
+  return { loadLogs, searchPatients };
 };

@@ -64,10 +64,8 @@ export class ImportTaskDocument {
   }
 }
 
-export const ImagePickerConverter = (
-  output: any /*ImagePicker.ImagePickerResult*/,
-) => {
-  return new ImportTaskDocument({...output});
+export const ImagePickerConverter = (output: any /*ImagePicker.ImagePickerResult*/) => {
+  return new ImportTaskDocument({ ...output });
 };
 
 export interface ProcessTaskNewContent {

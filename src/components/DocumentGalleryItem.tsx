@@ -28,10 +28,10 @@ interface Props {
   documentId?: string;
 }
 
-const DocumentGalleryItem: React.FC<Props> = ({patientId, documentId}) => {
+const DocumentGalleryItem: React.FC<Props> = ({ patientId, documentId }) => {
   const [fullScreen, setFullScreen] = useState(false);
 
-  const {fetchDocument, documentContent} = useDocument();
+  const { fetchDocument, documentContent } = useDocument();
 
   useEffect(() => {
     if (!!documentId) {
@@ -42,12 +42,7 @@ const DocumentGalleryItem: React.FC<Props> = ({patientId, documentId}) => {
   if (!documentId || !documentContent(patientId, documentId)) {
     return (
       <View
-        style={[
-          styles.container,
-          styles.imageContainerStyle,
-          styles.imageStyle,
-          styles.imagePlaceholderStyle,
-        ]}></View>
+        style={[styles.container, styles.imageContainerStyle, styles.imageStyle, styles.imagePlaceholderStyle]}></View>
     );
   }
 
@@ -55,7 +50,7 @@ const DocumentGalleryItem: React.FC<Props> = ({patientId, documentId}) => {
     <View style={styles.container}>
       <View style={styles.imageContainerStyle}>
         <TouchableOpacity
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           onPress={() => {
             setFullScreen(true);
           }}>
@@ -69,7 +64,7 @@ const DocumentGalleryItem: React.FC<Props> = ({patientId, documentId}) => {
       </View>
 
       <ImageView
-        images={[{uri: documentContent(patientId, documentId)!!}]}
+        images={[{ uri: documentContent(patientId, documentId)!! }]}
         imageIndex={0}
         visible={fullScreen}
         onRequestClose={() => setFullScreen(false)}

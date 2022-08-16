@@ -26,22 +26,19 @@ import {
   CollectDocumentActionPayload,
   PatientAction,
   PatientActionTypes,
-  PatientState
+  PatientState,
 } from './reducer-action/PatientReducerActions';
 
-const patientReducer = (
-  state: PatientState,
-  action: PatientAction,
-): PatientState => {
+const patientReducer = (state: PatientState, action: PatientAction): PatientState => {
   switch (action.type) {
     case PatientActionTypes.SetSearching:
-      return {...state, searching: action.payload};
+      return { ...state, searching: action.payload };
     case PatientActionTypes.SetSearch:
-      return {...state, list: action.payload};
+      return { ...state, list: action.payload };
     case PatientActionTypes.ResetSearch:
-      return {...state, list: state.logs};
+      return { ...state, list: state.logs };
     case PatientActionTypes.SetLogs:
-      return {...state, logs: action.payload};
+      return { ...state, logs: action.payload };
     case PatientActionTypes.CollectContacts:
       return collectContactsAction(state, action.payload);
     case PatientActionTypes.CollectDocuments:
@@ -60,12 +57,11 @@ const setSearching =
     });
   };
 
-const resetSearch =
-  (dispatch: React.Dispatch<PatientAction>) => async (): Promise<void> => {
-    dispatch({
-      type: PatientActionTypes.ResetSearch,
-    });
-  };
+const resetSearch = (dispatch: React.Dispatch<PatientAction>) => async (): Promise<void> => {
+  dispatch({
+    type: PatientActionTypes.ResetSearch,
+  });
+};
 
 const setLogs =
   (dispatch: React.Dispatch<PatientAction>) =>
@@ -87,22 +83,19 @@ const setList =
 
 const collectContacts =
   (dispatch: React.Dispatch<PatientAction>) =>
-  async ({patientId, contacts}: CollectContactActionPayload): Promise<void> => {
+  async ({ patientId, contacts }: CollectContactActionPayload): Promise<void> => {
     dispatch({
       type: PatientActionTypes.CollectContacts,
-      payload: {patientId, contacts},
+      payload: { patientId, contacts },
     });
   };
 
 const collectDocuments =
   (dispatch: React.Dispatch<PatientAction>) =>
-  async ({
-    patientId,
-    documents,
-  }: CollectDocumentActionPayload): Promise<void> => {
+  async ({ patientId, documents }: CollectDocumentActionPayload): Promise<void> => {
     dispatch({
       type: PatientActionTypes.CollectDocuments,
-      payload: {patientId, documents},
+      payload: { patientId, documents },
     });
   };
 
@@ -129,20 +122,14 @@ export const Context = createContext<{
   resetSearch: () => Promise<void>;
   setLogs: (logs: Array<Patient>) => Promise<void>;
   setList: (list: Array<Patient>) => Promise<void>;
-  collectContacts: ({
-    patientId,
-    contacts,
-  }: CollectContactActionPayload) => Promise<void>;
-  collectDocuments: ({
-    patientId,
-    documents,
-  }: CollectDocumentActionPayload) => Promise<void>;
+  collectContacts: ({ patientId, contacts }: CollectContactActionPayload) => Promise<void>;
+  collectDocuments: ({ patientId, documents }: CollectDocumentActionPayload) => Promise<void>;
 }>({
   state: defaultPatientState,
   ...defaultPatientDispatcher,
 });
 
-export const Provider: React.FC = ({children}) => {
+export const Provider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(patientReducer, defaultPatientState);
 
   const dispatcher = {
@@ -154,11 +141,7 @@ export const Provider: React.FC = ({children}) => {
     collectContacts: collectContacts(dispatch),
   };
 
-  return (
-    <Context.Provider value={{state, ...dispatcher}}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ state, ...dispatcher }}>{children}</Context.Provider>;
 };
 
-export default {Context, Provider};
+export default { Context, Provider };

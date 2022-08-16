@@ -33,12 +33,7 @@ export const extractContactServices = (contact: Contact): Service[] => {
       !!s.tags &&
       s.tags.length >= 2 &&
       DOCUMENT_SERVICE_TAGS.every(docTag => {
-        return (
-          _.findIndex(
-            s.tags,
-            t => t.type === docTag.type && t.code === docTag.code,
-          ) > -1
-        );
+        return _.findIndex(s.tags, t => t.type === docTag.type && t.code === docTag.code) > -1;
       })
     );
   });
@@ -46,8 +41,6 @@ export const extractContactServices = (contact: Contact): Service[] => {
   return docServices as Service[];
 };
 
-export const extractDocumentIdFromService = (
-  service: Service,
-): string | undefined => {
+export const extractDocumentIdFromService = (service: Service): string | undefined => {
   return service?.content?.fr?.documentId ?? undefined;
 };

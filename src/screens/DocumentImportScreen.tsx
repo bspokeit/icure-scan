@@ -22,26 +22,19 @@ import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  NavigationStackScreenComponent,
-  NavigationStackScreenProps
-} from 'react-navigation-stack';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import PatientHeader from '../components/PatientHeader';
-import {
-  DEFAULT_BORDER, MAIN_ACTION
-} from '../constant';
+import { DEFAULT_BORDER, MAIN_ACTION } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Patient } from '../models';
 
 interface Props extends NavigationStackScreenProps {}
 
-const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
-  navigation,
-}) => {
+const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({ navigation }) => {
   const {
-    state: {documents, active},
+    state: { documents, active },
     collect,
     activate,
   } = useContext(ImportContext);
@@ -109,19 +102,12 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({
         </TouchableOpacity> */}
         {documents.length ? (
           <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
-            <Icon
-              reverse
-              raised
-              name="cloud-upload"
-              color={MAIN_ACTION}
-            />
+            <Icon reverse raised name="cloud-upload" color={MAIN_ACTION} />
           </TouchableOpacity>
         ) : null}
       </View>
       <Overlay overlayStyle={styles.overlayStyle} isVisible={active} fullScreen>
-        <DocumentImporter
-          onDone={deactivateImportMode}
-          patient={patient}></DocumentImporter>
+        <DocumentImporter onDone={deactivateImportMode} patient={patient}></DocumentImporter>
       </Overlay>
     </SafeAreaView>
   );

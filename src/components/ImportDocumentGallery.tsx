@@ -18,33 +18,22 @@
  */
 
 import React, { useContext, useRef } from 'react';
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { navigate } from '../utils/navigationHelper';
 
 const ImportDocumentGallery: React.FC = () => {
-  const flatListRef = useRef<FlatList<any>>() as React.MutableRefObject<
-    FlatList<any>
-  >;
+  const flatListRef = useRef<FlatList<any>>() as React.MutableRefObject<FlatList<any>>;
 
   const {
-    state: {documents},
+    state: { documents },
   } = useContext(ImportContext);
 
   if (!documents || !documents.length) {
     return (
       <View style={styles.default}>
-        <Text style={styles.defaultText}>
-          Select files (.jpeg) or take new pictures...
-        </Text>
+        <Text style={styles.defaultText}>Select files (.jpeg) or take new pictures...</Text>
       </View>
     );
   }
@@ -57,11 +46,11 @@ const ImportDocumentGallery: React.FC = () => {
       data={documents}
       ref={flatListRef}
       onContentSizeChange={() => flatListRef?.current?.scrollToEnd()}
-      renderItem={({item}) => (
+      renderItem={({ item }) => (
         <View style={styles.container}>
           <TouchableOpacity
             key={item.uri}
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             onPress={() => {
               navigate('Draw');
             }}>
@@ -79,7 +68,7 @@ const ImportDocumentGallery: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  flatList: {marginBottom: 72},
+  flatList: { marginBottom: 72 },
   default: {
     flex: 1,
     justifyContent: 'center',

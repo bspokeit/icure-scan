@@ -21,10 +21,7 @@ import { Card } from '@rneui/base';
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  NavigationSwitchScreenComponent,
-  NavigationSwitchScreenProps
-} from 'react-navigation';
+import { NavigationSwitchScreenComponent, NavigationSwitchScreenProps } from 'react-navigation';
 import LoginForm from '../components/LoginForm';
 import { DEFAULT_BORDER, MAIN_COLOR } from '../constant';
 import { Context as AuthContext } from '../context/AuthContext';
@@ -34,9 +31,9 @@ interface Props extends NavigationSwitchScreenProps {}
 
 const LoginScreen: NavigationSwitchScreenComponent<Props> = () => {
   const {
-    state: {error, authHeader, ongoing},
+    state: { error, authHeader, ongoing },
   } = useContext(AuthContext);
-  const {login} = useAuth();
+  const { login } = useAuth();
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  container: {width: '90%'},
+  container: { width: '90%' },
   card: {
     borderWidth: 1,
     borderColor: MAIN_COLOR,

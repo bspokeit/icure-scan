@@ -24,7 +24,7 @@ import { Context as SystemContext } from '../context/SystemContext';
 
 export default () => {
   const {
-    state: {systemChecks, checkCompleted},
+    state: { systemChecks, checkCompleted },
     updateSystemCheck,
     setSystemChecked,
   } = useContext(SystemContext);
@@ -46,10 +46,8 @@ export default () => {
   };
 
   const systemIsReady = () => {
-    return (
-      checkCompleted && _.every(systemChecks, {status: SystemCheckStatus.Ready})
-    );
+    return checkCompleted && _.every(systemChecks, { status: SystemCheckStatus.Ready });
   };
 
-  return {checkSystem, systemIsReady};
+  return { checkSystem, systemIsReady };
 };

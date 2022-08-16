@@ -52,5 +52,4 @@ export type AuthActionPayloadTypes = {
   [AuthActionTypes.SetError]: string;
 };
 
-export type AuthAction =
-  ActionMap<AuthActionPayloadTypes>[keyof ActionMap<AuthActionPayloadTypes>];
+export type AuthAction = ActionMap<AuthActionPayloadTypes>[keyof ActionMap<AuthActionPayloadTypes>];

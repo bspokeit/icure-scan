@@ -31,26 +31,20 @@ interface Props {
   goBack: () => void;
 }
 
-const PatientHeader: React.FC<Props> = ({patient, subTitle, goBack}) => {
+const PatientHeader: React.FC<Props> = ({ patient, subTitle, goBack }) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.contentGoBack}>
           <TouchableOpacity onPress={goBack}>
-            <Icon
-              name="arrow-back"
-              color={MAIN_COLOR}
-              size={20}
-            />
+            <Icon name="arrow-back" color={MAIN_COLOR} size={20} />
           </TouchableOpacity>
         </View>
         <View style={styles.contentText}>
           <Text style={styles.contextTextTitle}>
             {patient?.firstName} {patient?.lastName}
           </Text>
-          {subTitle ? (
-            <Text style={styles.contentTextSubTitle}>{subTitle}</Text>
-          ) : null}
+          {subTitle ? <Text style={styles.contentTextSubTitle}>{subTitle}</Text> : null}
         </View>
         <View style={styles.contentAvatar}>
           {patient.picture ? (
@@ -96,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  contentText: {flex: 6, justifyContent: 'center'},
+  contentText: { flex: 6, justifyContent: 'center' },
   contentAvatar: {
     flex: 1,
     alignContent: 'center',
@@ -106,7 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: MAIN_COLOR,
   },
-  contentTextSubTitle: {color: 'grey', fontSize: 12},
+  contentTextSubTitle: { color: 'grey', fontSize: 12 },
   subTitle: {
     fontSize: 12,
   },

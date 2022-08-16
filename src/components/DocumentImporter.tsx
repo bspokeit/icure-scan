@@ -32,15 +32,15 @@ interface Props {
   onDone: () => void;
 }
 
-const DocumentImporter: React.FC<Props> = ({onDone, patient}) => {
+const DocumentImporter: React.FC<Props> = ({ onDone, patient }) => {
   const {
-    state: {documents, status, tasks, final},
+    state: { documents, status, tasks, final },
     clear,
     activate,
     reset,
   } = useContext(ImportContext);
 
-  const {startImport} = useImporter();
+  const { startImport } = useImporter();
 
   const start = async () => {
     await startImport(patient);
@@ -61,21 +61,15 @@ const DocumentImporter: React.FC<Props> = ({onDone, patient}) => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Import to Cloud</Text>
-        <Divider style={{backgroundColor: 'blue'}} />
+        <Divider style={{ backgroundColor: 'blue' }} />
         <View style={styles.body}>
           <Text style={styles.bodyLine}>
-            {status === ImportStatus.Error
-              ? 'Something went wrong! Please, try again.'
-              : 'Import is done!'}
+            {status === ImportStatus.Error ? 'Something went wrong! Please, try again.' : 'Import is done!'}
           </Text>
         </View>
-        <Divider style={{backgroundColor: 'blue'}} />
+        <Divider style={{ backgroundColor: 'blue' }} />
         <View style={styles.controller}>
-          <Button
-            buttonStyle={[styles.control, styles.controlDone]}
-            onPress={done}
-            title="Ok"
-          />
+          <Button buttonStyle={[styles.control, styles.controlDone]} onPress={done} title="Ok" />
         </View>
       </View>
     );
@@ -84,21 +78,17 @@ const DocumentImporter: React.FC<Props> = ({onDone, patient}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Import to Cloud</Text>
-      <Divider style={{backgroundColor: LIGHT_GREY, margin: 0}} />
+      <Divider style={{ backgroundColor: LIGHT_GREY, margin: 0 }} />
       <View style={styles.body}>
         {!tasks?.length ? (
           <Text style={styles.bodyLine}>
-            Ready to import {documents.length}{' '}
-            {documents.length === 1 ? 'document' : 'documents'}
+            Ready to import {documents.length} {documents.length === 1 ? 'document' : 'documents'}
           </Text>
         ) : null}
 
         {tasks?.length ? (
           <Text style={styles.bodyLine}>
-            Import ongoing{' '}
-            {`${tasks.filter(t => t.status === ImportTaskStatus.Done).length}/${
-              tasks.length
-            }`}
+            Import ongoing {`${tasks.filter(t => t.status === ImportTaskStatus.Done).length}/${tasks.length}`}
           </Text>
         ) : null}
 
@@ -106,7 +96,7 @@ const DocumentImporter: React.FC<Props> = ({onDone, patient}) => {
           <Text style={styles.bodyLine}>Finalisation ongoing</Text>
         ) : null}
       </View>
-      <Divider style={{backgroundColor: LIGHT_GREY, margin: 0}} />
+      <Divider style={{ backgroundColor: LIGHT_GREY, margin: 0 }} />
       <View style={styles.controller}>
         <Button
           buttonStyle={[styles.control, styles.controlCancel]}
@@ -170,7 +160,7 @@ const styles = StyleSheet.create({
   controlStart: {
     backgroundColor: MAIN_ACTION,
   },
-  controlDone: {backgroundColor: MAIN_ACTION},
+  controlDone: { backgroundColor: MAIN_ACTION },
 });
 
 export default DocumentImporter;

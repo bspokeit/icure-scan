@@ -24,4 +24,3 @@ export * from './healthcareparty.model';
 export * from './patient.model';
 export * from './service.model';
 export * from './user.model';
-

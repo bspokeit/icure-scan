@@ -21,10 +21,7 @@ import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
-  NavigationStackScreenComponent,
-  NavigationStackScreenProps
-} from 'react-navigation-stack';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
 import PatientHeader from '../components/PatientHeader';
 import { DEFAULT_BORDER, MAIN_ACTION } from '../constant';
@@ -34,12 +31,12 @@ import { Patient } from '../models';
 
 interface Props extends NavigationStackScreenProps {}
 
-const PatientScreen: NavigationStackScreenComponent<Props> = ({navigation}) => {
+const PatientScreen: NavigationStackScreenComponent<Props> = ({ navigation }) => {
   const patient: Patient = navigation.state.params?.patient;
-  const {fetchContacts} = useContact();
+  const { fetchContacts } = useContact();
 
   const {
-    state: {contacts},
+    state: { contacts },
   } = useContext(PatientContext);
 
   useEffect(() => {
@@ -65,7 +62,7 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({navigation}) => {
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => {
-            navigation.navigate('Import', {patient});
+            navigation.navigate('Import', { patient });
           }}>
           <Icon reverse raised name="add" type="ionicon" color={MAIN_ACTION} />
         </TouchableOpacity>

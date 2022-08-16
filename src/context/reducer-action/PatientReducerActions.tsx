@@ -75,16 +75,12 @@ export type PatientActionPayloadTypes = {
   [PatientActionTypes.CollectDocuments]: CollectDocumentActionPayload;
 };
 
-export type PatientAction =
-  ActionMap<PatientActionPayloadTypes>[keyof ActionMap<PatientActionPayloadTypes>];
+export type PatientAction = ActionMap<PatientActionPayloadTypes>[keyof ActionMap<PatientActionPayloadTypes>];
 
-export const collectContactsAction = (
-  state: PatientState,
-  payload: CollectContactActionPayload,
-) => {
-  const {patientId, contacts} = payload;
+export const collectContactsAction = (state: PatientState, payload: CollectContactActionPayload) => {
+  const { patientId, contacts } = payload;
 
-  const updatedStateContacts = {...state.contacts};
+  const updatedStateContacts = { ...state.contacts };
 
   //  Init the patient contacts list if needed
   if (!updatedStateContacts[patientId]) {
@@ -105,13 +101,10 @@ export const collectContactsAction = (
   };
 };
 
-export const collectDocumentAction = (
-  state: PatientState,
-  payload: CollectDocumentActionPayload,
-) => {
-  const {patientId, documents} = payload;
+export const collectDocumentAction = (state: PatientState, payload: CollectDocumentActionPayload) => {
+  const { patientId, documents } = payload;
 
-  const updatedStateDocuments = {...state.documents};
+  const updatedStateDocuments = { ...state.documents };
 
   //  Init the patient document collection container if needed
   if (!updatedStateDocuments[patientId]) {
@@ -143,5 +136,5 @@ export const collectDocumentAction = (
     };
   }
 
-  return {...state, documents: {...updatedStateDocuments}};
+  return { ...state, documents: { ...updatedStateDocuments } };
 };

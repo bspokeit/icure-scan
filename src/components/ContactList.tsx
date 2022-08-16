@@ -17,6 +17,7 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { Contact } from '@icure/api';
 import React, { useCallback, useContext } from 'react';
 import { FlatList } from 'react-native';
 import { Context as PatientContext } from '../context/PatientContext';
@@ -28,15 +29,15 @@ interface Props {
   patient: Patient;
 }
 
-const ContactList: React.FC<Props> = ({patient}) => {
+const ContactList: React.FC<Props> = ({ patient }) => {
   const {
-    state: {contacts},
+    state: { contacts },
   } = useContext(PatientContext);
 
-  const keyExtractor = useCallback(item => item.id, []);
+  const keyExtractor = useCallback((item: Contact) => item.id, []);
 
   const renderItem = useCallback(
-    ({item}) => (
+    ({ item }) => (
       <ContactListItem
         patient={patient}
         contact={item}
@@ -53,17 +54,13 @@ const ContactList: React.FC<Props> = ({patient}) => {
   return (
     <FlatList
       keyExtractor={keyExtractor}
-      data={
-        contacts && contacts[patient.id] && contacts[patient.id].length
-          ? contacts[patient.id]
-          : []
-      }
+      data={contacts && contacts[patient.id] && contacts[patient.id].length ? contacts[patient.id] : []}
       renderItem={renderItem}
       initialNumToRender={4}
       maxToRenderPerBatch={2}
       onEndReachedThreshold={0.1}
       windowSize={6}
-      style={{marginBottom: 56}}
+      style={{ marginBottom: 56 }}
     />
   );
 };

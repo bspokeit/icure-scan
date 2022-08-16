@@ -34,12 +34,8 @@ export const addressAsString = (addresses?: Address[]): string => {
   const address = mainAddress(addresses);
 
   if (address) {
-    const street = `${address?.street || ''} ${
-      address?.houseNumber || ''
-    }`.trim();
-    const locality = `${address?.postalCode || ''} ${
-      address?.city || ''
-    }`.trim();
+    const street = `${address?.street || ''} ${address?.houseNumber || ''}`.trim();
+    const locality = `${address?.postalCode || ''} ${address?.city || ''}`.trim();
 
     return compact([street, locality]).join(', ');
   }

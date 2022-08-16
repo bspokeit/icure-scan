@@ -18,22 +18,10 @@
  */
 
 import React, { createContext, useReducer } from 'react';
-import {
-  ImportTask,
-  ImportTaskDocument,
-  ImportTaskStatus
-} from '../models/core/import-task.model';
-import {
-  ImportAction,
-  ImportActionTypes,
-  ImportState,
-  ImportStatus
-} from './reducer-action/ImportReducerActions';
+import { ImportTask, ImportTaskDocument, ImportTaskStatus } from '../models/core/import-task.model';
+import { ImportAction, ImportActionTypes, ImportState, ImportStatus } from './reducer-action/ImportReducerActions';
 
-const importReducer = (
-  state: ImportState,
-  action: ImportAction,
-): ImportState => {
+const importReducer = (state: ImportState, action: ImportAction): ImportState => {
   switch (action.type) {
     case ImportActionTypes.Collect:
       return {
@@ -41,7 +29,7 @@ const importReducer = (
         documents: [...state.documents, action.payload],
       };
     case ImportActionTypes.Clear:
-      return {...state, documents: []};
+      return { ...state, documents: [] };
     case ImportActionTypes.Reset:
       return {
         ...state,
@@ -50,11 +38,11 @@ const importReducer = (
         status: ImportStatus.Pending,
       };
     case ImportActionTypes.Activate:
-      return {...state, active: action.payload};
+      return { ...state, active: action.payload };
     case ImportActionTypes.SetStatus:
-      return {...state, status: action.payload};
+      return { ...state, status: action.payload };
     case ImportActionTypes.SetTasks:
-      return {...state, tasks: action.payload};
+      return { ...state, tasks: action.payload };
     case ImportActionTypes.UpdateTask:
       const updatedTasks = [...state.tasks].map(t => {
         if (t.id === action.payload.id) {
@@ -62,9 +50,9 @@ const importReducer = (
         }
         return t;
       });
-      return {...state, tasks: updatedTasks};
+      return { ...state, tasks: updatedTasks };
     case ImportActionTypes.SetFinal:
-      return {...state, final: action.payload};
+      return { ...state, final: action.payload };
     default:
       return state;
   }
@@ -74,49 +62,47 @@ const collect =
   (dispatch: React.Dispatch<ImportAction>) =>
   async (taskDoc: ImportTaskDocument): Promise<void> => {
     if (!taskDoc.cancelled) {
-      dispatch({type: ImportActionTypes.Collect, payload: taskDoc});
+      dispatch({ type: ImportActionTypes.Collect, payload: taskDoc });
     }
   };
 
-const clear =
-  (dispatch: React.Dispatch<ImportAction>) => async (): Promise<void> => {
-    dispatch({type: ImportActionTypes.Clear});
-  };
+const clear = (dispatch: React.Dispatch<ImportAction>) => async (): Promise<void> => {
+  dispatch({ type: ImportActionTypes.Clear });
+};
 
 const activate =
   (dispatch: React.Dispatch<ImportAction>) =>
   async (active: boolean): Promise<void> => {
-    dispatch({type: ImportActionTypes.Activate, payload: active});
+    dispatch({ type: ImportActionTypes.Activate, payload: active });
   };
 
 const setStatus =
   (dispatch: React.Dispatch<ImportAction>) =>
   async (status: ImportStatus): Promise<void> => {
-    dispatch({type: ImportActionTypes.SetStatus, payload: status});
+    dispatch({ type: ImportActionTypes.SetStatus, payload: status });
   };
 
 const setTasks =
   (dispatch: React.Dispatch<ImportAction>) =>
   async (tasks: Array<ImportTask>): Promise<void> => {
-    dispatch({type: ImportActionTypes.SetTasks, payload: tasks});
+    dispatch({ type: ImportActionTypes.SetTasks, payload: tasks });
   };
 
 const updateTask =
   (dispatch: React.Dispatch<ImportAction>) =>
   async (id: string, status: ImportTaskStatus): Promise<void> => {
-    dispatch({type: ImportActionTypes.UpdateTask, payload: {id, status}});
+    dispatch({ type: ImportActionTypes.UpdateTask, payload: { id, status } });
   };
 
 const setFinal =
   (dispatch: React.Dispatch<ImportAction>) =>
   async (task: ImportTask | undefined): Promise<void> => {
-    dispatch({type: ImportActionTypes.SetFinal, payload: task});
+    dispatch({ type: ImportActionTypes.SetFinal, payload: task });
   };
 
-const reset =
-  (dispatch: React.Dispatch<ImportAction>) => async (): Promise<void> => {
-    dispatch({type: ImportActionTypes.Reset});
-  };
+const reset = (dispatch: React.Dispatch<ImportAction>) => async (): Promise<void> => {
+  dispatch({ type: ImportActionTypes.Reset });
+};
 
 const defaultImportState: ImportState = {
   active: false,
@@ -151,7 +137,7 @@ export const Context = createContext<{
   ...defaultImportDispatcher,
 });
 
-export const Provider: React.FC = ({children}) => {
+export const Provider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(importReducer, defaultImportState);
 
   const dispatcher = {
@@ -164,11 +150,7 @@ export const Provider: React.FC = ({children}) => {
     updateTask: updateTask(dispatch),
     setFinal: setFinal(dispatch),
   };
-  return (
-    <Context.Provider value={{state, ...dispatcher}}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ state, ...dispatcher }}>{children}</Context.Provider>;
 };
 
-export default {Context, Provider};
+export default { Context, Provider };

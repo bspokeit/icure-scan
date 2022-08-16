@@ -28,8 +28,8 @@ interface Props {
   documentId?: string;
 }
 
-const DocumentAvatar: React.FC<Props> = ({patientId, documentId}) => {
-  const {fetchDocument, documentContent} = useDocument();
+const DocumentAvatar: React.FC<Props> = ({ patientId, documentId }) => {
+  const { fetchDocument, documentContent } = useDocument();
 
   useEffect(() => {
     if (!!documentId) {

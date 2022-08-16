@@ -20,30 +20,26 @@
 import { XHR } from '@icure/api';
 import React, { createContext, useReducer } from 'react';
 import { HealthcareParty, User } from '../models';
-import {
-  AuthAction,
-  AuthActionTypes,
-  AuthState
-} from './reducer-action/AuthReducerActions';
+import { AuthAction, AuthActionTypes, AuthState } from './reducer-action/AuthReducerActions';
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case AuthActionTypes.SetOngoing:
-      return {...state, ongoing: action.payload};
+      return { ...state, ongoing: action.payload };
     case AuthActionTypes.SetAuthHeader:
-      return {authHeader: action.payload, error: undefined};
+      return { authHeader: action.payload, error: undefined };
     case AuthActionTypes.SetSession:
-      return {...state, session: action.payload};
+      return { ...state, session: action.payload };
     case AuthActionTypes.Logout:
       return {};
     case AuthActionTypes.SetUser:
-      return {...state, currentUser: action.payload};
+      return { ...state, currentUser: action.payload };
     case AuthActionTypes.SetHcp:
-      return {...state, currentHcp: action.payload};
+      return { ...state, currentHcp: action.payload };
     case AuthActionTypes.SetParent:
-      return {...state, currentParentHcp: action.payload};
+      return { ...state, currentParentHcp: action.payload };
     case AuthActionTypes.SetError:
-      return {error: action.payload};
+      return { error: action.payload };
     default:
       return state;
   }
@@ -52,48 +48,47 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const setLoginOngoing =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (status: boolean): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetOngoing, payload: status});
+    dispatch({ type: AuthActionTypes.SetOngoing, payload: status });
   };
 
 const setAuthHeader =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (header?: XHR.Header): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetAuthHeader, payload: header});
+    dispatch({ type: AuthActionTypes.SetAuthHeader, payload: header });
   };
 
 const setSession =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (session: string): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetSession, payload: session});
+    dispatch({ type: AuthActionTypes.SetSession, payload: session });
   };
 
-const setLogout =
-  (dispatch: React.Dispatch<AuthAction>) => async (): Promise<void> => {
-    dispatch({type: AuthActionTypes.Logout});
-  };
+const setLogout = (dispatch: React.Dispatch<AuthAction>) => async (): Promise<void> => {
+  dispatch({ type: AuthActionTypes.Logout });
+};
 
 const setUser =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (user: User): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetUser, payload: user});
+    dispatch({ type: AuthActionTypes.SetUser, payload: user });
   };
 
 const setHcp =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (hcp: HealthcareParty): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetHcp, payload: hcp});
+    dispatch({ type: AuthActionTypes.SetHcp, payload: hcp });
   };
 
 const setParent =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (hcp: HealthcareParty): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetParent, payload: hcp});
+    dispatch({ type: AuthActionTypes.SetParent, payload: hcp });
   };
 
 const setError =
   (dispatch: React.Dispatch<AuthAction>) =>
   async (error: string): Promise<void> => {
-    dispatch({type: AuthActionTypes.SetError, payload: error});
+    dispatch({ type: AuthActionTypes.SetError, payload: error });
   };
 
 const defaultAuthState: AuthState = {};
@@ -124,7 +119,7 @@ export const Context = createContext<{
   ...defaultAuthDispatcher,
 });
 
-export const Provider: React.FC = ({children}) => {
+export const Provider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, defaultAuthState);
 
   const dispatcher = {
@@ -137,9 +132,5 @@ export const Provider: React.FC = ({children}) => {
     setParent: setParent(dispatch),
     setError: setError(dispatch),
   };
-  return (
-    <Context.Provider value={{state, ...dispatcher}}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ state, ...dispatcher }}>{children}</Context.Provider>;
 };

@@ -20,8 +20,8 @@
 import { ActionMap } from '../../models';
 
 export interface CryptoState {
-  keys: {[hcpId: string]: string};
-  keyImports: {[hcpId: string]: boolean};
+  keys: { [hcpId: string]: string };
+  keyImports: { [hcpId: string]: boolean };
 }
 
 export enum CryptoActionTypes {
@@ -31,10 +31,9 @@ export enum CryptoActionTypes {
 }
 
 export type CryptoActionPayloadTypes = {
-  [CryptoActionTypes.SetKeyImport]: {[hcpId: string]: boolean};
-  [CryptoActionTypes.SetKey]: {[hcpId: string]: string};
+  [CryptoActionTypes.SetKeyImport]: { [hcpId: string]: boolean };
+  [CryptoActionTypes.SetKey]: { [hcpId: string]: string };
   [CryptoActionTypes.DeleteKey]: string;
 };
 
-export type CryptoAction =
-  ActionMap<CryptoActionPayloadTypes>[keyof ActionMap<CryptoActionPayloadTypes>];
+export type CryptoAction = ActionMap<CryptoActionPayloadTypes>[keyof ActionMap<CryptoActionPayloadTypes>];

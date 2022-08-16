@@ -18,27 +18,20 @@
  */
 
 import React, { createContext, useReducer } from 'react';
-import {
-  CryptoAction,
-  CryptoActionTypes,
-  CryptoState
-} from './reducer-action/CryptoReducerActions';
+import { CryptoAction, CryptoActionTypes, CryptoState } from './reducer-action/CryptoReducerActions';
 
-const cryptoReducer = (
-  state: CryptoState,
-  action: CryptoAction,
-): CryptoState => {
+const cryptoReducer = (state: CryptoState, action: CryptoAction): CryptoState => {
   switch (action.type) {
     case CryptoActionTypes.SetKeyImport:
-      const keyImports = {...state.keyImports, ...action.payload};
-      return {...state, keyImports};
+      const keyImports = { ...state.keyImports, ...action.payload };
+      return { ...state, keyImports };
     case CryptoActionTypes.SetKey:
-      const extendedKeySet = {...state.keys, ...action.payload};
-      return {...state, keys: extendedKeySet};
+      const extendedKeySet = { ...state.keys, ...action.payload };
+      return { ...state, keys: extendedKeySet };
     case CryptoActionTypes.DeleteKey:
-      const cleanedKeySet = {...state.keys};
+      const cleanedKeySet = { ...state.keys };
       delete cleanedKeySet[action.payload];
-      return {...state, keys: cleanedKeySet};
+      return { ...state, keys: cleanedKeySet };
     default:
       return state;
   }
@@ -49,7 +42,7 @@ const setKeyImport =
   async (hcpId: string, status: boolean): Promise<void> => {
     dispatch({
       type: CryptoActionTypes.SetKeyImport,
-      payload: {[hcpId]: status},
+      payload: { [hcpId]: status },
     });
   };
 
@@ -58,7 +51,7 @@ const setKey =
   async (hcpId: string, key: string): Promise<void> => {
     dispatch({
       type: CryptoActionTypes.SetKey,
-      payload: {[hcpId]: key},
+      payload: { [hcpId]: key },
     });
   };
 
@@ -92,7 +85,7 @@ export const Context = createContext<{
   ...defaultCryptoDispatcher,
 });
 
-export const Provider: React.FC = ({children}) => {
+export const Provider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(cryptoReducer, defaultCryptoState);
 
   const dispatcher = {
@@ -100,11 +93,7 @@ export const Provider: React.FC = ({children}) => {
     setKey: setKey(dispatch),
     deleteKey: deleteKey(dispatch),
   };
-  return (
-    <Context.Provider value={{state, ...dispatcher}}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ state, ...dispatcher }}>{children}</Context.Provider>;
 };
 
-export default {Context, Provider};
+export default { Context, Provider };

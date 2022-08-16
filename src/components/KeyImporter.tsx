@@ -35,17 +35,12 @@ interface Props {
   loadedText: string;
 }
 
-const KeyImporter: React.FC<Props> = ({
-  hcp,
-  headerText,
-  buttonText,
-  loadedText,
-}) => {
+const KeyImporter: React.FC<Props> = ({ hcp, headerText, buttonText, loadedText }) => {
   const {
-    state: {keys, keyImports},
+    state: { keys, keyImports },
   } = useContext(CryptoContext);
 
-  const {importPrivateKey} = useCrypto();
+  const { importPrivateKey } = useCrypto();
 
   const onImportPress = async () => {
     try {
@@ -71,7 +66,7 @@ const KeyImporter: React.FC<Props> = ({
         <Card.Title>
           <Text style={styles.text}>{headerText}</Text>
         </Card.Title>
-        <Card.Divider style={{backgroundColor: MAIN_COLOR, margin: 5}} />
+        <Card.Divider style={{ backgroundColor: MAIN_COLOR, margin: 5 }} />
         <View style={styles.center}>
           {!hcp ? (
             <View>
@@ -84,7 +79,7 @@ const KeyImporter: React.FC<Props> = ({
           )}
         </View>
 
-        <Card.Divider style={{backgroundColor: MAIN_COLOR, margin: 5}} />
+        <Card.Divider style={{ backgroundColor: MAIN_COLOR, margin: 5 }} />
         <View>
           {!keys[hcp.id] ? (
             <Button
@@ -97,12 +92,7 @@ const KeyImporter: React.FC<Props> = ({
           ) : (
             <View style={styles.center}>
               <View style={styles.horizontal}>
-                <Icon
-                  style={styles.textIcon}
-                  name="md-checkmark-circle"
-                  size={16}
-                  color="green"
-                />
+                <Icon style={styles.textIcon} name="md-checkmark-circle" size={16} color="green" />
                 <Text style={styles.text}>{loadedText}</Text>
               </View>
             </View>
@@ -114,7 +104,7 @@ const KeyImporter: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {width: '90%'},
+  container: { width: '90%' },
   card: {
     borderWidth: 1,
     borderColor: MAIN_COLOR,

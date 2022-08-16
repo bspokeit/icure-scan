@@ -17,13 +17,8 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const arrayBuffer2Base64 = (
-  arrayBuffer: ArrayBuffer,
-  type = 'image/jpeg',
-): string => {
-  return `data:${type};base64,${btoa(
-    String.fromCharCode(...new Uint8Array(arrayBuffer)),
-  )}`;
+export const arrayBuffer2Base64 = (arrayBuffer: ArrayBuffer, type = 'image/jpeg'): string => {
+  return `data:${type};base64,${btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))}`;
 };
 
 export const URI2Blob = async (uri: string | undefined): Promise<Blob> => {

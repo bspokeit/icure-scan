@@ -21,12 +21,7 @@ import { Button, Input, Text } from '@rneui/base';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Credentials } from '../api/icure';
-import {
-  DEFAULT_BORDER,
-  MAIN_ACTION,
-  MAIN_COLOR,
-  SECONDARY_ACTION
-} from '../constant';
+import { DEFAULT_BORDER, MAIN_ACTION, MAIN_COLOR, SECONDARY_ACTION } from '../constant';
 
 interface Props {
   errorMessage?: string;
@@ -36,19 +31,13 @@ interface Props {
   disabled: boolean;
 }
 
-const LoginForm: React.FC<Props> = ({
-  errorMessage,
-  onSubmit,
-  submitButtonText,
-  loginOngoing,
-  disabled,
-}) => {
+const LoginForm: React.FC<Props> = ({ errorMessage, onSubmit, submitButtonText, loginOngoing, disabled }) => {
   const [username, setUsername] = useState('demo-test-1608210888');
   const [password, setPassword] = useState('test');
 
   const tryToSubmit = () => {
     if (username && password) {
-      onSubmit({username, password});
+      onSubmit({ username, password });
     }
   };
 
@@ -80,7 +69,7 @@ const LoginForm: React.FC<Props> = ({
       ) : null}
       <Button
         title={submitButtonText}
-        onPress={() => onSubmit({username, password})}
+        onPress={() => onSubmit({ username, password })}
         disabled={disabled || !username || !password || loginOngoing}
         loading={loginOngoing}
         buttonStyle={styles.submitButton}

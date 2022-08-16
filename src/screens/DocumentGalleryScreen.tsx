@@ -21,19 +21,14 @@ import moment from 'moment';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  NavigationStackScreenComponent,
-  NavigationStackScreenProps
-} from 'react-navigation-stack';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import DocumentGallery from '../components/DocumentGallery';
 import PatientHeader from '../components/PatientHeader';
 import { DEFAULT_BORDER } from '../constant';
 
 interface Props extends NavigationStackScreenProps {}
 
-const DocumentGalleryScreen: NavigationStackScreenComponent<Props> = ({
-  navigation,
-}) => {
+const DocumentGalleryScreen: NavigationStackScreenComponent<Props> = ({ navigation }) => {
   const patient = navigation.state.params?.patient;
   const contact = navigation.state.params?.contact;
 
@@ -43,9 +38,7 @@ const DocumentGalleryScreen: NavigationStackScreenComponent<Props> = ({
         <PatientHeader
           patient={patient}
           goBack={() => navigation.goBack()}
-          subTitle={`Contact du ${moment(contact.created).format(
-            'DD/MM/YYYY',
-          )}`}></PatientHeader>
+          subTitle={`Contact du ${moment(contact.created).format('DD/MM/YYYY')}`}></PatientHeader>
       </View>
       <View>
         <DocumentGallery patient={patient} contact={contact}></DocumentGallery>

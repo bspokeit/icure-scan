@@ -52,8 +52,7 @@ export type SystemActionPayloadTypes = {
   [SystemActionTypes.SetCheckCompleted]: boolean;
 };
 
-export type SystemAction =
-  ActionMap<SystemActionPayloadTypes>[keyof ActionMap<SystemActionPayloadTypes>];
+export type SystemAction = ActionMap<SystemActionPayloadTypes>[keyof ActionMap<SystemActionPayloadTypes>];
 
 export const defaultSystemChecks: SystemCheck[] = [
   {
@@ -63,9 +62,7 @@ export const defaultSystemChecks: SystemCheck[] = [
       let status;
 
       try {
-        status = (await initCrypto())
-          ? SystemCheckStatus.Ready
-          : SystemCheckStatus.Error;
+        status = (await initCrypto()) ? SystemCheckStatus.Ready : SystemCheckStatus.Error;
       } catch (err) {
         status = SystemCheckStatus.Error;
       }
@@ -82,13 +79,12 @@ export const defaultSystemChecks: SystemCheck[] = [
 
       try {
         await EncryptedStorage.setItem('test', 'create_read_delete');
-        const check =
-          (await EncryptedStorage.getItem('test')) === 'create_read_delete';
+        const check = (await EncryptedStorage.getItem('test')) === 'create_read_delete';
         await EncryptedStorage.removeItem('test');
 
         status = check ? SystemCheckStatus.Ready : SystemCheckStatus.Error;
       } catch (err) {
-        console.log(err)
+        console.log(err);
         status = SystemCheckStatus.Error;
       }
 

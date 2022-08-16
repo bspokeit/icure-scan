@@ -17,11 +17,7 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-  NavigationActions,
-  NavigationContainerComponent,
-  NavigationParams
-} from 'react-navigation';
+import { NavigationActions, NavigationContainerComponent, NavigationParams } from 'react-navigation';
 
 let navigator: NavigationContainerComponent;
 
