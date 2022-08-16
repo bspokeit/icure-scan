@@ -38,7 +38,6 @@ export default () => {
     return api()
       .cryptoApi.loadKeyPairsAsTextInBrowserLocalStorage(hcp.id, hex2ua(privateKey))
       .then(() => {
-        console.log('cdcdcdcd', api().cryptoApi.randomUuid());
         return validatePrivateKey(hcp);
       })
       .catch(error => {
@@ -68,7 +67,6 @@ export default () => {
       const keyImported = await importAndValidatePrivateKey(hcp, privateKey);
 
       if (keyImported) {
-        console.log('privateKeyprivateKey: ');
         setKey(hcp.id, privateKey);
       } else {
         await clearPrivateKeyData(hcp);
