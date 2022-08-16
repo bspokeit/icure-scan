@@ -17,10 +17,11 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { Icon } from '@rneui/base';
+
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import ContactList from '../components/ContactList';
 import PatientHeader from '../components/PatientHeader';
@@ -64,7 +65,7 @@ const PatientScreen: NavigationStackScreenComponent<Props> = ({ navigation }) =>
           onPress={() => {
             navigation.navigate('Import', { patient });
           }}>
-          <Icon name="add-circle" size={46} color={MAIN_ACTION} />
+          <Icon reverse raised name="add" color={MAIN_ACTION} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
