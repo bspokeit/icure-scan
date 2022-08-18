@@ -20,15 +20,16 @@
 import { Icon, Overlay } from '@rneui/base';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import DocumentImporter from '../components/DocumentImporter';
 import ImportDocumentGallery from '../components/ImportDocumentGallery';
 import PatientHeader from '../components/PatientHeader';
-import { DEFAULT_BORDER, MAIN_ACTION } from '../constant';
+import { DEFAULT_BORDER, IMPORT_OPTION, LAST_ACTION, MAIN_ACTION, SECONDARY_ACTION } from '../constant';
 import { Context as ImportContext } from '../context/ImportContext';
 import { Patient } from '../models';
+import { ImagePickerConverter } from '../models/core/import-task.model';
 
 interface Props extends NavigationStackScreenProps {}
 
@@ -50,25 +51,25 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({ navigatio
     navigation.goBack();
   };
 
-  // const cameraRequest = async () => {
-  //   const {status} = await ImagePicker.requestCameraPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     alert('Sorry, we need Camera permissions to make this work!');
-  //   }
+  const cameraRequest = async () => {
+    let result = await launchCamera(IMPORT_OPTION);
+    if (result?.errorCode) {
+      console.error(result?.errorCode);
+      return;
+    }
+    console.log('cameraRequest result: ', result);
+    collect(ImagePickerConverter(result));
+  };
 
-  //   let result = await ImagePicker.launchCameraAsync(IMPORT_OPTION);
-  //   collect(ImagePickerConverter(result));
-  // };
-
-  // const galleryRequest = async () => {
-  //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     alert('Sorry, we need MediaLibrary permissions to make this work!');
-  //   }
-
-  //   let result = await ImagePicker.launchImageLibraryAsync(IMPORT_OPTION);
-  //   collect(ImagePickerConverter(result));
-  // };
+  const galleryRequest = async () => {
+    let result = await launchImageLibrary(IMPORT_OPTION);
+    if (result?.errorCode) {
+      console.error(result?.errorCode);
+      return;
+    }
+    console.log('galleryRequest result: ', result);
+    collect(ImagePickerConverter(result));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,24 +83,16 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({ navigatio
         <ImportDocumentGallery></ImportDocumentGallery>
       </View>
       <View style={styles.actionButtonBlock}>
-        {/* <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
-          <Icon
-            reverse
-            raised
-            name="images"
-            type="ionicon"
-            color={LAST_ACTION}
-          />
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
-          <Icon
-            reverse
-            raised
-            name="camera"
-            type="ionicon"
-            color={SECONDARY_ACTION}
-          />
-        </TouchableOpacity> */}
+        {
+          <TouchableOpacity activeOpacity={0.7} onPress={galleryRequest}>
+            <Icon reverse raised name="images" type="ionicon" color={LAST_ACTION} />
+          </TouchableOpacity>
+        }
+        {
+          <TouchableOpacity activeOpacity={0.7} onPress={cameraRequest}>
+            <Icon reverse raised name="camera" type="ionicon" color={SECONDARY_ACTION} />
+          </TouchableOpacity>
+        }
         {documents.length ? (
           <TouchableOpacity activeOpacity={0.7} onPress={activateImportMode}>
             <Icon reverse raised name="cloud-upload" color={MAIN_ACTION} />

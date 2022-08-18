@@ -24,6 +24,10 @@ import { ImportAction, ImportActionTypes, ImportState, ImportStatus } from './re
 const importReducer = (state: ImportState, action: ImportAction): ImportState => {
   switch (action.type) {
     case ImportActionTypes.Collect:
+      console.log({
+        ...state,
+        documents: [...state.documents, action.payload],
+      });
       return {
         ...state,
         documents: [...state.documents, action.payload],
@@ -60,10 +64,12 @@ const importReducer = (state: ImportState, action: ImportAction): ImportState =>
 
 const collect =
   (dispatch: React.Dispatch<ImportAction>) =>
-  async (taskDoc: ImportTaskDocument): Promise<void> => {
-    if (!taskDoc.cancelled) {
-      dispatch({ type: ImportActionTypes.Collect, payload: taskDoc });
-    }
+  async (taskDocs: Array<ImportTaskDocument>): Promise<void> => {
+    taskDocs?.forEach(taskDoc => {
+      if (!taskDoc.cancelled) {
+        dispatch({ type: ImportActionTypes.Collect, payload: taskDoc });
+      }
+    });
   };
 
 const clear = (dispatch: React.Dispatch<ImportAction>) => async (): Promise<void> => {
@@ -112,7 +118,7 @@ const defaultImportState: ImportState = {
 };
 
 const defaultImportDispatcher = {
-  collect: (_a: ImportTaskDocument) => Promise.resolve(),
+  collect: (_a: Array<ImportTaskDocument>) => Promise.resolve(),
   clear: () => Promise.resolve(),
   reset: () => Promise.resolve(),
   activate: (_a: boolean) => Promise.resolve(),
@@ -124,7 +130,7 @@ const defaultImportDispatcher = {
 
 export const Context = createContext<{
   state: ImportState;
-  collect: (taskDoc: ImportTaskDocument) => Promise<void>;
+  collect: (taskDocs: Array<ImportTaskDocument>) => Promise<void>;
   clear: () => Promise<void>;
   reset: () => Promise<void>;
   activate: (active: boolean) => Promise<void>;

@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+import { ImagePickerResponse } from 'react-native-image-picker';
 import { Contact } from './contact.model';
 import { Document } from './document.model';
 import { Service } from './service.model';
 
 export const taskID = (): string => {
-  return Math.random().toString(36).substr(2, 9) + '';
+  return Math.random().toString(36).substring(2, 9) + '';
 };
 
 export enum ImportTaskType {
@@ -53,7 +53,7 @@ export class ImportTask {
 export class ImportTaskDocument {
   cancelled?: boolean;
   uri?: string;
-  type?: 'image' | 'video';
+  type?: string;
   base64?: string;
 
   constructor(json: Partial<ImportTaskDocument>) {
@@ -64,8 +64,17 @@ export class ImportTaskDocument {
   }
 }
 
-export const ImagePickerConverter = (output: any /*ImagePicker.ImagePickerResult*/) => {
-  return new ImportTaskDocument({ ...output });
+export const ImagePickerConverter = (output: ImagePickerResponse): Array<ImportTaskDocument> => {
+  return (
+    output?.assets?.map(asset => {
+      return new ImportTaskDocument({
+        cancelled: output.didCancel,
+        uri: asset.uri,
+        type: asset.type,
+        base64: asset.base64,
+      });
+    }) ?? []
+  );
 };
 
 export interface ProcessTaskNewContent {

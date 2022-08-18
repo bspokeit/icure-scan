@@ -17,10 +17,11 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const IMPORT_OPTION: /*ImagePicker.ImagePickerOptions*/ any = {
-  mediaTypes: {}, //ImagePicker.MediaTypeOptions.Images,
-  allowsEditing: false,
+import { ImageLibraryOptions } from 'react-native-image-picker';
+
+export const IMPORT_OPTION: ImageLibraryOptions = {
+  mediaType: 'photo',
   quality: 0.5,
-  allowsMultipleSelection: true,
-  base64: true,
+  selectionLimit: 1,
+  includeBase64: true,
 };
