@@ -1,9 +1,4 @@
 {
-  // "extends": "@tsconfig/react-native/tsconfig.json",
-  // "compilerOptions": {
-  //   "jsx": "react",
-  //   "skipLibCheck": false,
-  // }
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -23,11 +18,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "incremental": true, 
-    "sourceMap": true, 
-    "declaration": true, 
-    "noUnusedLocals": false, 
-    "noUnusedParameters": true, 
+    "incremental": true,
+    "sourceMap": true,
+    "declaration": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
     "jsx": "react"
   },
   "exclude": [
