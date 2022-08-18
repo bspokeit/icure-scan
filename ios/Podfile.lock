@@ -292,7 +292,9 @@ PODS:
     - React-Core
   - react-native-icure-crypto (1.0.0):
     - React
-  - react-native-quick-base64 (2.0.3):
+  - react-native-image-picker (4.8.5):
+    - React-Core
+  - react-native-quick-base64 (2.0.5):
     - React-Core
   - react-native-safe-area-context (4.3.1):
     - RCT-Folly
@@ -399,7 +401,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.14.1):
+  - RNScreens (3.15.0):
     - React-Core
     - React-RCTImage
   - RNVectorIcons (9.2.0):
@@ -456,7 +458,8 @@ DEPENDENCIES:
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-encrypted-storage (from `../node_modules/react-native-encrypted-storage`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
-  - react-native-icure-crypto (from `../../../react-native-modules/IcureCrypto`)
+  - react-native-icure-crypto (from `../node_modules/react-native-icure-crypto`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-quick-base64 (from `../node_modules/react-native-quick-base64`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -543,7 +546,9 @@ EXTERNAL SOURCES:
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-icure-crypto:
-    :path: "../../../react-native-modules/IcureCrypto"
+    :path: "../node_modules/react-native-icure-crypto"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-quick-base64:
     :path: "../node_modules/react-native-quick-base64"
   react-native-safe-area-context:
@@ -623,8 +628,9 @@ SPEC CHECKSUMS:
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
   react-native-encrypted-storage: e78d848ce0fb663c2ce306e37921d026809322e6
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
-  react-native-icure-crypto: 17f7eb49b70b51fdfb357c86d7e8c39f1b3f30d9
-  react-native-quick-base64: 8d7a267399ebe8e9b49c68642ff461ff579e93bf
+  react-native-icure-crypto: bc9b7c0adca800a5d93e3b2c8fddacdc1aaa1c0d
+  react-native-image-picker: cd420f97f6ed6ff74fc4686d27dbcfdbd051db91
+  react-native-quick-base64: e657e9197e61b60a9dec49807843052b830da254
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   React-perflogger: c9161ff0f1c769993cd11d2751e4331ff4ceb7cd
   React-RCTActionSheet: 2d885b0bea76a5254ef852939273edd8de116180
@@ -642,7 +648,7 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNReanimated: 2cf7451318bb9cc430abeec8d67693f9cf4e039c
-  RNScreens: aa9a97835afbbdc18a4757870b2b59b7d9fae16a
+  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 7ab6e3ee4ce47d7b789d1cb520163833e515f452
