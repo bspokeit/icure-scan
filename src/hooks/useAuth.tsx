@@ -17,9 +17,8 @@
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HealthcareParty, hex2ua, IccUserXApi, Patient, ua2b64, XHR } from '@icure/api';
+import { IccUserXApi, XHR } from '@icure/api';
 import { useContext } from 'react';
-import { tDecrypt, tEncrypt } from '../api/crypto';
 import {
   Credentials,
   ErrorHandler,
@@ -234,83 +233,8 @@ export default () => {
     autoLogin();
   };
 
-  const hcp_id = '4a1e806e5f702e9320c745e554006855-test-1608210888';
-  const parent_id = '4a1e806e5f702e9320c745e554004c75-test-1608210888';
-
-  const hcp_private_key = async () => {
-    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(hcp_id);
-    return key.privateKey;
-  };
-  const parent_private_key = async () => {
-    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(parent_id);
-    return key.privateKey;
-  };
-
-  const hcp_public_key = async () => {
-    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(hcp_id);
-    return key.publicKey;
-  };
-  const parent_public_key = async () => {
-    const key = await api().cryptoApi.RSA.loadKeyPairNotImported(parent_id);
-    return key.publicKey;
-  };
-
   const test = async () => {
     try {
-      //addPatient();
-      //return;
-      const uApi = userApi();
-      const current = await uApi.getCurrentUser();
-      console.log(current);
-      const hcp_key = await hcp_private_key();
-      const parent_key = await parent_private_key();
-
-      const e1 = await tEncrypt('bimbim', await hcp_public_key());
-      const d1 = await tDecrypt(e1, hcp_key);
-
-      console.log('d1: ', d1);
-
-      const e2 = await tEncrypt('bambam', await parent_public_key());
-      const d2 = await tDecrypt(e2, parent_key);
-
-      console.log('d2: ', d2);
-
-      const hcp: HealthcareParty = await api().healthcarePartyApi.getCurrentHealthcareParty();
-
-      const hcpAA0 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![hcp_id][0]) as ArrayBuffer), hcp_key);
-      const hcpAA1 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![hcp_id][1]) as ArrayBuffer), hcp_key);
-
-      console.log('hcpAA0: ', hcpAA0);
-      console.log('hcpAA1: ', hcpAA1);
-
-      const hcpAB0 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![parent_id][0]) as ArrayBuffer), hcp_key);
-      const hcpAB1 = await tDecrypt(ua2b64(hex2ua(hcp.hcPartyKeys![parent_id][1]) as ArrayBuffer), parent_key);
-
-      console.log('hcpAB0: ', hcpAB0);
-      console.log('hcpAB1: ', hcpAB1);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const addPatient = async () => {
-    try {
-      const patientToCreate = await api().patientApi.newInstance(
-        await api().userApi.getCurrentUser(),
-        new Patient({
-          id: 'aaa' + api().cryptoApi.randomUuid(),
-          firstName: 'C',
-          lastName: 'DW',
-          note: 'Winter is coming',
-        }),
-      );
-
-      console.log('patientToCreate: ', patientToCreate);
-      // When
-      const createdPatient = await api().patientApi.createPatientWithUser(
-        await api().userApi.getCurrentUser(),
-        patientToCreate,
-      );
     } catch (error) {
       console.error(error);
     }
