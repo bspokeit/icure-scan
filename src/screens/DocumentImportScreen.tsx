@@ -59,7 +59,7 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({ navigatio
       console.error(result?.errorCode);
       return;
     }
-    console.log('cameraRequest result: ', result);
+    //console.log('cameraRequest result: ', result);
     collect(ImagePickerConverter(result));
   };
 

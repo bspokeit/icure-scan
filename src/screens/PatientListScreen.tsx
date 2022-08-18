@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { BottomSheet, SearchBar } from '@rneui/base';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';

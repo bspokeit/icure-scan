@@ -87,15 +87,11 @@ export default () => {
     try {
       const document: Document = new Document(await buildNewDocument(task.document!!));
 
-      console.log('bim: ');
+      console.log('document: ', document);
 
       if (!document) {
-        console.log('clearAttachment: ');
         throw new Error(`Impossible to create Document for task: ${task}`);
       }
-
-      console.log('bam: ');
-
       newContent.documents.push(document);
 
       const clearAttachment = await URI2Blob(task.document!!.uri!!);
@@ -124,8 +120,6 @@ export default () => {
         clearAttachment as any,
       );
 
-      console.log('step 10 ');
-
       const service = api()
         .contactApi.service()
         .newInstance(currentUser!!, {
@@ -142,13 +136,9 @@ export default () => {
           label: 'imported document',
         });
 
-      console.log('step 11 ');
-
       if (!service) {
         throw new Error(`Impossible to create Service for document: ${document}`);
       }
-
-      console.log('step 12 ');
 
       newContent.services.push(service);
       updateTask(task.id, ImportTaskStatus.Done);
@@ -190,7 +180,6 @@ export default () => {
 
     try {
       const contact = await buildNewContact(patient);
-      console.log('contact ok ');
       contact.services = _.chain(newContent.services).compact().value();
       contact.subContacts = [
         {
@@ -202,8 +191,6 @@ export default () => {
       ];
 
       const newContact: Contact = await api().contactApi.createContactWithUser(currentUser!!, contact);
-
-      console.log('contact with user ok ');
 
       newContent.contact = newContact;
 

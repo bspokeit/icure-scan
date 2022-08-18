@@ -18,7 +18,6 @@
  */
 
 import { Icon } from '@rneui/base';
-
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
