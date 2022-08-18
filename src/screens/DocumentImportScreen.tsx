@@ -53,6 +53,8 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({ navigatio
 
   const cameraRequest = async () => {
     let result = await launchCamera(IMPORT_OPTION);
+    //  TODO: add user feedback to permission or availability issue
+    //  TODO: test on physical device
     if (result?.errorCode) {
       console.error(result?.errorCode);
       return;
@@ -63,11 +65,12 @@ const DocumentImportScreen: NavigationStackScreenComponent<Props> = ({ navigatio
 
   const galleryRequest = async () => {
     let result = await launchImageLibrary(IMPORT_OPTION);
+    //  TODO: add user feedback to permission or availability issue
     if (result?.errorCode) {
       console.error(result?.errorCode);
       return;
     }
-    console.log('galleryRequest result: ', result);
+
     collect(ImagePickerConverter(result));
   };
 
