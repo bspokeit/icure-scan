@@ -16,27 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import 'react-native-get-random-values';
 
 import { b64_2ab, b64_2ua, string2ab, ua2b64, ua2string } from '@icure/api/dist/icc-x-api/utils/binary-utils';
 import { RNIcureAES, RNIcureRSA } from 'react-native-icure-crypto';
+
 import { stringifyPrivateJWK, stringifyPublicJWK } from './key-helper';
 
 import { v4 as uuidv4 } from 'uuid';
 
 const msrCrypto = require('./support/msr-crypto.js');
-
-export const tDecrypt = async (data: string, key: any) => {
-  const b64Key = stringifyPrivateJWK(key);
-  const decrypted = await RNIcureRSA.decrypt(data, b64Key);
-  return decrypted;
-};
-
-export const tEncrypt = async (data: string, key: any) => {
-  const b64Key = stringifyPublicJWK(key);
-  const encrypted = await RNIcureRSA.encrypt(data, b64Key);
-  return encrypted;
-};
 
 const decrypt = async (algorithm: RsaOaepParams | AesCbcParams, key: CryptoKey, data: BufferSource) => {
   try {
