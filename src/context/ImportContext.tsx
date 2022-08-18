@@ -24,10 +24,6 @@ import { ImportAction, ImportActionTypes, ImportState, ImportStatus } from './re
 const importReducer = (state: ImportState, action: ImportAction): ImportState => {
   switch (action.type) {
     case ImportActionTypes.Collect:
-      console.log({
-        ...state,
-        documents: [...state.documents, action.payload],
-      });
       return {
         ...state,
         documents: [...state.documents, action.payload],
