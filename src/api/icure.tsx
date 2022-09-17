@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { RNIcureCrypto as crypto } from 'react-native-icure-crypto';
 
 import { decode as atob, encode as btoa } from 'base-64';
@@ -138,7 +137,7 @@ const buildApi = (headers?: IccApiHeaders, handler?: ErrorHandler): IcureAPI => 
     hcpPartyXApi,
     setErrorHandler(new IccPatientApi(API_URL, parsedHeaders), handler),
     deviceApi,
-    crypto,
+    crypto as Crypto,
   );
 
   const accessLogApi = setErrorHandler(new IccAccesslogXApi(API_URL, parsedHeaders, cryptoApi, userApi), handler);
