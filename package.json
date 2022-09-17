@@ -23,7 +23,6 @@
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.5.0",
-    "react-native-get-random-values": "^1.8.0",
     "react-native-icure-crypto": "file:../../react-native-modules/IcureCrypto",
     "react-native-image-picker": "^4.8.5",
     "react-native-image-viewing": "^0.2.2",
