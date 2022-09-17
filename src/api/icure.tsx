@@ -16,11 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with icure-scan.  If not, see <http://www.gnu.org/licenses/>.
  */
-import crypto from './crypto';
-const b64 = require('b64-lite');
 
-global.atob = typeof atob === 'undefined' ? b64.atob : atob;
-global.btoa = typeof btoa === 'undefined' ? b64.btoa : btoa;
+import { RNIcureCrypto as crypto } from 'react-native-icure-crypto';
+
+import { decode as atob, encode as btoa } from 'base-64';
+
+global.atob = atob;
+global.btoa = btoa;
 
 const initSecuredCrypto = async (): Promise<boolean> => {
   // Only needed for crypto.getRandomValues

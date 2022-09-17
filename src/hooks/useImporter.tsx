@@ -104,11 +104,7 @@ export default () => {
         document.encryptionKeys!!,
       );
 
-      console.log('bagadad: ');
-
-      console.log('clearAttachment: ');
-
-      await api().documentApi.setDocumentAttachment(
+      await api().documentApi.setDocumentAttachmentBody(
         document.id,
         _.chain(ekeys.extractedKeys)
           .map(ek => {
