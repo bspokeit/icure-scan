@@ -19,7 +19,6 @@
 
 import { IccUserXApi, XHR } from '@icure/api';
 import { useContext } from 'react';
-import { aesKeyGenerationTest, rsaKeyPairGenerationTest } from '../api/crypto.test';
 import {
   Credentials,
   ErrorHandler,
@@ -234,14 +233,5 @@ export default () => {
     autoLogin();
   };
 
-  const test = async () => {
-    try {
-      //const test = await rsaKeyPairGenerationTest();
-      const test = await aesKeyGenerationTest();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return { login, autoLogin, logUserOut, logoutUserOutHard, sessionActive, test };
+  return { login, autoLogin, logUserOut, logoutUserOutHard, sessionActive };
 };

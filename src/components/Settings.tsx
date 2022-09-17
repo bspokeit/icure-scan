@@ -28,7 +28,7 @@ interface Props {
 }
 
 const Settings: React.FC<Props> = ({ onCancel }) => {
-  const { logUserOut, logoutUserOutHard, test } = useAuth();
+  const { logUserOut, logoutUserOutHard } = useAuth();
 
   const onLogout = async () => {
     await logUserOut();
@@ -36,10 +36,6 @@ const Settings: React.FC<Props> = ({ onCancel }) => {
 
   const onLogoutHard = async () => {
     await logoutUserOutHard();
-  };
-
-  const onTest = async () => {
-    await test();
   };
 
   return (
@@ -59,11 +55,6 @@ const Settings: React.FC<Props> = ({ onCancel }) => {
       <ListItem key={3} underlayColor={LIGHT_GREY} containerStyle={styles.settingItem} onPress={() => onCancel()}>
         <ListItem.Content style={styles.settingItemContent}>
           <ListItem.Title style={[styles.settingItemTitle, { color: LIGHT_GREY }]}>Cancel</ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
-      <ListItem key={4} underlayColor={LIGHT_GREY} containerStyle={styles.settingItem} onPress={() => onTest()}>
-        <ListItem.Content style={styles.settingItemContent}>
-          <ListItem.Title style={[styles.settingItemTitle, { color: LIGHT_GREY }]}>Test</ListItem.Title>
         </ListItem.Content>
       </ListItem>
     </>
